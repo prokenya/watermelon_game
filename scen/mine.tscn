@@ -1,0 +1,175 @@
+[gd_scene load_steps=13 format=3 uid="uid://cxjxhji71pdka"]
+
+[ext_resource type="AudioStream" uid="uid://bbhfg3cbhi5rf" path="res://audio/sfx/on.ogg" id="1_lovnv"]
+[ext_resource type="AudioStream" uid="uid://3myxn1aftmdc" path="res://audio/sfx/off.ogg" id="2_qjox7"]
+
+[sub_resource type="GDScript" id="GDScript_byupa"]
+script/source = "extends StaticBody3D
+@onready var mine = $\".\"
+
+@onready var anim = $AnimationPlayer
+@export var vfx_expp1 = preload(\"res://scen/vfx/vfx_expp1.tscn\")
+@onready var exp_s = $base
+@onready var on = $on
+@onready var off = $off
+@onready var hurt = $hurt/CollisionShape3D
+var repulsion_force: float = 20.0
+var expp_called: bool = false
+func _on_area_3d_body_entered(body):
+	anim.play(\"down\")
+	on.play()
+
+func _on_area_3d_body_exited(body):
+	expp()
+	print(str(body))
+func expp():
+	if expp_called:
+		return  # Если функция уже вызывалась, просто выходим из нее
+	expp_called = true  # Устанавливаем флаг после первого вызова функции
+	anim.play(\"up\")
+	if not off.playing:
+		off.play()
+	if exp_s.is_inside_tree():
+		var instance = vfx_expp1.instantiate()
+		instance.global_position = exp_s.global_position
+		get_tree().root.add_child(instance)
+		hurt.disabled = false
+		await get_tree().create_timer(0.1).timeout
+		queue_free()
+
+func _on_area_3d_area_entered(area): # взрыв от взрыва рядом
+	if area.editor_description == \"hurt\":
+		expp()
+
+@onready var animation_player = $StaticBody3D/AnimationPlayer
+
+func _on_hurt_body_entered(body):
+	if body is CharacterBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к скорости CharacterBody3D
+		body.velocity += force
+
+	elif body is RigidBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к RigidBody3D с использованием add_central_force
+		body.apply_central_impulse(force)
+
+
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_ufhxi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3oi4g"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cumq3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5i6ui"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_av25h"]
+size = Vector3(0.915283, 0.159988, 0.921814)
+
+[sub_resource type="Animation" id="Animation_5ptyw"]
+resource_name = "down"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("button:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.117365, 0), Vector3(0, 0.03, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ey26w"]
+resource_name = "up"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("button:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.03, 0), Vector3(0, 0.117365, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1rcrf"]
+_data = {
+"down": SubResource("Animation_5ptyw"),
+"up": SubResource("Animation_ey26w")
+}
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tfx8m"]
+radius = 2.0
+
+[node name="mine" type="StaticBody3D"]
+script = SubResource("GDScript_byupa")
+
+[node name="base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.151139, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_ufhxi")
+surface_material_override/0 = SubResource("StandardMaterial3D_3oi4g")
+
+[node name="button" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.88489, 0, 0, 0, 0.0588354, 0, 0, 0, 0.88489, 0, 0.117365, 0)
+mesh = SubResource("CylinderMesh_cumq3")
+skeleton = NodePath("../base")
+surface_material_override/0 = SubResource("StandardMaterial3D_5i6ui")
+
+[node name="1" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.085, 0, 0, 0, 1, 0, 0, 0, 1.08, 0, -0.000907898, 0)
+shape = SubResource("BoxShape3D_av25h")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 2
+
+[node name="2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00500488, 0.195658, 0.0145569)
+shape = SubResource("BoxShape3D_av25h")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1rcrf")
+}
+
+[node name="on" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("1_lovnv")
+
+[node name="off" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_qjox7")
+volume_db = 20.0
+max_distance = 30.0
+bus = &"SFX"
+
+[node name="hurt" type="Area3D" parent="."]
+editor_description = "hurt1m"
+collision_layer = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="hurt"]
+shape = SubResource("SphereShape3D_tfx8m")
+disabled = true
+
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
+[connection signal="body_entered" from="hurt" to="." method="_on_hurt_body_entered"]
+[connection signal="body_exited" from="hurt" to="." method="_on_hurt_body_exited"]

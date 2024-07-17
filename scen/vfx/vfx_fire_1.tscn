@@ -1,0 +1,45 @@
+[gd_scene load_steps=10 format=3 uid="uid://djyme3vqxbqwg"]
+
+[ext_resource type="Material" uid="uid://b0eekmgghjv0i" path="res://materials/exp_flash1.tres" id="1_ltfl3"]
+
+[sub_resource type="Gradient" id="Gradient_s1wt0"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qbvvg"]
+gradient = SubResource("Gradient_s1wt0")
+
+[sub_resource type="Curve" id="Curve_glwi8"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_4a44j"]
+curve = SubResource("Curve_glwi8")
+
+[sub_resource type="Curve" id="Curve_ludj3"]
+max_value = 3.0
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1.28571), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_c0pgl"]
+curve = SubResource("Curve_ludj3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_815ly"]
+spread = 0.0
+initial_velocity_min = 5.5
+initial_velocity_max = 5.5
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_4a44j")
+scale_over_velocity_curve = SubResource("CurveTexture_c0pgl")
+color = Color(5, 1, 0.35, 1)
+color_ramp = SubResource("GradientTexture1D_qbvvg")
+
+[sub_resource type="QuadMesh" id="QuadMesh_eiufj"]
+material = ExtResource("1_ltfl3")
+
+[node name="vfx_fire1" type="Node3D"]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 15
+speed_scale = 1.24
+process_material = SubResource("ParticleProcessMaterial_815ly")
+draw_pass_1 = SubResource("QuadMesh_eiufj")

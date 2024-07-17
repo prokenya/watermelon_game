@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://6voauus8d75d"]
+
+[ext_resource type="Script" path="res://scripts/music.gd" id="1_2jpwm"]
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_yomo1"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iuf80"]
+texture = SubResource("CurveXYZTexture_yomo1")
+texture_margin_top = 20.0
+modulate_color = Color(0, 0.847059, 0.815686, 1)
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_0n047"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hld2m"]
+texture = SubResource("CurveXYZTexture_0n047")
+texture_margin_top = 20.0
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_tbc7r"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_76k40"]
+texture = SubResource("CurveXYZTexture_tbc7r")
+texture_margin_top = 20.0
+modulate_color = Color(0.552941, 0, 0.262745, 1)
+
+[node name="music" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2jpwm")
+bus_name = "SFX"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -802.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "SFX"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/slider = SubResource("StyleBoxTexture_iuf80")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hld2m")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_76k40")
+max_value = 1.0
+step = 0.001
+
+[connection signal="value_changed" from="VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]

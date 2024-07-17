@@ -1,0 +1,37 @@
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://bg8fsepfigyn0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12rix"]
+bg_color = Color(0.101961, 0.113725, 0.133333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlhsc"]
+bg_color = Color(0, 0.360784, 0.14902, 1)
+
+[sub_resource type="ImageTexture" id="ImageTexture_qxhda"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_p40fr"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_mgmom"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ofwd"]
+bg_color = Color(0, 0, 0.815686, 1)
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_04trc"]
+bg_color = Color(0, 0, 0.815686, 1)
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[resource]
+Button/colors/font_color = Color(0, 0.596078, 0.0901961, 1)
+Button/styles/normal = SubResource("StyleBoxFlat_12rix")
+Button/styles/pressed = SubResource("StyleBoxFlat_mlhsc")
+HSlider/icons/grabber = SubResource("ImageTexture_qxhda")
+HSlider/icons/grabber_disabled = SubResource("ImageTexture_p40fr")
+HSlider/icons/grabber_highlight = SubResource("ImageTexture_mgmom")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_2ofwd")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_04trc")

@@ -1,0 +1,565 @@
+[gd_scene load_steps=31 format=3 uid="uid://m6cpbilj2lg6"]
+
+[ext_resource type="Script" path="res://scripts/character.gd" id="1_hwfqd"]
+[ext_resource type="PackedScene" uid="uid://euo6v66j3nfb" path="res://scen/watermelon_gun.tscn" id="2_f5rlp"]
+[ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_ch1nh"]
+[ext_resource type="Texture2D" uid="uid://bkvmydfn5saxg" path="res://joystick/textures/joystick_tip.png" id="3_ctadg"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://joystick/virtual_joystick.tscn" id="4_clp4a"]
+[ext_resource type="Script" path="res://scripts/GUI.gd" id="4_kt6tb"]
+[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="5_dm75i"]
+[ext_resource type="AudioStream" uid="uid://erqx6phtv0fp" path="res://audio/music/Transferloop_-_drone_-_spaces.wav" id="7_c42dc"]
+[ext_resource type="AudioStream" uid="uid://n57g5baj44a" path="res://audio/sfx/Footsteps/FootstepsStoneDirt1.wav" id="8_5j2pe"]
+[ext_resource type="AudioStream" uid="uid://ctrpvkoufalvn" path="res://audio/sfx/Footsteps/FootstepsStoneDirt2.wav" id="9_45bso"]
+[ext_resource type="AudioStream" uid="uid://cis8w30cm46lq" path="res://audio/sfx/Footsteps/FootstepsStoneDirt3.wav" id="10_bv7be"]
+[ext_resource type="AudioStream" uid="uid://bp7oub08v01c0" path="res://audio/sfx/Footsteps/FootstepsStoneDirt4.wav" id="11_hb27t"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v4cbk"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0xdd3"]
+
+[sub_resource type="Animation" id="Animation_4ps3i"]
+resource_name = "cam_go_shaking_left"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera3D:h_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -0.055, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera3D:v_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.045, 0.0]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"footstep"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_jpkuy"]
+resource_name = "cam_go_shaking_right"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera3D:h_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.055, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera3D:v_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.045, 0.0]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"footstep"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fp5d2"]
+_data = {
+"cam_go_shaking_left": SubResource("Animation_4ps3i"),
+"cam_go_shaking_right": SubResource("Animation_jpkuy")
+}
+
+[sub_resource type="GDScript" id="GDScript_5u52p"]
+script/source = "extends Button
+
+
+
+func _on_pressed():
+	$\"..\".modulate.a = 0.00
+	$\"../../../CanvasLayer2/menu\".modulate.a = 0.00
+"
+
+[sub_resource type="GDScript" id="GDScript_aocj4"]
+script/source = "extends Label
+
+@onready var fps_label := %Label
+var counter := 0.0
+
+func _process(delta: float) -> void:
+	counter += delta
+	# Hide FPS label until it's initially updated by the engine (this can take up to 1 second).
+	fps_label.visible = counter >= 1.0
+	fps_label.text = \"%d FPS (%.2f mspf)\" % [Engine.get_frames_per_second(), 1000.0 / Engine.get_frames_per_second()]
+"
+
+[sub_resource type="GDScript" id="GDScript_b1duj"]
+script/source = "extends Button
+
+
+func _on_pressed():
+	Event.emit_signal(\"control\",1)
+
+"
+
+[sub_resource type="GDScript" id="GDScript_26y8o"]
+script/source = "extends Button
+
+
+
+func _on_pressed():
+	Event.emit_signal(\"menu\")
+"
+
+[sub_resource type="GDScript" id="GDScript_xwmwt"]
+script/source = "extends Button
+
+
+
+func _on_pressed():
+	Event.emit_signal(\"back_s\",1)
+"
+
+[sub_resource type="Animation" id="Animation_lvddx"]
+resource_name = "fade_in"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/n-2-n/ColorRect:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CanvasLayer/n-2-n/ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_xxrsi"]
+resource_name = "fade_out"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/n-2-n/ColorRect:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CanvasLayer/n-2-n/ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_s8e0y"]
+_data = {
+"fade_in": SubResource("Animation_lvddx"),
+"fade_out": SubResource("Animation_xxrsi")
+}
+
+[sub_resource type="GDScript" id="GDScript_muoad"]
+script/source = "extends AnimationPlayer
+
+@onready var node_to_node = %\"n-2-n\"
+func back_s(id):
+	get_tree().paused = false
+	if id == 1:
+		node_to_node.play(\"fade_out\")
+
+func _on_animation_finished(anim_name):
+	if anim_name == \"fade_out\":
+		get_tree().change_scene_to_file(\"res://scen/menu.tscn\")
+
+func _ready():
+	Event.connect(\"back_s\",back_s)
+	node_to_node.play(\"fade_in\")
+"
+
+[sub_resource type="Animation" id="Animation_d8ouq"]
+resource_name = "damag"
+length = 0.3
+step = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/playeranim_gui/ColorRect2:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(0.701961, 0, 0.207843, 0.509804), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8g1y3"]
+_data = {
+"damag": SubResource("Animation_d8ouq")
+}
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2ysn1"]
+playback_mode = 1
+random_volume_offset_db = 0.4
+streams_count = 4
+stream_0/stream = ExtResource("8_5j2pe")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("9_45bso")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("10_bv7be")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("11_hb27t")
+stream_3/weight = 1.0
+
+[sub_resource type="GDScript" id="GDScript_5dq31"]
+script/source = "extends AudioStreamPlayer
+
+@onready var audio_stream_player = $\".\"
+
+func _on_finished():
+	audio_stream_player.playing = true
+"
+
+[node name="player" type="CharacterBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+collision_layer = 3
+script = ExtResource("1_hwfqd")
+
+[node name="AudioListener3D" type="AudioListener3D" parent="."]
+
+[node name="Control_charapter_ui_b_MENU_base_cont_VBoxContainer2_MSAA_ddm#_PopupMenu_96332" type="PopupMenu" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_v4cbk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+layers = 65537
+mesh = SubResource("CapsuleMesh_0xdd3")
+
+[node name="animation_player" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Node3D")
+libraries = {
+"": SubResource("AnimationLibrary_fp5d2")
+}
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+cull_mask = 983039
+
+[node name="Node3D2" parent="Node3D" instance=ExtResource("2_f5rlp")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.474398, -0.213836, -0.947284)
+
+[node name="Control_charapter" type="CanvasLayer" parent="."]
+process_mode = 3
+
+[node name="GUI" type="Control" parent="Control_charapter"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_kt6tb")
+
+[node name="hp" type="Label" parent="Control_charapter/GUI"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 1152.0
+offset_bottom = 49.0
+size_flags_vertical = 0
+theme = ExtResource("3_ch1nh")
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 35
+text = "HP:100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control_charapter/GUI"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="Control_charapter/GUI/VBoxContainer"]
+position = Vector2(-168, -168)
+scale = Vector2(1.52, 1.57)
+texture_normal = ExtResource("3_ctadg")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control_charapter/GUI"]
+modulate = Color(1, 1, 1, 0.0392157)
+layout_mode = 0
+offset_right = 193.0
+offset_bottom = 185.0
+alignment = 1
+
+[node name="fire" type="TouchScreenButton" parent="Control_charapter/GUI/VBoxContainer2"]
+position = Vector2(6, 1)
+scale = Vector2(1.78, 1.65)
+texture_normal = ExtResource("3_ctadg")
+
+[node name="Virtual Joystick" parent="Control_charapter/GUI" instance=ExtResource("4_clp4a")]
+layout_mode = 1
+offset_top = -300.0
+offset_bottom = 0.0
+clampzone_size = 40.0
+joystick_mode = 1
+
+[node name="Button" type="Button" parent="Control_charapter/GUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -396.0
+offset_right = -334.0
+offset_bottom = 57.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 35
+text = "ass"
+script = SubResource("GDScript_5u52p")
+
+[node name="Label" type="Label" parent="Control_charapter/GUI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -106.0
+offset_right = -66.0
+offset_bottom = 69.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 25
+script = SubResource("GDScript_aocj4")
+
+[node name="use" type="Button" parent="Control_charapter/GUI"]
+unique_name_in_owner = true
+visible = false
+top_level = true
+light_mask = 3
+visibility_layer = 3
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.0
+offset_top = 147.0
+offset_right = 52.0
+offset_bottom = 209.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("3_ch1nh")
+button_mask = 7
+text = "use"
+script = SubResource("GDScript_b1duj")
+
+[node name="menu2" type="Button" parent="Control_charapter/GUI"]
+top_level = true
+visibility_layer = 15
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 62.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("3_ch1nh")
+button_mask = 7
+text = "menu"
+script = SubResource("GDScript_26y8o")
+
+[node name="ui_b" parent="Control_charapter" instance=ExtResource("5_dm75i")]
+visible = false
+
+[node name="ColorRect" parent="Control_charapter/ui_b/Control" index="0"]
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="HSeparator" parent="Control_charapter/ui_b/Control" index="1"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1152.0
+offset_bottom = 7.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="HBoxContainer" parent="Control_charapter/ui_b/Control" index="2"]
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="menu2" type="Button" parent="Control_charapter/ui_b/Control" index="6"]
+top_level = true
+visibility_layer = 15
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 62.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("3_ch1nh")
+button_mask = 7
+text = "menu"
+script = SubResource("GDScript_26y8o")
+
+[node name="back" type="Button" parent="Control_charapter/ui_b"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -163.0
+offset_top = 2.0
+offset_right = -118.0
+offset_bottom = 64.0
+grow_horizontal = 0
+scale = Vector2(2.12, 1)
+size_flags_horizontal = 8
+size_flags_vertical = 4
+button_mask = 7
+text = "back"
+script = SubResource("GDScript_xwmwt")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Control_charapter"]
+layer = -1
+
+[node name="n-2-n" type="AnimationPlayer" parent="Control_charapter/CanvasLayer"]
+unique_name_in_owner = true
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_s8e0y")
+}
+script = SubResource("GDScript_muoad")
+
+[node name="ColorRect" type="ColorRect" parent="Control_charapter/CanvasLayer/n-2-n"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="playeranim_gui" type="AnimationPlayer" parent="Control_charapter/CanvasLayer"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_8g1y3")
+}
+
+[node name="ColorRect2" type="ColorRect" parent="Control_charapter/CanvasLayer/playeranim_gui"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CapsuleShape3D_v4cbk")
+
+[node name="footstep" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_2ysn1")
+volume_db = 0.05
+bus = &"SFX"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_c42dc")
+volume_db = 10.0
+autoplay = true
+bus = &"music"
+script = SubResource("GDScript_5dq31")
+
+[connection signal="animation_finished" from="animation_player" to="." method="_on_animation_player_animation_finished"]
+[connection signal="pressed" from="Control_charapter/GUI/VBoxContainer/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
+[connection signal="pressed" from="Control_charapter/GUI/VBoxContainer2/fire" to="." method="_on_fire_pressed"]
+[connection signal="pressed" from="Control_charapter/GUI/Button" to="Control_charapter/GUI/Button" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/GUI/use" to="Control_charapter/GUI/use" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/GUI/menu2" to="Control_charapter/GUI/menu2" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/ui_b/Control/menu2" to="Control_charapter/ui_b/Control/menu2" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/ui_b/back" to="Control_charapter/ui_b/back" method="_on_pressed"]
+[connection signal="animation_finished" from="Control_charapter/CanvasLayer/n-2-n" to="Control_charapter/CanvasLayer/n-2-n" method="_on_animation_finished"]
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="area_entered" from="Area3D" to="Control_charapter/GUI" method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="Area3D" to="Control_charapter/GUI" method="_on_area_3d_area_exited"]
+[connection signal="finished" from="footstep" to="footstep" method="_on_finished"]
+[connection signal="finished" from="AudioStreamPlayer" to="AudioStreamPlayer" method="_on_finished"]
+
+[editable path="Control_charapter/ui_b"]

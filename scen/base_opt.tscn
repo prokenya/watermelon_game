@@ -1,0 +1,385 @@
+[gd_scene load_steps=4 format=3 uid="uid://cqn6qgtemelvm"]
+
+[ext_resource type="Script" path="res://scripts/music.gd" id="2_2luiw"]
+[ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="2_x5s8u"]
+
+[sub_resource type="GDScript" id="GDScript_tk30l"]
+script/source = "extends CanvasLayer
+
+@onready var active_layer = [$Control/MENU,$Control/cheats,$Control/music]
+
+func _on_perfomance_pressed():
+	pressed(0)
+
+func _on_cheats_pressed():
+	pressed(1)
+
+func _on_audio_pressed():
+	pressed(2)
+
+
+func pressed(id):
+	for i in range(len(active_layer)):
+		active_layer[i].visible = false
+	active_layer[id].visible = true
+
+var user_prefs: UserPref
+
+# chapter
+@onready var sensitivity_slider = %sensitivity_Slider
+@onready var free_jump = %free_jump
+@onready var msaa_ddm = %MSAA_ddm
+@onready var cam_ch = %cam_ch
+@onready var infinite_hp = %infinite_hp
+
+#world
+@onready var shadows = %shadows
+@onready var high_graphics = %high_graphics
+
+# engine
+@onready var time = %time
+
+func _ready():
+	msaa_ddm.add_item(\"MSAA Disabled\")
+	msaa_ddm.add_item(\"MSAA_2X\")
+	msaa_ddm.add_item(\"MSAA_4X\")
+	msaa_ddm.add_item(\"MSAA_8X\")
+	user_prefs = UserPref.load_or_create()
+	if sensitivity_slider:
+		sensitivity_slider.value = user_prefs.sensitivity
+	if shadows:
+		shadows.button_pressed = user_prefs.shadows
+	if free_jump:
+		free_jump.button_pressed = user_prefs.freejump_s
+	if msaa_ddm:
+		msaa_ddm.selected = user_prefs.MSAA
+	if cam_ch:
+		cam_ch.button_pressed = user_prefs.cam_ch
+	high_graphics.button_pressed = user_prefs.high_graphics
+	infinite_hp.button_pressed = user_prefs.infinite_hp
+#chapter
+func _on_sensitivity_slider_value_changed(value):
+	if user_prefs:
+		user_prefs.sensitivity = value
+		user_prefs.save()
+		Event.emit_signal(\"charapter_op\")
+
+func _on_free_jump_toggled(toggled_on):
+	if user_prefs:
+		user_prefs.freejump_s = toggled_on
+		user_prefs.save()
+		Event.emit_signal(\"charapter_op\")
+
+func _on_infinite_hp_toggled(toggled_on):
+	if user_prefs:
+		user_prefs.infinite_hp = toggled_on
+		user_prefs.save()
+		Event.emit_signal(\"charapter_op\")
+
+
+func _on_msaa_ddm_item_selected(index):
+	if index == 0: # Disabled (default)
+		get_viewport().msaa_3d = Viewport.MSAA_DISABLED
+	elif index == 1: # 2×
+		get_viewport().msaa_3d = Viewport.MSAA_2X
+	elif index == 2: # 4×
+		get_viewport().msaa_3d = Viewport.MSAA_4X
+	elif index == 3: # 8×
+		get_viewport().msaa_3d = Viewport.MSAA_8X
+	if user_prefs:
+		user_prefs.MSAA = index
+		user_prefs.save()
+		Event.emit_signal(\"charapter_op\")
+
+func _on_cam_ch_toggled(toggled_on):
+	if user_prefs:
+		user_prefs.cam_ch = toggled_on
+		user_prefs.save()
+		Event.emit_signal(\"charapter_op\")
+
+#world
+func _on_shadows_toggled(toggled_on):
+	if user_prefs:
+		user_prefs.shadows = toggled_on
+		user_prefs.save()
+		Event.emit_signal(\"world_s_op\")
+
+func _on_spawn_enemy_pressed():
+	Event.emit_signal(\"spawn_enemy\")
+
+func _on_high_graphics_toggled(toggled_on):
+	if user_prefs:
+		user_prefs.high_graphics = toggled_on
+		user_prefs.save()
+		Event.emit_signal(\"world_s_op\")
+	
+
+# engine time_s
+func _on_time_s_value_changed(value):
+	Engine.time_scale = value
+	time.text = \"time_scale = \" + str(value)
+
+
+
+func _on_reset_drone_pos_pressed():
+	Event.emit_signal(\"reset_drone_pos\")
+
+
+"
+
+[node name="base_opt" type="CanvasLayer"]
+script = SubResource("GDScript_tk30l")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+modulate = Color(0, 0, 0, 0.454902)
+visibility_layer = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSeparator" type="HSeparator" parent="Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -5.0
+offset_top = 72.0
+offset_right = -5.0
+offset_bottom = 79.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.117
+offset_bottom = -1.816
+grow_horizontal = 2
+theme = ExtResource("2_x5s8u")
+
+[node name="perfomance" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "perfomance"
+
+[node name="audio" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "audio"
+
+[node name="cheats" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "cheats"
+
+[node name="console" type="Button" parent="Control/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "console"
+
+[node name="MENU" type="Control" parent="Control"]
+layout_mode = 1
+anchor_top = 0.116
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.167999
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+
+[node name="base_cont" type="HBoxContainer" parent="Control/MENU"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MENU/base_cont"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Control/MENU/base_cont/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "sensitivity"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="sensitivity_Slider" type="HSlider" parent="Control/MENU/base_cont/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+min_value = 0.05
+max_value = 1.0
+step = 0.05
+value = 0.55
+
+[node name="shadows" type="CheckBox" parent="Control/MENU/base_cont/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+button_pressed = true
+text = "shadows"
+
+[node name="cam_ch" type="CheckBox" parent="Control/MENU/base_cont/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+button_pressed = true
+text = "cam_chaking"
+
+[node name="high_graphics" type="CheckBox" parent="Control/MENU/base_cont/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+button_pressed = true
+text = "high_graphics"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control/MENU/base_cont"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MSAA_ddm" type="OptionButton" parent="Control/MENU/base_cont/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+
+[node name="music" type="Control" parent="Control"]
+visible = false
+layout_mode = 1
+anchor_top = 0.116
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.167999
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_2luiw")
+bus_name = "SFX"
+bus_name2 = "music"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/music"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -802.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Control/music/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "music"
+horizontal_alignment = 1
+
+[node name="music" type="HSlider" parent="Control/music/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+max_value = 1.0
+step = 0.001
+value = 0.725
+
+[node name="Label" type="Label" parent="Control/music/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "SFX"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Control/music/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+max_value = 1.0
+step = 0.001
+value = 0.545
+
+[node name="cheats" type="Control" parent="Control"]
+visible = false
+layout_mode = 1
+anchor_top = 0.117
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.183998
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/cheats"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -802.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="free_jump" type="CheckBox" parent="Control/cheats/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "free jump"
+
+[node name="infinite_hp" type="CheckBox" parent="Control/cheats/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "infinite_hp"
+
+[node name="spawn_enemy" type="Button" parent="Control/cheats/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+theme_override_font_sizes/font_size = 35
+text = "spawn_enemy"
+
+[node name="reset_drone_pos" type="Button" parent="Control/cheats/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+theme_override_font_sizes/font_size = 35
+text = "reset_drone_pos"
+
+[node name="time" type="Label" parent="Control/cheats/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "time_scale = 1"
+horizontal_alignment = 1
+
+[node name="time_s" type="HSlider" parent="Control/cheats/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("2_x5s8u")
+min_value = 0.001
+max_value = 1.0
+step = 0.001
+value = 1.0
+
+[connection signal="pressed" from="Control/HBoxContainer/perfomance" to="." method="_on_perfomance_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/audio" to="." method="_on_audio_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/cheats" to="." method="_on_cheats_pressed"]
+[connection signal="value_changed" from="Control/MENU/base_cont/VBoxContainer/sensitivity_Slider" to="." method="_on_sensitivity_slider_value_changed"]
+[connection signal="toggled" from="Control/MENU/base_cont/VBoxContainer/shadows" to="." method="_on_shadows_toggled"]
+[connection signal="toggled" from="Control/MENU/base_cont/VBoxContainer/cam_ch" to="." method="_on_cam_ch_toggled"]
+[connection signal="toggled" from="Control/MENU/base_cont/VBoxContainer/high_graphics" to="." method="_on_high_graphics_toggled"]
+[connection signal="item_selected" from="Control/MENU/base_cont/VBoxContainer2/MSAA_ddm" to="." method="_on_msaa_ddm_item_selected"]
+[connection signal="value_changed" from="Control/music/VBoxContainer/music" to="Control/music" method="_on_music_value_changed"]
+[connection signal="value_changed" from="Control/music/VBoxContainer/HSlider" to="Control/music" method="_on_h_slider_value_changed"]
+[connection signal="toggled" from="Control/cheats/VBoxContainer/free_jump" to="." method="_on_free_jump_toggled"]
+[connection signal="toggled" from="Control/cheats/VBoxContainer/infinite_hp" to="." method="_on_infinite_hp_toggled"]
+[connection signal="pressed" from="Control/cheats/VBoxContainer/spawn_enemy" to="." method="_on_spawn_enemy_pressed"]
+[connection signal="pressed" from="Control/cheats/VBoxContainer/reset_drone_pos" to="." method="_on_reset_drone_pos_pressed"]
+[connection signal="value_changed" from="Control/cheats/VBoxContainer/time_s" to="." method="_on_time_s_value_changed"]
