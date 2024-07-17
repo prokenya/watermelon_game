@@ -16,7 +16,6 @@ run/main_scene="res://scen/menu.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 run/max_fps=120
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/image="res://textures/icon.png"
 config/icon="res://icon.svg"
 boot_splash/minimum_display_time=100
 
@@ -166,6 +165,13 @@ mouse_left={
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
+
+[layer_names]
+
+3d_physics/layer_1="СТАТИК"
+3d_physics/layer_2="ДИНАМИК"
+3d_physics/layer_3="ДРОП"
+3d_physics/layer_4="ВОЗДУХ"
 
 [physics]
 

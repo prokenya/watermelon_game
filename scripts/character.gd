@@ -207,6 +207,3 @@ func _on_animation_player_animation_finished(anim_name: String):
 	else:
 		cam_shid = 1
 
-
-func _on_area_3d_area_exited(area):
-	Event.emit_signal("usev",false)

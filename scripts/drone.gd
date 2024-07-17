@@ -54,11 +54,12 @@ func apply_control_drone(id):
 		camera_1_person.current = false
 		camera_3_person.current = false
 		
-func app_cam(cam):
-	if cam == true:
-		camera_3_person.current = true
-	else:
-		camera_1_person.current = true
+func app_cam(cam,id):
+	if drone_id == id:
+		if cam == true:
+			camera_3_person.current = true
+		else:
+			camera_1_person.current = true
 func _apply_user_prefs():
 	sensitivity = user_prefs.sensitivity
 	var index = user_prefs.MSAA
@@ -76,7 +77,8 @@ func _process(delta: float):
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.FLY)
-	Event.drone_speed = "km/h" + str(round(linear_velocity))
+	if drone_id == Event.control_id:
+		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 func _physics_process(delta: float):
 	if drone_id == id_control:

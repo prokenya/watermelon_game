@@ -20,19 +20,6 @@ func _on_pressed():
 	a = !a
 "
 
-[sub_resource type="GDScript" id="GDScript_aocj4"]
-script/source = "extends Label
-
-@onready var fps_label := %Label
-var counter := 0.0
-
-func _process(delta: float) -> void:
-	counter += delta
-	# Hide FPS label until it's initially updated by the engine (this can take up to 1 second).
-	fps_label.visible = counter >= 1.0
-	fps_label.text = \"%d FPS (%.2f mspf)\" % [Engine.get_frames_per_second(), 1000.0 / Engine.get_frames_per_second()]
-"
-
 [sub_resource type="GDScript" id="GDScript_b1duj"]
 script/source = "extends Button
 
@@ -66,6 +53,19 @@ script/source = "extends Button
 
 func _on_pressed():
 	Event.emit_signal(\"pick_up\")
+"
+
+[sub_resource type="GDScript" id="GDScript_x21m7"]
+script/source = "extends Label
+
+@onready var fps_label := %Label
+var counter := 0.0
+
+func _process(delta: float) -> void:
+	counter += delta
+	# Hide FPS label until it's initially updated by the engine (this can take up to 1 second).
+	fps_label.visible = counter >= 1.0
+	fps_label.text = \"%d FPS (%.2f mspf)\" % [Engine.get_frames_per_second(), 1000.0 / Engine.get_frames_per_second()]
 "
 
 [node name="GUI" type="Control"]
@@ -146,20 +146,6 @@ theme_override_font_sizes/font_size = 35
 text = "hui"
 script = SubResource("GDScript_5u52p")
 
-[node name="Label" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -106.0
-offset_right = -66.0
-offset_bottom = 69.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_font_sizes/font_size = 25
-script = SubResource("GDScript_aocj4")
-
 [node name="use" type="Button" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -239,6 +225,20 @@ theme = ExtResource("2_rh2mb")
 button_mask = 7
 text = "pick_up"
 script = SubResource("GDScript_4oa0t")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_top = 64.0
+offset_bottom = 128.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 25
+script = SubResource("GDScript_x21m7")
 
 [connection signal="pressed" from="VBoxContainer/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/fire" to="." method="_on_fire_pressed"]

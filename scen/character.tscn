@@ -250,14 +250,13 @@ script = ExtResource("1_hwfqd")
 
 [node name="AudioListener3D" type="AudioListener3D" parent="."]
 
-[node name="Control_charapter_ui_b_MENU_base_cont_VBoxContainer2_MSAA_ddm#_PopupMenu_96332" type="PopupMenu" parent="."]
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_v4cbk")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
 layers = 65537
 mesh = SubResource("CapsuleMesh_0xdd3")
+skeleton = NodePath("../..")
 
 [node name="animation_player" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Node3D")
@@ -266,10 +265,10 @@ libraries = {
 }
 
 [node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08243, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -0.0757391, 0)
 cull_mask = 983039
 
 [node name="RayCast3D" type="RayCast3D" parent="Node3D/Camera3D"]
