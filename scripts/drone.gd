@@ -8,14 +8,14 @@ const JUMP_VELOCITY: float = 3.5
 var user_prefs: UserPref
 var last_position: Vector3
 var id_control: int = 0
-@export var drone_id: int
+@export var control_item_id: int
 var item_id = 0
 
 #drone anim
-@onready var prop1 = $"drone/FPV Racing Drone/wing_back_3/polySurface270"
-@onready var prop2 = $"drone/FPV Racing Drone/wing_back_3/polySurface271"
-@onready var prop3 = $"drone/FPV Racing Drone/wing_back_3/polySurface272"
-@onready var prop4 = $"drone/FPV Racing Drone/wing_back_3/polySurface273"
+@onready var prop1 = $drone/MeshInstance3D2
+@onready var prop2 =$drone/MeshInstance3D3
+@onready var prop3 = $drone/MeshInstance3D4
+@onready var prop4 = $drone/MeshInstance3D5
 @onready var camera_3_person = $Camera3person
 @onready var camera_1_person = $Camera1person
 
@@ -42,12 +42,12 @@ func _ready():
 	last_position = position
 	camera_rotation_direction = Vector3(0, 0, 1) # Инициализируем направление камеры вперед
 	global_t = global_transform
-	drone_id = Event.drone_id + 1
-	Event.drone_id += 1
+	control_item_id = Event.control_item_id + 1
+	Event.control_item_id += 1
 
 func apply_control_drone(id):
 	id_control = id
-	if id_control == drone_id:
+	if id_control == control_item_id:
 		camera_1_person.current = true
 		print("drone")
 	else:
@@ -55,7 +55,7 @@ func apply_control_drone(id):
 		camera_3_person.current = false
 		
 func app_cam(cam,id):
-	if drone_id == id:
+	if control_item_id == id:
 		if cam == true:
 			camera_3_person.current = true
 		else:
@@ -77,11 +77,11 @@ func _process(delta: float):
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.FLY)
-	if drone_id == Event.control_id:
+	if control_item_id == Event.control_id:
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 func _physics_process(delta: float):
-	if drone_id == id_control:
+	if control_item_id == id_control:
 		val_slider = Event.val_slider
 		var current_rotation_speed = 2
 		if val_slider > 0:

@@ -3,7 +3,8 @@ extends Control
 @onready var pick_up = %pick_up
 
 @onready var hp = %hp
-
+var item_id
+var control_id
 @onready var gui = $"."
 @onready var menu = $"../ui_b"
 var is_paused = false
@@ -27,13 +28,19 @@ func ds_control(id):
 	if id != 0:
 		queue_free()
 
-func visus(vis,a,b):
+func visus(vis,item_id,control):
 	pick_up.visible = vis
 	use.visible = vis
+	item_id = item_id
+	control_id = control
 
 func _on_touch_screen_button_pressed():
 	Event.emit_signal("jump")
 
 
 func _on_fire_pressed():
+	if control_id != -1:
+		Event.emit_signal("control",control_id)
+		Event.control_id = control_id
+		print(control_id)
 	Event.emit_signal("fire")

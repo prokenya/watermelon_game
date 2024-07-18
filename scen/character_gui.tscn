@@ -23,16 +23,18 @@ func _on_pressed():
 [sub_resource type="GDScript" id="GDScript_b1duj"]
 script/source = "extends Button
 
+var item_id
 var control_id
 
 func _ready():
 	Event.connect(\"usev\",visus)
 
 func _on_pressed():
-		Event.emit_signal(\"control\",control_id)
-		Event.control_id = control_id
+	Event.emit_signal(\"control\",control_id)
+	Event.control_id = control_id
 
 func visus(vis,item_id,control):
+	item_id = item_id
 	control_id = control
 "
 
@@ -83,9 +85,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -576.0
-offset_right = 576.0
-offset_bottom = 49.0
+offset_left = -64.0
+offset_right = 128.0
+offset_bottom = 64.0
 grow_horizontal = 2
 size_flags_vertical = 0
 theme = ExtResource("2_rh2mb")
@@ -115,20 +117,20 @@ scale = Vector2(1.52, 1.57)
 texture_normal = ExtResource("3_fxqtb")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
-modulate = Color(1, 1, 1, 0.0392157)
+modulate = Color(1, 1, 1, 0.2)
 layout_mode = 0
-offset_right = 193.0
-offset_bottom = 185.0
+offset_right = 192.0
+offset_bottom = 192.0
 alignment = 1
 
 [node name="fire" type="TouchScreenButton" parent="VBoxContainer2"]
-position = Vector2(6, 1)
-scale = Vector2(1.78, 1.65)
+scale = Vector2(1.92, 1.92)
 texture_normal = ExtResource("3_fxqtb")
 
 [node name="Virtual Joystick" parent="." instance=ExtResource("4_csjpt")]
 layout_mode = 1
-offset_top = -300.0
+offset_top = -328.0
+offset_right = 320.0
 offset_bottom = 0.0
 clampzone_size = 40.0
 joystick_mode = 1
@@ -136,11 +138,11 @@ joystick_mode = 1
 [node name="Button" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.683
-anchor_right = 0.683
-offset_left = -30.816
-offset_right = 31.184
-offset_bottom = 57.0
+anchor_left = 0.694
+anchor_right = 0.694
+offset_left = -31.488
+offset_right = 32.512
+offset_bottom = 64.0
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 35
 text = "hui"
@@ -159,15 +161,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -52.0
-offset_top = 147.0
-offset_right = 52.0
-offset_bottom = 209.0
+offset_left = -48.0
+offset_top = 612.0
+offset_right = 56.0
+offset_bottom = 674.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme = ExtResource("2_rh2mb")
+disabled = true
 button_mask = 7
 text = "use"
 script = SubResource("GDScript_b1duj")
@@ -186,6 +189,7 @@ size_flags_vertical = 4
 theme = ExtResource("2_rh2mb")
 button_mask = 7
 text = "menu"
+language = "E_GB"
 script = SubResource("GDScript_26y8o")
 
 [node name="Control" parent="." instance=ExtResource("2_li0oh")]
@@ -202,7 +206,6 @@ grow_vertical = 0
 
 [node name="pick_up" type="Button" parent="."]
 unique_name_in_owner = true
-visible = false
 self_modulate = Color(1, 1, 1, 0.411765)
 top_level = true
 light_mask = 3
@@ -213,9 +216,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -52.0
-offset_top = 84.0
-offset_right = 52.0
+offset_left = -64.0
+offset_top = 60.0
+offset_right = 64.0
 offset_bottom = 146.0
 grow_horizontal = 2
 grow_vertical = 2

@@ -202,7 +202,7 @@ func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 
 func _draw():
 	save_inventory()
-	print(active_item)
+	#print(active_item)
 	for i in range(MAX_SLOTS):
 		var col = Color.DARK_GRAY
 		var rect = Rect2(get_pos_by_id(i), SLOT_SIZE)

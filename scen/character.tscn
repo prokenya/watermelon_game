@@ -265,7 +265,7 @@ libraries = {
 }
 
 [node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08243, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.947956, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -0.0757391, 0)
@@ -273,8 +273,11 @@ cull_mask = 983039
 
 [node name="RayCast3D" type="RayCast3D" parent="Node3D/Camera3D"]
 transform = Transform3D(0.5, 0, 0, 0, -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, -0.00357184, -0.242808)
-target_position = Vector3(0, 1.905, 0)
+target_position = Vector3(0, 2, 0)
 collision_mask = 4
+
+[node name="hand" type="Node3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, -0.227058, -1.01239)
 
 [node name="Control_charapter" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -378,9 +381,6 @@ volume_db = 10.0
 autoplay = true
 bus = &"music"
 script = SubResource("GDScript_5dq31")
-
-[node name="hand" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, -0.0808938, -0.765157)
 
 [connection signal="animation_finished" from="animation_player" to="." method="_on_animation_player_animation_finished"]
 [connection signal="pressed" from="Control_charapter/ui_b/Control/menu2" to="Control_charapter/ui_b/Control/menu2" method="_on_pressed"]

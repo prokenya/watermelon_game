@@ -12,7 +12,7 @@ var last_position: Vector3
 @onready var footstep_audio = $footstep
 @onready var playeranim_gui = $Control_charapter/CanvasLayer/playeranim_gui
 @onready var head = $Node3D
-@onready var hand = $hand
+@onready var hand = $Node3D/hand
 @onready var ray_cast_3d = $Node3D/Camera3D/RayCast3D
 var picked_item_id: int
 var picked_item: Object
@@ -28,6 +28,7 @@ var dragging: bool = false
 var id_control: int = 0
 var active_item = null
 var picked_item_control:int
+var control:bool = true
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
@@ -79,11 +80,13 @@ func drop_item(item_id,amount):
 
 func ds_control(id):
 	id_control = id
-	if id != 0:
+	if id != 0 and control == true:
+		control = false
 		camera.current = false
 		$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
-	else:
+	if id == 0 and control == false:
 		$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
+		control = true
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -109,7 +112,8 @@ func _process(delta: float):
 		if picked_item != null:
 			picked_item_id = picked_item.item_id
 			if picked_item.item_id == 0:
-				picked_item_control = picked_item.drone_id
+				picked_item_control = picked_item.control_item_id
+			else:picked_item_control = -1
 			#print("->",picked_item_id)
 			Event.emit_signal("usev",true,picked_item_id,picked_item_control)
 	else: 

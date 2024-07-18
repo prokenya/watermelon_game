@@ -14,7 +14,6 @@ class_name Weapon
 @onready var bullet_scene = preload(\"res://scen/bullet.tscn\")
 @onready var bullet_spawn_point = $CSGMesh3D/RayCast3D
 var item_id = 0
-
 func _on_fire_pressed():
 	if not gun_anim.is_playing():
 		fire_sfx.play()

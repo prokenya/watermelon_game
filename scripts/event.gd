@@ -20,7 +20,7 @@ var is_inventory_active: bool
 # drone
 var drone_speed: String = "0"
 var val_slider: float = 0
-var drone_id: int = 0
+var control_item_id: int = 0
 var control_id:int
 signal cam_1_3p(cam: bool,id:int)
 signal reset_drone_pos()

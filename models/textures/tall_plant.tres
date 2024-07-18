@@ -1,6 +1,0 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://d4xux2g5yj44"]
-
-[resource]
-resource_name = "tall_plant"
-cull_mode = 2
-roughness = 0.5
