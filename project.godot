@@ -28,6 +28,7 @@ Event="*res://scripts/event.gd"
 
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=2
 window/bg_color=Color(0.14, 0.14, 0.14, 1)
 window/name="Роб"
 
