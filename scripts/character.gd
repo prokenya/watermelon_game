@@ -111,7 +111,7 @@ func _process(delta: float):
 		picked_item = ray_cast_3d.get_collider()
 		if picked_item != null:
 			picked_item_id = picked_item.item_id
-			if picked_item.item_id == 0:
+			if picked_item.item_id == 0 or picked_item.item_id == 3:
 				picked_item_control = picked_item.control_item_id
 			else:picked_item_control = -1
 			#print("->",picked_item_id)

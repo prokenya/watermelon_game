@@ -7,7 +7,7 @@ signal global_op()
 signal spawn_enemy()
 #player
 signal _on_fire_pressed()
-signal  control(id)
+signal control(id)
 signal fire()
 signal jump()
 signal usev(vis: bool,item_id: int,control:int)
