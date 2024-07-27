@@ -73,9 +73,11 @@ func drop_item(item_id,amount):
 		0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
 		1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
 		2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
+		3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
 	for i in range(amount):
 		var dropped_item = dropped_item_scene.instantiate()
 		dropped_item.position = hand.global_position
+		dropped_item.rotation = head.global_rotation
 		get_tree().root.add_child(dropped_item)
 
 func ds_control(id):
@@ -195,7 +197,7 @@ func _on_area_3d_area_entered(area: Area3D):
 	if area.editor_description == "hurt1x":
 		hp -= 100
 		playeranim_gui.play("damag")
-	if area.editor_description == "hurt1m":
+	if area.editor_description == "hurt1m" or area.editor_description == "0":
 		hp -= 150
 		playeranim_gui.play("damag")
 	if hp <= 0:

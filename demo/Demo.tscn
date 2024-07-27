@@ -77,7 +77,7 @@ collision_mask = 3
 
 [node name="Tunnel" parent="." instance=ExtResource("3_kdh0b")]
 
-[node name="Terrain3D" type="Terrain3D" parent="."]
+[node name="Terrain3D" type="Terrain3D" parent="Tunnel"]
 storage = ExtResource("5_sl43a")
 material = SubResource("Terrain3DMaterial_jrc01")
 assets = ExtResource("8_g2of2")

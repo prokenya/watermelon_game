@@ -5,12 +5,13 @@ class_name Item
 const ITEM_DRONE = preload("res://textures/icons/drone.png")
 const ITEM_ak_w = preload("res://textures/icons/ak_w.png")
 const ITEM_watermelon = preload("res://textures/icons/watermelon.png")
+const ITEM_DRONE_EXP = preload("res://icon.png")
 
 const ITEM_TEXTURES = [
-	ITEM_DRONE, ITEM_ak_w, ITEM_watermelon
+	ITEM_DRONE, ITEM_ak_w, ITEM_watermelon,ITEM_DRONE_EXP
 	]
 const ITEM_STACK_LIM = [
-	3,1,10
+	3,1,10,3
 ]
 @export var amount: int = 1
 @export var item_id: int = -1
