@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://bdnenmk6e4f2t"]
+[gd_scene load_steps=65 format=3 uid="uid://bdnenmk6e4f2t"]
 
 [ext_resource type="Texture2D" uid="uid://dup4vwmgwyf41" path="res://textures/prototype/Dark/texture_04.png" id="1_oehe3"]
 [ext_resource type="Script" path="res://scripts/node_3d.gd" id="1_wb52b"]
@@ -19,7 +19,6 @@
 [ext_resource type="AudioStream" uid="uid://3myxn1aftmdc" path="res://audio/sfx/off.ogg" id="16_rr4q3"]
 [ext_resource type="PackedScene" uid="uid://djyme3vqxbqwg" path="res://scen/vfx/vfx_fire_1.tscn" id="17_ratdr"]
 [ext_resource type="PackedScene" uid="uid://cxjxhji71pdka" path="res://scen/mine.tscn" id="19_qrgk1"]
-[ext_resource type="PackedScene" uid="uid://m6cpbilj2lg6" path="res://scen/character.tscn" id="20_02aab"]
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="21_hvwye"]
 [ext_resource type="PackedScene" uid="uid://d2sa2ulk5du35" path="res://scen/drop/ak_drop.tscn" id="22_8vfdx"]
 [ext_resource type="PackedScene" uid="uid://cr7oe3avnadsj" path="res://scen/drop/watermelon.tscn" id="23_8rled"]
@@ -125,7 +124,7 @@ albedo_texture = ExtResource("2_a61ap")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rnafv"]
 
-[sub_resource type="Resource" id="Resource_bla3k"]
+[sub_resource type="Resource" id="Resource_j4oqy"]
 script = ExtResource("6_8vpc8")
 amount = 75
 enabled = true
@@ -134,7 +133,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_cfn2p"]
+[sub_resource type="Resource" id="Resource_o6wf4"]
 script = ExtResource("7_nxmyj")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(20, 360, 20)
@@ -145,7 +144,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_57e6q"]
+[sub_resource type="Resource" id="Resource_gnd3o"]
 script = ExtResource("8_0b8nj")
 iterations = 3
 offset_step = 0.2
@@ -157,7 +156,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_w4x5k"]
+[sub_resource type="Resource" id="Resource_5lytf"]
 script = ExtResource("9_312er")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -173,15 +172,15 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_yhanm"]
+[sub_resource type="Resource" id="Resource_xhmkv"]
 script = ExtResource("5_8mmjo")
-stack = Array[Resource("res://addons/proton_scatter/src/modifiers/base_modifier.gd")]([SubResource("Resource_bla3k"), SubResource("Resource_cfn2p"), SubResource("Resource_57e6q"), SubResource("Resource_w4x5k")])
+stack = Array[Resource("res://addons/proton_scatter/src/modifiers/base_modifier.gd")]([SubResource("Resource_j4oqy"), SubResource("Resource_o6wf4"), SubResource("Resource_gnd3o"), SubResource("Resource_5lytf")])
 
 [sub_resource type="Resource" id="Resource_g8bsm"]
 script = ExtResource("12_6m262")
 radius = 4.42488
 
-[sub_resource type="Resource" id="Resource_vhhjg"]
+[sub_resource type="Resource" id="Resource_jyw5c"]
 script = ExtResource("6_8vpc8")
 amount = 270
 enabled = true
@@ -190,7 +189,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_7kgci"]
+[sub_resource type="Resource" id="Resource_fuuog"]
 script = ExtResource("7_nxmyj")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(3, 360, 3)
@@ -201,7 +200,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_5l405"]
+[sub_resource type="Resource" id="Resource_euvps"]
 script = ExtResource("8_0b8nj")
 iterations = 3
 offset_step = 0.2
@@ -213,7 +212,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_menhk"]
+[sub_resource type="Resource" id="Resource_d1q7f"]
 script = ExtResource("9_312er")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -229,9 +228,9 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_xbtnc"]
+[sub_resource type="Resource" id="Resource_57lqd"]
 script = ExtResource("5_8mmjo")
-stack = Array[Resource("res://addons/proton_scatter/src/modifiers/base_modifier.gd")]([SubResource("Resource_vhhjg"), SubResource("Resource_7kgci"), SubResource("Resource_5l405"), SubResource("Resource_menhk")])
+stack = Array[Resource("res://addons/proton_scatter/src/modifiers/base_modifier.gd")]([SubResource("Resource_jyw5c"), SubResource("Resource_fuuog"), SubResource("Resource_euvps"), SubResource("Resource_d1q7f")])
 
 [sub_resource type="Resource" id="Resource_o4ret"]
 script = ExtResource("15_io3t5")
@@ -401,7 +400,7 @@ shape = SubResource("BoxShape3D_rnafv")
 [node name="ProtonScatter" type="Node3D" parent="NavigationRegion3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.395, 0, -2.59251)
 script = ExtResource("4_lf7o3")
-modifier_stack = SubResource("Resource_yhanm")
+modifier_stack = SubResource("Resource_xhmkv")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(15, 15, 15)
 
@@ -420,7 +419,7 @@ shape = SubResource("Resource_g8bsm")
 transform = Transform3D(0.498206, 0, 0, 0, 0.498206, 0, 0, 0, 0.498206, 13.5578, 2.14216, 0)
 script = ExtResource("4_lf7o3")
 keep_static_colliders = true
-modifier_stack = SubResource("Resource_xbtnc")
+modifier_stack = SubResource("Resource_57lqd")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(15, 15, 15)
 
@@ -530,10 +529,6 @@ transform = Transform3D(-0.923986, 0, -0.382425, 0, 1, 0, 0.382425, 0, -0.923986
 
 [node name="mine9" parent="mines" instance=ExtResource("19_qrgk1")]
 transform = Transform3D(-0.923986, 0, -0.382425, 0, 1, 0, 0.382425, 0, -0.923986, 18.6213, 0.448301, -20.2753)
-
-[node name="player" parent="." instance=ExtResource("20_02aab")]
-transform = Transform3D(-0.400537, 0, -0.299281, 0, 0.5, 0, 0.299281, 0, -0.400537, -2.14404, 1.92867, -3.1511)
-hp = 10000000
 
 [node name="ak_drop" parent="." instance=ExtResource("22_8vfdx")]
 transform = Transform3D(0.322343, -0.0112103, -0.000197437, 0.0112119, 0.322314, 0.00430484, 4.7676e-05, -0.00430882, 0.32253, 1.79572, 0.626653, -2.37941)

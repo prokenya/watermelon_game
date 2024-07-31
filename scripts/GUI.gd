@@ -9,12 +9,13 @@ var control_id
 @onready var menu = $"../ui_b"
 var is_paused = false
 func preessed():
-	if gui.visible == true:
-		gui.visible = false;$"../../..".set_physics_process(false)
-		menu.visible = true
-	else: gui.visible = true;menu.visible = false;$"../../..".set_physics_process(true)
-	is_paused = not is_paused
-	get_tree().paused = is_paused
+	if is_multiplayer_authority():
+		if gui.visible == true:
+			gui.visible = false;$"../../..".set_physics_process(false)
+			menu.visible = true
+		else: gui.visible = true;menu.visible = false;$"../../..".set_physics_process(true)
+		is_paused = not is_paused
+		get_tree().paused = is_paused
 
 func _ready():
 	Event.connect("usev",visus)

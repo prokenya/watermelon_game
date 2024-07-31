@@ -23,6 +23,7 @@ boot_splash/minimum_display_time=100
 
 SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
 Event="*res://scripts/event.gd"
+MPIO="*res://addons/MultiplayCore/MPIO.gd"
 
 [display]
 
@@ -38,7 +39,7 @@ project/assembly_name="Роб"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/proton_scatter/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/MultiplayCore/plugin.cfg", "res://addons/proton_scatter/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [filesystem]
 

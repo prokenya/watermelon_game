@@ -5,7 +5,7 @@ func _ready():
 var id
 @onready var node_to_node = $"Control/n-2-n"
 var level2  = preload("res://scen/main_test_s.tscn")
-var level1 = preload("res://demo/Demo.tscn")
+var level1 = preload("res://scen/multi_play_core.tscn")
 func _on_play_pressed():
 	id = 0
 	node_to_node.play("fade_out")

@@ -19,7 +19,6 @@ var is_inventory_active: bool = false
 var is_inventory_full: bool = false
 var inventory_offset: Vector2 = Vector2()
 var user_prefs: UserPref
-
 func _ready(): 
 	user_prefs = UserPref.load_or_create()
 	items = []
