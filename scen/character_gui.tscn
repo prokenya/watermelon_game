@@ -206,6 +206,7 @@ grow_vertical = 0
 
 [node name="pick_up" type="Button" parent="."]
 unique_name_in_owner = true
+visible = false
 self_modulate = Color(1, 1, 1, 0.411765)
 top_level = true
 light_mask = 3

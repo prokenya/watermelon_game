@@ -126,9 +126,9 @@ func _process(delta: float):
 				picked_item_control = picked_item.control_item_id
 			else:picked_item_control = -1
 			#print("->",picked_item_id)
-			Event.emit_signal("usev",true,picked_item_id,picked_item_control)
+			Event.emit_signal("usev",true,picked_item_id,picked_item_control,mpp.player_index)
 	else: 
-		Event.emit_signal("usev",false,-1,-1)
+		Event.emit_signal("usev",false,-1,-1,mpp.player_index)
 func _physics_process(delta: float):
 	SimpleGrass.set_player_position(global_position)
 	if is_multiplayer_authority():

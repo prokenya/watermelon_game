@@ -13,6 +13,10 @@ func _ready():
 	Event.connect("spawn_enemy",spawn_enemy)
 	Event.connect("global_op",op_world_S)
 	Event.connect("control", ds_control)
+	if Event.is_multiplayer == false:
+		var player = preload("res://scen/character.tscn").instantiate()
+		player.position = directional_light_3d.position
+		add_child(player)
 
 func ds_control(id):
 	if id != 0:

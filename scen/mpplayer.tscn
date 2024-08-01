@@ -101,15 +101,6 @@ _data = {
 "cam_go_shaking_right": SubResource("Animation_jpkuy")
 }
 
-[sub_resource type="GDScript" id="GDScript_26y8o"]
-script/source = "extends Button
-
-
-
-func _on_pressed():
-	Event.emit_signal(\"menu\")
-"
-
 [sub_resource type="GDScript" id="GDScript_xwmwt"]
 script/source = "extends Button
 
@@ -117,6 +108,15 @@ script/source = "extends Button
 
 func _on_pressed():
 	Event.emit_signal(\"back_s\",1)
+"
+
+[sub_resource type="GDScript" id="GDScript_26y8o"]
+script/source = "extends Button
+
+
+
+func _on_pressed():
+	Event.emit_signal(\"menu\")
 "
 
 [sub_resource type="Animation" id="Animation_lvddx"]
@@ -237,10 +237,10 @@ stream_3/weight = 1.0
 [sub_resource type="GDScript" id="GDScript_5dq31"]
 script/source = "extends AudioStreamPlayer
 
-@onready var audio_stream_player = $\".\"
-
-func _on_finished():
-	audio_stream_player.playing = true
+#@onready var audio_stream_player = $\".\"
+#
+#func _on_finished():
+	#audio_stream_player.playing = true
 "
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_trvfa"]
@@ -292,41 +292,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.420772, -0.157218, -0.69422
 
 [node name="Control_charapter" type="CanvasLayer" parent="."]
 process_mode = 3
+follow_viewport_enabled = true
 
 [node name="ui_b" parent="Control_charapter" instance=ExtResource("2_f0wst")]
+layer = 128
 visible = false
 
-[node name="ColorRect" parent="Control_charapter/ui_b/Control" index="0"]
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="HSeparator" parent="Control_charapter/ui_b/Control" index="1"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 1152.0
-offset_bottom = 7.0
-
-[node name="HBoxContainer" parent="Control_charapter/ui_b/Control" index="2"]
-grow_horizontal = 1
-
-[node name="menu2" type="Button" parent="Control_charapter/ui_b/Control" index="6"]
-top_level = true
-visibility_layer = 15
+[node name="back" type="Button" parent="Control_charapter/ui_b/Control" index="6"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -64.0
-offset_bottom = 62.0
-grow_horizontal = 0
-size_flags_horizontal = 8
-size_flags_vertical = 4
-theme = ExtResource("3_jx4fy")
-button_mask = 7
-text = "menu"
-script = SubResource("GDScript_26y8o")
-
-[node name="back" type="Button" parent="Control_charapter/ui_b"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -341,6 +314,22 @@ size_flags_vertical = 4
 button_mask = 7
 text = "back"
 script = SubResource("GDScript_xwmwt")
+
+[node name="menu2" type="Button" parent="Control_charapter/ui_b"]
+top_level = true
+visibility_layer = 15
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 62.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("3_jx4fy")
+button_mask = 7
+text = "menu"
+script = SubResource("GDScript_26y8o")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Control_charapter"]
 layer = -1
@@ -390,7 +379,6 @@ bus = &"SFX"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_vw82q")
 volume_db = 10.0
-autoplay = true
 bus = &"music"
 script = SubResource("GDScript_5dq31")
 
@@ -398,8 +386,8 @@ script = SubResource("GDScript_5dq31")
 replication_config = SubResource("SceneReplicationConfig_trvfa")
 
 [connection signal="animation_finished" from="animation_player" to="." method="_on_animation_player_animation_finished"]
-[connection signal="pressed" from="Control_charapter/ui_b/Control/menu2" to="Control_charapter/ui_b/Control/menu2" method="_on_pressed"]
-[connection signal="pressed" from="Control_charapter/ui_b/back" to="Control_charapter/ui_b/back" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/ui_b/Control/back" to="Control_charapter/ui_b/Control/back" method="_on_pressed"]
+[connection signal="pressed" from="Control_charapter/ui_b/menu2" to="Control_charapter/ui_b/menu2" method="_on_pressed"]
 [connection signal="animation_finished" from="Control_charapter/CanvasLayer/n-2-n" to="Control_charapter/CanvasLayer/n-2-n" method="_on_animation_finished"]
 [connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
 [connection signal="area_exited" from="Area3D" to="." method="_on_area_3d_area_exited"]

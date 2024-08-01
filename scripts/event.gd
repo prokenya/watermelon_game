@@ -10,7 +10,7 @@ signal _on_fire_pressed()
 signal control(id)
 signal fire()
 signal jump()
-signal usev(vis: bool,item_id: int,control:int)
+signal usev(vis: bool,item_id: int,control:int,player_id:int)
 signal _active_item(item_id)
 signal drop_item(item_id,amount)
 signal pick_up()
@@ -31,3 +31,4 @@ signal menu()
 #multiplayer
 signal host()
 signal join()
+var is_multiplayer:bool = false

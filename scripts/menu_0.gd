@@ -14,7 +14,9 @@ func _on_n_2n_animation_finished(anim_name):
 	if anim_name == "fade_out":
 		if id == 0:
 			get_tree().change_scene_to_packed(level1)
+			Event.is_multiplayer = true
 		if id == 1:
+			Event.is_multiplayer = false
 			get_tree().change_scene_to_packed(level2)
 
 
