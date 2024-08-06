@@ -27,7 +27,6 @@ shape = SubResource("BoxShape3D_uj322")
 
 [node name="Camera3person" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00425252, 0.353434, 1.92835)
-current = true
 
 [node name="Camera1person" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.989455, 0.14484, 0, -0.14484, 0.989455, 0.00640284, -4.9267e-05, -0.304829)

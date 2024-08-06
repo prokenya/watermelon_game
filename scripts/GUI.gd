@@ -54,5 +54,12 @@ func _on_fire_pressed():
 	if control_id != -1:
 		Event.emit_signal("control",control_id)
 		Event.control_id = control_id
-		print(control_id)
+		print("Applying control for ID:",control_id)
 	Event.emit_signal("fire")
+
+
+func _on_pick_up_pressed():
+	if Event.is_multiplayer == true:
+		Event.emit_signal("pick_up",get_parent().get_parent().mpp.player_index)
+	else:
+		Event.emit_signal("pick_up",-1)

@@ -31,8 +31,6 @@ var global_t
 var camera_rotation_direction: Vector3
 
 func _ready():
-	camera_1_person.current = false
-	camera_3_person.current = false
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
 	Event.connect("charapter_op", _apply_user_prefs)
@@ -44,16 +42,19 @@ func _ready():
 	global_t = global_transform
 	control_item_id = Event.control_item_id + 1
 	Event.control_item_id += 1
+	camera_1_person.current = false
+	camera_3_person.current = false
 
 func apply_control_drone(id):
 	id_control = id
 	if id_control == control_item_id:
 		camera_1_person.current = true
-		print("drone")
+		print("Drone camera activated")
 	else:
 		camera_1_person.current = false
 		camera_3_person.current = false
-		
+		print("Drone camera deactivated")
+
 func app_cam(cam,id):
 	if control_item_id == id:
 		if cam == true:

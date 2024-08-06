@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d2sa2ulk5du35"]
+[gd_scene load_steps=10 format=3 uid="uid://d2sa2ulk5du35"]
 
 [ext_resource type="Texture2D" uid="uid://gol4jtv04a6g" path="res://models/textures/material_baseColor.jpeg" id="1_km815"]
 [ext_resource type="Texture2D" uid="uid://ckyt0t75mctit" path="res://models/textures/material_metallicRoughness.png" id="2_nedcg"]
@@ -61,6 +61,14 @@ shadow_mesh = SubResource("ArrayMesh_dhn1w")
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ft7m1"]
 points = PackedVector3Array(-0.000157654, -2.71685, 1.2466, -0.497854, -2.71685, 1.08482, 0.497538, -2.71685, 1.08482, 0.0304261, 0.900677, 0.579912, -0.000157654, 0.897691, 0.58389, -0.0305838, 0.900677, 0.579912, -0.805268, -2.71685, 0.661467, -0.0528122, 0.914614, 0.563004, -0.0625864, 2.35157, 0.200982, 0.805268, -2.71685, 0.661467, 0.0624288, 2.35157, 0.200982, 0.0526546, 0.914614, 0.563004, 0.0327908, 2.35655, 0.21905, -0.000157654, 2.35754, 0.22452, -0.0329486, 2.35655, 0.21905, -0.805268, -2.71685, 0.138159, -0.0827655, 2.34361, 0.167664, -0.0967962, 2.33067, 0.115615, -0.11193, 2.28288, -0.0523006, -0.0588029, 2.36501, 0.170482, 0.805268, -2.71685, 0.138159, 0.111773, 2.28288, -0.0523006, 0.0966385, 2.33067, 0.115615, 0.0826077, 2.34361, 0.167664, 0.0584875, 2.36501, 0.170482, 0.0342097, 2.367, 0.180262, -0.000157654, 2.368, 0.184406, -0.0343674, 2.367, 0.180262, -0.497854, -2.71685, -0.285195, -0.0852878, 2.24854, -0.301439, -0.0704688, 2.35953, 0.142966, -0.0818195, 2.34958, 0.0910827, -0.0931702, 2.31026, -0.0552843, -0.0786666, 2.27791, -0.282874, -0.0394121, 2.36053, 0.146115, -0.0457181, 2.35008, 0.09158, 0.497538, -2.71685, -0.285195, 0.0851302, 2.24854, -0.301439, 0.0785089, 2.27791, -0.282874, 0.0930126, 2.31026, -0.0552843, 0.0816619, 2.34958, 0.0910827, 0.0703112, 2.35953, 0.142966, 0.0455604, 2.35008, 0.09158, 0.0392544, 2.36053, 0.146115, 0.0468216, 2.27144, -0.317187, -0.0469792, 2.27144, -0.317187, -0.000157654, -2.71685, -0.446812, -0.0466639, 2.24207, -0.347355, -0.0878102, 0.957916, -0.369733, 0.0874949, 0.957916, -0.369733, 0.0465063, 2.24207, -0.347355, -0.000157654, 2.26994, -0.324149, -0.000157654, 2.24058, -0.355809, -0.000157654, 0.967374, -0.384486, 0.0562805, 0.966876, -0.379347, -0.0564381, 0.966876, -0.379347)
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_xbjjh"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="ak_drop" type="RigidBody3D"]
 transform = Transform3D(0.322538, 0, 0, 0, 0.322538, 0, 0, 0, 0.322559, 0, 0, 0)
 collision_layer = 6
@@ -75,3 +83,6 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -3.57628e-07, 1, 0, -1, -3.57628e-07, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_ft7m1")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_xbjjh")

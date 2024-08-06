@@ -39,11 +39,10 @@ func _ready():
 	Event.connect("jump",_on_touch_screen_button_pressed)
 	Event.connect("_active_item",set_active_item)
 	Event.connect("pick_up",pick_up)
-	Event.connect("drop_item",drop_item)
+	Event.connect("drop_item",drop_item_s)
 	last_position = position
 	if is_multiplayer_authority():
-		camera.current = true
-		ds_control(0)
+		Event.emit_signal("control",0)
 #inventory
 
 func set_active_item(id):
@@ -71,33 +70,53 @@ func _active_item(id,p_id):
 			return
 		hand.add_child(active_item)
 
-func pick_up():
-	if picked_item != null:
-		picked_item.queue_free()
-		Event.emit_signal("add_item",picked_item_id)
+func pick_up(id):
+	pick_up_mp.rpc(id)
 
-func drop_item(item_id,amount):
+@rpc("any_peer", "call_local", "reliable")
+func pick_up_mp(mp_id):
+	if mp_id != -1:
+		if mp_id == get_parent().player_index:
+			if picked_item != null:
+				picked_item.queue_free()
+				Event.emit_signal("add_item",picked_item_id)
+	if mp_id == -1:
+		if picked_item != null:
+			picked_item.queue_free()
+			Event.emit_signal("add_item",picked_item_id)
+
+func drop_item_s(id,amount):
+	if is_multiplayer_authority():
+		var p_id = mpp.player_index
+		drop_item.rpc(id,amount,p_id)
+
+@rpc("any_peer", "call_local", "reliable")
+func drop_item(item_id,amount,p_id):
 	var dropped_item_scene
-	match item_id:
-		0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
-		1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
-		2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
-		3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
-	for i in range(amount):
-		var dropped_item = dropped_item_scene.instantiate()
-		dropped_item.position = hand.global_position
-		dropped_item.rotation = head.global_rotation
-		get_tree().root.add_child(dropped_item)
+	if mpp.player_index == p_id:
+		match item_id:
+			0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
+			1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
+			2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
+			3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
+		for i in range(amount):
+			var dropped_item = dropped_item_scene.instantiate()
+			dropped_item.position = hand.global_position
+			dropped_item.rotation = head.global_rotation
+			get_parent().add_child(dropped_item)
+			Event.emit_signal("control",0) # curent cam problem fix
 
 func ds_control(id):
-	id_control = id
-	if id != 0 and control == true:
-		control = false
-		camera.current = false
-		$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
-	if id == 0 and control == false:
-		$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
-		control = true
+	if is_multiplayer_authority():
+		id_control = id
+		if id != 0 and control == true:
+			control = false
+			camera.current = false
+			$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
+		if id == 0 and control == false:
+			$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
+			camera.current = true
+			control = true
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -213,6 +232,7 @@ func _on_area_3d_area_entered(area: Area3D):
 		playeranim_gui.play("damag")
 	if hp <= 0:
 		Event.emit_signal("back_s",1)
+		mpp.disconnect_player()
 		print("hurt1x")
 		playeranim_gui.play("damag")
 	Event.hp_char = hp

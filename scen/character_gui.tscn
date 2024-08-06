@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ba0c673pkere7"]
+[gd_scene load_steps=10 format=3 uid="uid://ba0c673pkere7"]
 
 [ext_resource type="Script" path="res://scripts/GUI.gd" id="1_366xt"]
 [ext_resource type="PackedScene" uid="uid://d0myxgmrgyquy" path="res://scen/inventory.tscn" id="2_li0oh"]
@@ -33,7 +33,7 @@ func _on_pressed():
 	Event.emit_signal(\"control\",control_id)
 	Event.control_id = control_id
 
-func visus(vis,item_id,control):
+func visus(vis,item_id,control,mp_id):
 	item_id = item_id
 	control_id = control
 "
@@ -45,16 +45,6 @@ script/source = "extends Button
 
 func _on_pressed():
 	Event.emit_signal(\"menu\")
-"
-
-[sub_resource type="GDScript" id="GDScript_4oa0t"]
-script/source = "extends Button
-
-
-
-
-func _on_pressed():
-	Event.emit_signal(\"pick_up\")
 "
 
 [sub_resource type="GDScript" id="GDScript_x21m7"]
@@ -228,7 +218,6 @@ size_flags_vertical = 4
 theme = ExtResource("2_rh2mb")
 button_mask = 7
 text = "pick_up"
-script = SubResource("GDScript_4oa0t")
 
 [node name="Label" type="Label" parent="."]
 unique_name_in_owner = true
@@ -249,4 +238,4 @@ script = SubResource("GDScript_x21m7")
 [connection signal="pressed" from="Button" to="Button" method="_on_pressed"]
 [connection signal="pressed" from="use" to="use" method="_on_pressed"]
 [connection signal="pressed" from="menu2" to="menu2" method="_on_pressed"]
-[connection signal="pressed" from="pick_up" to="pick_up" method="_on_pressed"]
+[connection signal="pressed" from="pick_up" to="." method="_on_pick_up_pressed"]

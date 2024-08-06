@@ -62,7 +62,7 @@ func _active_item(id):
 
 	head.add_child(active_item)
 
-func pick_up():
+func pick_up(id):
 	if picked_item != null:
 		picked_item.queue_free()
 		Event.emit_signal("add_item",picked_item_id)
@@ -78,8 +78,8 @@ func drop_item(item_id,amount):
 		var dropped_item = dropped_item_scene.instantiate()
 		dropped_item.position = hand.global_position
 		dropped_item.rotation = head.global_rotation
-		get_tree().root.add_child(dropped_item)
-
+		get_parent().add_child(dropped_item)
+		Event.emit_signal("control",0) # curent cam problem fix
 func ds_control(id):
 	id_control = id
 	if id != 0 and control == true:
@@ -89,6 +89,7 @@ func ds_control(id):
 	if id == 0 and control == false:
 		$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
 		control = true
+		camera.current = true
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity

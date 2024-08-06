@@ -62,6 +62,7 @@ func apply_control_drone(id):
 	else:
 		camera_1_person.current = false
 		camera_3_person.current = false
+		print(\"drone-\")
 		
 func app_cam(cam,id):
 	if control_item_id == id:
