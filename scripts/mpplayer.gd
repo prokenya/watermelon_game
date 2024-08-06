@@ -109,9 +109,10 @@ func drop_item(item_id,amount,p_id):
 func ds_control(id):
 	if is_multiplayer_authority():
 		id_control = id
+		if id == 0:
+			camera.current = true
 		if id != 0 and control == true:
 			control = false
-			camera.current = false
 			$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
 		if id == 0 and control == false:
 			$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
