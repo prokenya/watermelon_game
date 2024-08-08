@@ -35,7 +35,6 @@ func _ready():
 	_apply_user_prefs()
 	Event.connect("charapter_op", _apply_user_prefs)
 	Event.connect("control", ds_control)
-	Event.connect("fire",_on_fire_pressed)
 	Event.connect("jump",_on_touch_screen_button_pressed)
 	Event.connect("_active_item",set_active_item)
 	Event.connect("pick_up",pick_up)
@@ -79,11 +78,11 @@ func pick_up_mp(mp_id):
 		if mp_id == get_parent().player_index:
 			if picked_item != null:
 				picked_item.queue_free()
-				Event.emit_signal("add_item",picked_item_id)
+				Event.emit_signal("add_item",picked_item_id,mp_id)
 	if mp_id == -1:
 		if picked_item != null:
 			picked_item.queue_free()
-			Event.emit_signal("add_item",picked_item_id)
+			Event.emit_signal("add_item",picked_item_id,mp_id)
 
 func drop_item_s(id,amount):
 	if is_multiplayer_authority():
@@ -216,27 +215,26 @@ func _rotate_camera(delta: Vector2):
 	$Node3D.rotation_degrees.x = current_rotation.y
 
 func _on_touch_screen_button_pressed():
-	if freejump or is_on_floor():
+	if freejump or is_on_floor() and is_multiplayer_authority():
 		velocity.y = JUMP_VELOCITY
 
-func _on_fire_pressed():
-	Event.emit_signal("_on_fire_pressed")
 func _on_area_3d_area_entered(area: Area3D):
-	if area.editor_description == "hurt":
-		hp -= 10
-		playeranim_gui.play("damag")
-	if area.editor_description == "hurt1x":
-		hp -= 100
-		playeranim_gui.play("damag")
-	if area.editor_description == "hurt1m" or area.editor_description == "0":
-		hp -= 150
-		playeranim_gui.play("damag")
-	if hp <= 0:
-		Event.emit_signal("back_s",1)
-		mpp.disconnect_player()
-		print("hurt1x")
-		playeranim_gui.play("damag")
-	Event.hp_char = hp
+	if is_multiplayer_authority():
+		if area.editor_description == "hurt":
+			hp -= 10
+			playeranim_gui.play("damag")
+		if area.editor_description == "hurt1x":
+			hp -= 100
+			playeranim_gui.play("damag")
+		if area.editor_description == "hurt1m" or area.editor_description == "0":
+			hp -= 150
+			playeranim_gui.play("damag")
+		if hp <= 0:
+			Event.emit_signal("back_s",1)
+			mpp.disconnect_player()
+			print("hurt1x")
+			playeranim_gui.play("damag")
+		Event.hp_char = hp
 	
 
 func _on_animation_player_animation_finished(anim_name: String):

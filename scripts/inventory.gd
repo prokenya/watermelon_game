@@ -32,7 +32,7 @@ func _ready():
 			i += 1
 	up_item_pos()
 	load_inventory()
-	Event.connect("add_item", add_item_by_id)
+	Event.connect("add_item", add_item_by_id_mp)
 
 func load_inventory():
 	for slot_id in user_prefs.inventory_items.keys():
@@ -158,6 +158,12 @@ func get_item_id(item: Node2D) -> int:
 	if item is Item:
 		return item.item_id
 	return -1
+
+func add_item_by_id_mp(item_id,player_id):
+	if Event.is_multiplayer == true:
+		if player_id == get_parent().get_parent().get_parent().get_parent().player_index:
+			add_item_by_id(item_id)
+	else: add_item_by_id(item_id)
 
 func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 	if slot_id >= 0 and slot_id < MAX_SLOTS and items[slot_id] == null:

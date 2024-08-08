@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cr7oe3avnadsj"]
+[gd_scene load_steps=10 format=3 uid="uid://cr7oe3avnadsj"]
 
 [ext_resource type="Texture2D" uid="uid://cpjqg3mbuwf3q" path="res://models/textures/Scene_-_Root_baseColor.png" id="1_1vx40"]
 [ext_resource type="Texture2D" uid="uid://d0m5lrby5nxdr" path="res://models/textures/Scene_-_Root_metallicRoughness.png" id="2_5p66o"]
@@ -59,6 +59,14 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cgh0o")
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ac0eg"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="watermelon" type="RigidBody3D"]
 transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0, 0, 0)
 collision_layer = 6
@@ -73,3 +81,6 @@ shape = SubResource("CapsuleShape3D_2wdlp")
 transform = Transform3D(1, 0, 0, 0, -3.57628e-07, 1, 0, -1, -3.57628e-07, -0.0197116, 0, 0.493881)
 mesh = SubResource("ArrayMesh_flw0o")
 skeleton = NodePath("")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ac0eg")

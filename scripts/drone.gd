@@ -82,10 +82,11 @@ func _process(delta: float):
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 func _physics_process(delta: float):
+	var rotate_dir = Input.get_vector("left_drone_r","right_drone_r","up_drone_","down_drone_")
 	if control_item_id == id_control:
 		val_slider = Event.val_slider
 		var current_rotation_speed = 2
-		if val_slider > 0:
+		if rotate_dir[1] > 0:
 			current_rotation_speed = val_slider * 5
 			var forward = transform.basis.y
 			forward = forward.normalized()
@@ -100,7 +101,6 @@ func _physics_process(delta: float):
 			#rotate_y(deg_to_rad(current_rotation.x * 10 * delta))
 			#current_rotation.x = 0
 		var input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
-		var rotate_dir = Input.get_vector("left_drone_r","right_drone_r","ui_up_d","ui_down_d")
 		if input_dir:
 			if input_dir.length() > 0.01:
 				rotate_object_local(Vector3(1,0,0), deg_to_rad(input_dir[1] * sensitivity * delta * 150))

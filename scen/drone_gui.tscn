@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://joystick/virtual_joystick.tscn" id="2_nu77o"]
 
 [sub_resource type="GDScript" id="GDScript_2p3pq"]
-script/source = "extends Control
+script/source = "extends CanvasLayer
 @onready var val = %val
 @onready var linar_ve = %linar_ve
 
@@ -86,18 +86,11 @@ func _on_pressed():
 	a = !a
 "
 
-[node name="GUI" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("1_sb682")
+[node name="GUI" type="CanvasLayer"]
+layer = 10
 script = SubResource("GDScript_2p3pq")
 
 [node name="hp" type="Label" parent="."]
-layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -113,7 +106,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Virtual Joystick" parent="." instance=ExtResource("2_nu77o")]
-layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_right = 1.0
@@ -130,7 +122,6 @@ action_down = "ui_down_d"
 
 [node name="Label" type="Label" parent="."]
 unique_name_in_owner = true
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -145,7 +136,6 @@ script = SubResource("GDScript_egv6q")
 
 [node name="linar_ve" type="Label" parent="."]
 unique_name_in_owner = true
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -161,7 +151,6 @@ text = "rtjtjtrjtjtjtrjtjtrjjjtjtjtjtjtt"
 unique_name_in_owner = true
 self_modulate = Color(1, 1, 1, 0)
 top_level = true
-layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -175,7 +164,6 @@ max_value = 10.0
 step = 0.05
 
 [node name="BoxContainer" type="BoxContainer" parent="."]
-layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -190,7 +178,6 @@ grow_vertical = 0
 top_level = true
 light_mask = 3
 visibility_layer = 3
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -208,7 +195,6 @@ text = "menu"
 script = SubResource("GDScript_6o2um")
 
 [node name="VBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
@@ -229,7 +215,6 @@ text = "cam_1-3p
 "
 
 [node name="Button2" type="Button" parent="."]
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -242,14 +227,13 @@ text = "hui"
 script = SubResource("GDScript_1giln")
 
 [node name="left-right" parent="." instance=ExtResource("2_nu77o")]
-layout_mode = 1
 offset_top = -300.0
 offset_bottom = 0.0
 deadzone_size = 5.0
 action_left = "left_drone_r"
 action_right = "right_drone_r"
-action_up = "none"
-action_down = "none"
+action_up = "up_drone_"
+action_down = "down_drone_"
 
 [node name="Tip" parent="left-right/Base" index="0"]
 offset_top = 0.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ijyj2vmqstqj"]
+[gd_scene load_steps=7 format=3 uid="uid://ijyj2vmqstqj"]
 
 [ext_resource type="Script" path="res://scripts/drone.gd" id="1_ho3or"]
 
@@ -11,6 +11,14 @@ bounce = 0.1
 radius = 1.62052
 
 [sub_resource type="BoxMesh" id="BoxMesh_2jvkg"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5tqcf"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [node name="drone" type="RigidBody3D"]
 rotation_order = 0
@@ -61,3 +69,6 @@ mesh = SubResource("BoxMesh_2jvkg")
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="drone"]
 transform = Transform3D(0.05, 0, -1.06581e-14, 0, 0.04, 0, 0, 0, 0.276, -0.424985, 0.112394, -0.498988)
 mesh = SubResource("BoxMesh_2jvkg")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_5tqcf")

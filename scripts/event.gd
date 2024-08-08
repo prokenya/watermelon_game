@@ -6,15 +6,14 @@ signal world_s_op()
 signal global_op()
 signal spawn_enemy()
 #player
-signal _on_fire_pressed()
 signal control(id)
-signal fire()
+signal on_fire(player_id:int)
 signal jump()
 signal usev(vis: bool,item_id: int,control:int,player_id:int)
 signal _active_item(item_id)
 signal drop_item(item_id,amount)
 signal pick_up(player_id:int)
-signal add_item(item_id:int)
+signal add_item(item_id:int,player_id:int)
 var hp_char: int
 var is_inventory_active: bool
 # drone

@@ -45,7 +45,7 @@ func _ready():
 #inventory
 func _active_item(id):
 	if active_item != null:
-		head.remove_child(active_item)
+		hand.remove_child(active_item)
 		active_item.queue_free()
 	if id == 0:
 		active_item = preload("res://scen/drone_inv.tscn").instantiate()
@@ -60,12 +60,12 @@ func _active_item(id):
 		active_item = null
 		return
 
-	head.add_child(active_item)
+	hand.add_child(active_item)
 
 func pick_up(id):
 	if picked_item != null:
 		picked_item.queue_free()
-		Event.emit_signal("add_item",picked_item_id)
+		Event.emit_signal("add_item",picked_item_id,-1)
 
 func drop_item(item_id,amount):
 	var dropped_item_scene
@@ -82,6 +82,7 @@ func drop_item(item_id,amount):
 		Event.emit_signal("control",0) # curent cam problem fix
 func ds_control(id):
 	id_control = id
+	if id == 0: camera.current = true
 	if id != 0 and control == true:
 		control = false
 		camera.current = false
@@ -190,7 +191,7 @@ func _on_touch_screen_button_pressed():
 		velocity.y = JUMP_VELOCITY
 
 func _on_fire_pressed():
-	Event.emit_signal("_on_fire_pressed")
+	Event.emit_signal("_on_fire_pressed",-1)
 func _on_area_3d_area_entered(area: Area3D):
 	if area.editor_description == "hurt":
 		hp -= 10

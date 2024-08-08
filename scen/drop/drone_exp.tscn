@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
+[gd_scene load_steps=8 format=3 uid="uid://bmcf5pe61drxq"]
 
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="1_piw0r"]
 [ext_resource type="PackedScene" uid="uid://dk5m0g106ms0q" path="res://scen/vfx/vfx_expp1.tscn" id="2_f1tmb"]
@@ -167,6 +167,14 @@ func _on_body_entered(body):
 [sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
 radius = 2.42169
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_uj6hg"]
+properties/0/path = NodePath("drone:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("drone:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="exp_d" type="Node3D"]
 
 [node name="drone" parent="." groups=["drone"] instance=ExtResource("1_piw0r")]
@@ -197,5 +205,8 @@ script = SubResource("GDScript_u5wx4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
 shape = SubResource("SphereShape3D_af6m0")
 disabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_uj6hg")
 
 [connection signal="body_entered" from="drone/Area3D2" to="drone/Area3D2" method="_on_body_entered"]
