@@ -103,11 +103,10 @@ func drop_item(item_id,amount,p_id):
 			dropped_item.position = hand.global_position
 			dropped_item.rotation = head.global_rotation
 			get_parent().add_child(dropped_item)
-			Event.emit_signal("control",0) # curent cam problem fix
+			#Event.emit_signal("control",Event.control_id) # curent cam problem fix
 
 func ds_control(id):
 	if is_multiplayer_authority():
-		id_control = id
 		if id == 0:
 			camera.current = true
 		if id != 0 and control == true:
@@ -117,6 +116,7 @@ func ds_control(id):
 			$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
 			camera.current = true
 			control = true
+			Event.control_id = 0
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -133,6 +133,7 @@ func _apply_user_prefs():
 		3: get_viewport().msaa_3d = Viewport.MSAA_8X
 
 func _process(delta: float):
+	print(Event.control_id)
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)
@@ -144,7 +145,7 @@ func _process(delta: float):
 			if picked_item.item_id == 0 or picked_item.item_id == 3:
 				picked_item_control = picked_item.control_item_id
 			else:picked_item_control = -1
-			#print("->",picked_item_id)
+			#print("->",picked_item_control)
 			Event.emit_signal("usev",true,picked_item_id,picked_item_control,mpp.player_index)
 	else: 
 		Event.emit_signal("usev",false,-1,-1,mpp.player_index)

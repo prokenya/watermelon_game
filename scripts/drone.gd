@@ -25,8 +25,10 @@ var tracked_touch_index: int = -1
 var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
-var val_slider: float = 0
+var value: float = 0
 var global_t
+var rotate_dir
+var input_dir
 # Добавляем переменную для хранения направления вращения камеры
 var camera_rotation_direction: Vector3
 
@@ -81,16 +83,18 @@ func _process(delta: float):
 	if control_item_id == Event.control_id:
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
+
 func _physics_process(delta: float):
-	var rotate_dir = Input.get_vector("left_drone_r","right_drone_r","up_drone_","down_drone_")
+	rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
+	input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 	if control_item_id == id_control:
-		val_slider = Event.val_slider
+		value = (rotate_dir[1])*10
 		var current_rotation_speed = 2
 		if rotate_dir[1] > 0:
-			current_rotation_speed = val_slider * 5
+			current_rotation_speed = value * 5
 			var forward = transform.basis.y
 			forward = forward.normalized()
-			apply_central_impulse(forward * val_slider * SPEED)
+			apply_central_impulse(forward * value * SPEED)
 		else:
 			current_rotation_speed = lerp(current_rotation_speed, 0, 10 * delta)
 		prop1.rotation.y += current_rotation_speed * delta
@@ -100,7 +104,6 @@ func _physics_process(delta: float):
 		#if current_rotation.x != 0:
 			#rotate_y(deg_to_rad(current_rotation.x * 10 * delta))
 			#current_rotation.x = 0
-		var input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 		if input_dir:
 			if input_dir.length() > 0.01:
 				rotate_object_local(Vector3(1,0,0), deg_to_rad(input_dir[1] * sensitivity * delta * 150))

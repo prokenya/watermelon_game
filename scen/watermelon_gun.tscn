@@ -14,10 +14,10 @@ class_name Weapon
 @onready var bullet_scene = preload(\"res://scen/bullet.tscn\")
 @onready var bullet_spawn_point = $CSGMesh3D/RayCast3D
 var item_id = 0
-@onready var mpp = get_parent().get_parent().get_parent().mpp
+@onready var mpp = get_parent().get_parent().get_parent()
 func _on_fire_pressed(pl_id):
 	if Event.is_multiplayer == true:
-		if not gun_anim.is_playing() and mpp.player_index == pl_id:
+		if not gun_anim.is_playing() and mpp.mpp.player_index == pl_id:
 			_spawn_bullet_mp.rpc()
 	else:
 		if not gun_anim.is_playing():

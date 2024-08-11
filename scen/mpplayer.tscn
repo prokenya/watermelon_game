@@ -258,7 +258,7 @@ properties/3/spawn = true
 properties/3/replication_mode = 1
 
 [node name="player" type="CharacterBody3D" groups=["player"]]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.0753218, 0, 0.683359)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 collision_layer = 3
 script = ExtResource("1_6ywoo")
 

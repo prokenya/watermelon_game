@@ -59,7 +59,6 @@ func _active_item(id):
 	else:
 		active_item = null
 		return
-
 	hand.add_child(active_item)
 
 func pick_up(id):
@@ -77,9 +76,9 @@ func drop_item(item_id,amount):
 	for i in range(amount):
 		var dropped_item = dropped_item_scene.instantiate()
 		dropped_item.position = hand.global_position
-		dropped_item.rotation = head.global_rotation
-		get_parent().add_child(dropped_item)
-		Event.emit_signal("control",0) # curent cam problem fix
+		dropped_item.rotation = hand.global_rotation
+		get_tree().root.add_child(dropped_item)
+		#Event.emit_signal("control",0) # curent cam problem fix
 func ds_control(id):
 	id_control = id
 	if id == 0: camera.current = true

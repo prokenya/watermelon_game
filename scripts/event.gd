@@ -18,7 +18,6 @@ var hp_char: int
 var is_inventory_active: bool
 # drone
 var drone_speed: String = "0"
-var val_slider: float = 0
 var control_item_id: int = 0
 var control_id:int = 0
 signal cam_1_3p(cam: bool,id:int)
