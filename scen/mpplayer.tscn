@@ -1,10 +1,14 @@
-[gd_scene load_steps=25 format=3 uid="uid://dlnitytscxewx"]
+[gd_scene load_steps=31 format=3 uid="uid://dlnitytscxewx"]
 
 [ext_resource type="Script" path="res://scripts/mpplayer.gd" id="1_6ywoo"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="2_f0wst"]
+[ext_resource type="Texture2D" uid="uid://cpjqg3mbuwf3q" path="res://models/textures/Scene_-_Root_baseColor.png" id="2_th3kk"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_jx4fy"]
+[ext_resource type="Texture2D" uid="uid://d0m5lrby5nxdr" path="res://models/textures/Scene_-_Root_metallicRoughness.png" id="3_x1h5e"]
 [ext_resource type="AudioStream" uid="uid://n57g5baj44a" path="res://audio/sfx/Footsteps/FootstepsStoneDirt1.wav" id="4_lvqym"]
+[ext_resource type="Texture2D" uid="uid://buxtny31co066" path="res://models/textures/Scene_-_Root_normal.png" id="4_trlhs"]
 [ext_resource type="AudioStream" uid="uid://ctrpvkoufalvn" path="res://audio/sfx/Footsteps/FootstepsStoneDirt2.wav" id="5_dmoer"]
+[ext_resource type="Texture2D" uid="uid://varw4lx87ems" path="res://textures/1182467.160.webp" id="5_rrd7c"]
 [ext_resource type="AudioStream" uid="uid://cis8w30cm46lq" path="res://audio/sfx/Footsteps/FootstepsStoneDirt3.wav" id="6_cx0fu"]
 [ext_resource type="AudioStream" uid="uid://bp7oub08v01c0" path="res://audio/sfx/Footsteps/FootstepsStoneDirt4.wav" id="7_3w6mv"]
 [ext_resource type="AudioStream" uid="uid://erqx6phtv0fp" path="res://audio/music/Transferloop_-_drone_-_spaces.wav" id="8_vw82q"]
@@ -12,6 +16,16 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v4cbk"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0xdd3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jlef8"]
+resource_name = "Scene_-_Root"
+albedo_texture = ExtResource("2_th3kk")
+metallic_texture = ExtResource("3_x1h5e")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("3_x1h5e")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("4_trlhs")
 
 [sub_resource type="Animation" id="Animation_4ps3i"]
 resource_name = "cam_go_shaking_left"
@@ -100,6 +114,10 @@ _data = {
 "cam_go_shaking_left": SubResource("Animation_4ps3i"),
 "cam_go_shaking_right": SubResource("Animation_jpkuy")
 }
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w2r42"]
+albedo_texture = ExtResource("5_rrd7c")
+uv1_scale = Vector3(1.705, 1.705, 1.705)
 
 [sub_resource type="GDScript" id="GDScript_xwmwt"]
 script/source = "extends Button
@@ -271,6 +289,7 @@ shape = SubResource("CapsuleShape3D_v4cbk")
 layers = 65537
 mesh = SubResource("CapsuleMesh_0xdd3")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_jlef8")
 
 [node name="animation_player" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Node3D")
@@ -292,6 +311,10 @@ collision_mask = 4
 
 [node name="hand" type="Node3D" parent="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.420772, -0.157218, -0.694229)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Node3D"]
+transform = Transform3D(0.445573, 0, 0.895246, 0, 1, 0, -0.895246, 0, 0.445573, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_w2r42")
 
 [node name="Control_charapter" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -367,6 +390,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
+
+[node name="control_id" type="Label" parent="Control_charapter"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -173.0
+offset_bottom = -124.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("3_jx4fy")
+theme_override_font_sizes/font_size = 35
 
 [node name="Area3D" type="Area3D" parent="."]
 

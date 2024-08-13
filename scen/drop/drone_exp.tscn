@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bmcf5pe61drxq"]
+[gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
 
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="1_piw0r"]
 [ext_resource type="PackedScene" uid="uid://dk5m0g106ms0q" path="res://scen/vfx/vfx_expp1.tscn" id="2_f1tmb"]
@@ -35,6 +35,7 @@ var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
 var value: float = 0
+var controler_id:int
 var global_t
 # Добавляем переменную для хранения направления вращения камеры
 var camera_rotation_direction: Vector3
@@ -54,9 +55,10 @@ func _ready():
 	control_item_id = Event.control_item_id + 1
 	Event.control_item_id += 1
 
-func apply_control_drone(id):
+func apply_control_drone(id,item_id,player_id):
 	Event.control_id = id
 	id_control = id
+	controler_id = player_id
 	if id_control == control_item_id:
 		camera_1_person.current = true
 		print(\"drone\")
@@ -96,7 +98,7 @@ func _process(delta: float):
 		var vfx_expp = vfx_expp1.instantiate()
 		vfx_expp.position = ray_cast_3d.global_position
 		get_tree().root.add_child(vfx_expp)
-		Event.emit_signal(\"control\",0)
+		Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
 		get_parent().queue_free()
 var impulse = Vector3(0,0,0)
 func _physics_process(delta: float):
@@ -168,14 +170,6 @@ func _on_body_entered(body):
 [sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
 radius = 2.42169
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_uj6hg"]
-properties/0/path = NodePath("drone:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath("drone:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-
 [node name="exp_d" type="Node3D"]
 
 [node name="drone" parent="." groups=["drone"] instance=ExtResource("1_piw0r")]
@@ -206,8 +200,5 @@ script = SubResource("GDScript_u5wx4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
 shape = SubResource("SphereShape3D_af6m0")
 disabled = true
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_uj6hg")
 
 [connection signal="body_entered" from="drone/Area3D2" to="drone/Area3D2" method="_on_body_entered"]

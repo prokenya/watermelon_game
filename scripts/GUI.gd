@@ -29,8 +29,8 @@ func _ready():
 func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)
 
-func ds_control(id):
-	if id != 0:
+func ds_control(id,item_id,player_id):
+	if id != Event.player_control_id:
 		queue_free()
 
 func visus(vis,item_id,control,mp_id):
@@ -51,13 +51,14 @@ func _on_touch_screen_button_pressed():
 
 
 func _on_fire_pressed():
-	if control_id != -1:
-		Event.emit_signal("control",control_id)
-		Event.control_id = control_id
-		print("Applying control for ID:",control_id)
+	var mpp = -1
 	if Event.is_multiplayer == true:
-		Event.emit_signal("on_fire",get_parent().get_parent().mpp.player_index)
-	else: Event.emit_signal("on_fire",-1)
+		mpp = get_parent().get_parent().mpp.player_index
+	if control_id != -1:
+		Event.control_id = control_id
+		Event.emit_signal("control",control_id,item_id,mpp)
+		print("Applying control for ID:",control_id)
+	Event.emit_signal("on_fire",mpp)
 
 
 func _on_pick_up_pressed():

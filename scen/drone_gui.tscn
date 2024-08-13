@@ -25,8 +25,8 @@ func _ready():
 	Event.connect(\"control\", ds_control)
 	Event.connect(\"menu\",preessed)
 
-func ds_control(id):
-	if id != 1:
+func ds_control(id,item_id,player_id):
+	if item_id != 0 or item_id != 3 and id != -1:
 		queue_free()
 
 func _on_val_drag_ended(value_changed):
@@ -37,7 +37,7 @@ func _process(delta):
 	linar_ve.text = Event.drone_speed
 
 func _on_ch_pressed():
-	Event.emit_signal(\"control\",0)
+	Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
 
 var a
 func _on_cam_13_person_pressed():

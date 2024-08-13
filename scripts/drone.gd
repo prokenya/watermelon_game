@@ -26,6 +26,7 @@ var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
 var value: float = 0
+var controler_id:int = -1
 var global_t
 var rotate_dir
 var input_dir
@@ -47,14 +48,17 @@ func _ready():
 	camera_1_person.current = false
 	camera_3_person.current = false
 
-func apply_control_drone(id):
+func apply_control_drone(id,item_id,player_id):
 	id_control = id
+	controler_id = player_id
 	if id_control == control_item_id:
 		camera_1_person.current = true
 		print("Drone camera activated")
+		print("controler_id:",controler_id)
 	else:
 		camera_1_person.current = false
 		camera_3_person.current = false
+		print("controler_id:",controler_id)
 		print("Drone camera deactivated")
 
 func app_cam(cam,id):
@@ -84,10 +88,13 @@ func _process(delta: float):
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 
-func _physics_process(delta: float):
+func movedata():
 	rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
 	input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+
+func _physics_process(delta: float):
 	if control_item_id == id_control:
+		movedata()
 		value = (rotate_dir[1])*10
 		var current_rotation_speed = 2
 		if rotate_dir[1] > 0:

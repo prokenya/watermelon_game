@@ -25,10 +25,10 @@ var tracked_touch_index: int = -1
 var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
-var id_control: int = 0
 var active_item = null
 var picked_item_control:int
-var control:bool = false
+var control_id:int
+@onready var control_idl = $Control_charapter/control_id
 @onready var mpp: MPPlayer = get_parent()
 func _ready():
 	user_prefs = UserPref.load_or_create()
@@ -40,8 +40,11 @@ func _ready():
 	Event.connect("pick_up",pick_up)
 	Event.connect("drop_item",drop_item_s)
 	last_position = position
+	control_id = Event.control_item_id + 1
+	Event.control_item_id = Event.control_item_id + 1
 	if is_multiplayer_authority():
-		Event.emit_signal("control",0)
+		Event.player_control_id = control_id
+		Event.emit_signal("control",control_id,-1,mpp.player_index)
 #inventory
 
 func set_active_item(id):
@@ -103,20 +106,17 @@ func drop_item(item_id,amount,p_id):
 			dropped_item.position = hand.global_position
 			dropped_item.rotation = head.global_rotation
 			get_parent().add_child(dropped_item)
-			#Event.emit_signal("control",Event.control_id) # curent cam problem fix
 
-func ds_control(id):
+func ds_control(id,item_id,player_id):
 	if is_multiplayer_authority():
-		if id == 0:
+		if id == control_id:
 			camera.current = true
-		if id != 0 and control == true:
-			control = false
+		if id != control_id:
 			$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
-		if id == 0 and control == false:
+		if id == control_id:
 			$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
 			camera.current = true
-			control = true
-			Event.control_id = 0
+			Event.control_id = control_id
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -133,7 +133,8 @@ func _apply_user_prefs():
 		3: get_viewport().msaa_3d = Viewport.MSAA_8X
 
 func _process(delta: float):
-	print(Event.control_id)
+	if is_multiplayer_authority():
+		control_idl.text = "player_id"+str(control_id)+"\ncurrent_id"+str(Event.control_id)
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)
@@ -181,7 +182,7 @@ func footstep():
 	footstep_audio.play()
 func _input(event: InputEvent):
 	if is_multiplayer_authority():
-		if id_control == 0:
+		if control_id == Event.control_id:
 			if Event.is_inventory_active == true:
 				return  # Если инвентарь активен, не обрабатывать события для игрока
 			
@@ -231,8 +232,8 @@ func _on_area_3d_area_entered(area: Area3D):
 			hp -= 150
 			playeranim_gui.play("damag")
 		if hp <= 0:
+			position = Vector3(0,-255,0)
 			Event.emit_signal("back_s",1)
-			mpp.disconnect_player()
 			print("hurt1x")
 			playeranim_gui.play("damag")
 		Event.hp_char = hp

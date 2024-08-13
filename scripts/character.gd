@@ -28,7 +28,9 @@ var dragging: bool = false
 var id_control: int = 0
 var active_item = null
 var picked_item_control:int
-var control:bool = true
+var control_id:int
+@onready var control_idl = $Control_charapter/control_id
+
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
@@ -40,8 +42,10 @@ func _ready():
 	Event.connect("pick_up",pick_up)
 	Event.connect("drop_item",drop_item)
 	last_position = position
-	camera.current = true
-	$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
+	control_id = Event.control_item_id + 1
+	Event.control_item_id = Event.control_item_id + 1
+	Event.player_control_id = control_id
+	Event.emit_signal("control",control_id,-1,-1)
 #inventory
 func _active_item(id):
 	if active_item != null:
@@ -79,17 +83,15 @@ func drop_item(item_id,amount):
 		dropped_item.rotation = hand.global_rotation
 		get_tree().root.add_child(dropped_item)
 		#Event.emit_signal("control",0) # curent cam problem fix
-func ds_control(id):
-	id_control = id
-	if id == 0: camera.current = true
-	if id != 0 and control == true:
-		control = false
-		camera.current = false
-		$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
-	if id == 0 and control == false:
-		$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
-		control = true
+func ds_control(id,item_id,player_id):
+	if id == control_id:
 		camera.current = true
+	if id != control_id:
+		$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
+	if id == control_id:
+		$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
+		camera.current = true
+		Event.control_id = control_id
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -106,6 +108,7 @@ func _apply_user_prefs():
 		3: get_viewport().msaa_3d = Viewport.MSAA_8X
 
 func _process(delta: float):
+	control_idl.text = "player_id"+str(control_id)+"\ncurrent_id"+str(Event.control_id)
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)
