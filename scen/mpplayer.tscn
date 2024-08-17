@@ -274,6 +274,9 @@ properties/2/replication_mode = 1
 properties/3/path = NodePath("Node3D:rotation")
 properties/3/spawn = true
 properties/3/replication_mode = 1
+properties/4/path = NodePath(".:control_id")
+properties/4/spawn = true
+properties/4/replication_mode = 1
 
 [node name="player" type="CharacterBody3D" groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
@@ -306,7 +309,7 @@ cull_mask = 983039
 
 [node name="RayCast3D" type="RayCast3D" parent="Node3D/Camera3D"]
 transform = Transform3D(0.5, 0, 0, 0, -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, -0.00357184, -0.242808)
-target_position = Vector3(0, 2, 0)
+target_position = Vector3(0, 3, 0)
 collision_mask = 4
 
 [node name="hand" type="Node3D" parent="Node3D"]

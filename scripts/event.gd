@@ -32,3 +32,4 @@ signal menu()
 signal host()
 signal join()
 var is_multiplayer:bool = false
+var mpp_index:int

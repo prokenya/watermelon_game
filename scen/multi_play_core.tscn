@@ -7,7 +7,7 @@
 
 [node name="MultiPlayCore" type="Node"]
 script = ExtResource("1_3ld4b")
-max_players = 4
+max_players = 12
 player_scene = ExtResource("2_1kwgl")
 first_scene = ExtResource("3_8lj5a")
 

@@ -15,12 +15,16 @@ radius = 1.62052
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5tqcf"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 0
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
-properties/1/replication_mode = 1
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:control_item_id")
+properties/2/spawn = true
+properties/2/replication_mode = 1
 
 [node name="drone" type="RigidBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 rotation_order = 0
 collision_layer = 6
 collision_mask = 3
@@ -71,3 +75,9 @@ mesh = SubResource("BoxMesh_2jvkg")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_5tqcf")
+
+[node name="debug label" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.612075, 0)
+visible = false
+billboard = 1
+text = "controler_id"

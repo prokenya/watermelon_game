@@ -27,7 +27,7 @@ var current_rotation: Vector2
 var dragging: bool = false
 var active_item = null
 var picked_item_control:int
-var control_id:int
+@export var control_id:int
 @onready var control_idl = $Control_charapter/control_id
 @onready var mpp: MPPlayer = get_parent()
 func _ready():
@@ -44,6 +44,7 @@ func _ready():
 	Event.control_item_id = Event.control_item_id + 1
 	if is_multiplayer_authority():
 		Event.player_control_id = control_id
+		Event.mpp_index = mpp.player_index
 		Event.emit_signal("control",control_id,-1,mpp.player_index)
 #inventory
 
@@ -103,7 +104,7 @@ func drop_item(item_id,amount,p_id):
 			3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
 		for i in range(amount):
 			var dropped_item = dropped_item_scene.instantiate()
-			dropped_item.position = hand.global_position
+			dropped_item.position = hand.global_position + global_transform.basis.x
 			dropped_item.rotation = head.global_rotation
 			get_parent().add_child(dropped_item)
 
@@ -233,9 +234,13 @@ func _on_area_3d_area_entered(area: Area3D):
 			playeranim_gui.play("damag")
 		if hp <= 0:
 			position = Vector3(0,-255,0)
-			Event.emit_signal("back_s",1)
-			print("hurt1x")
-			playeranim_gui.play("damag")
+			if multiplayer.is_server():
+				print("hurt1x")
+				playeranim_gui.play("damag")
+			else:
+				Event.emit_signal("back_s",1)
+				print("hurt1x")
+				playeranim_gui.play("damag")
 		Event.hp_char = hp
 	
 

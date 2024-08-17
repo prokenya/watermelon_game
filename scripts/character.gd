@@ -79,7 +79,7 @@ func drop_item(item_id,amount):
 		3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
 	for i in range(amount):
 		var dropped_item = dropped_item_scene.instantiate()
-		dropped_item.position = hand.global_position
+		dropped_item.position = hand.global_position + global_transform.basis.x
 		dropped_item.rotation = hand.global_rotation
 		get_tree().root.add_child(dropped_item)
 		#Event.emit_signal("control",0) # curent cam problem fix

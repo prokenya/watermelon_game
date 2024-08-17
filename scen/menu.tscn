@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bo2s8uuybarua"]
+[gd_scene load_steps=12 format=3 uid="uid://bo2s8uuybarua"]
 
 [ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_4snpv"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="2_ub5rg"]
@@ -99,6 +99,13 @@ func _on_pressed():
 	$\"../../Control/menu_0\".visible = true
 	%credits.visible = false
 "
+
+[sub_resource type="LabelSettings" id="LabelSettings_eeghs"]
+line_spacing = 8.74
+font_size = 31
+font_color = Color(4.57242e-07, 0.411091, 0.114304, 1)
+shadow_size = 11
+shadow_color = Color(1, 0.341176, 0.827451, 0.117647)
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_4snpv")
@@ -260,14 +267,13 @@ layout_mode = 2
 theme = ExtResource("3_60fmp")
 theme_override_colors/font_color = Color(0, 0.517647, 0.364706, 1)
 theme_override_font_sizes/font_size = 35
-text = "chief devoloper:
+text = "devoloper:
 @prokenya
 testers:
 @alekqq
 @alexeyprogamer
-@true_guro
 "
-horizontal_alignment = 1
+label_settings = SubResource("LabelSettings_eeghs")
 
 [connection signal="pressed" from="Control/CanvasLayer2/menu" to="Control/CanvasLayer2/menu" method="_on_pressed"]
 [connection signal="pressed" from="Control/menu_0/VBoxContainer/play" to="." method="_on_play_pressed"]

@@ -13,7 +13,7 @@ var item_id = 0
 
 #drone anim
 @onready var prop1 = $drone/MeshInstance3D2
-@onready var prop2 =$drone/MeshInstance3D3
+@onready var prop2 = $drone/MeshInstance3D3
 @onready var prop3 = $drone/MeshInstance3D4
 @onready var prop4 = $drone/MeshInstance3D5
 @onready var camera_3_person = $Camera3person
@@ -27,9 +27,12 @@ var current_rotation: Vector2
 var dragging: bool = false
 var value: float = 0
 var controler_id:int = -1
+var controler_id_nosync:int = -1
 var global_t
-var rotate_dir
-var input_dir
+@export var rotate_dir:Vector2
+@export var input_dir:Vector2
+@onready var debug_label = $"debug label"
+
 # Добавляем переменную для хранения направления вращения камеры
 var camera_rotation_direction: Vector3
 
@@ -47,20 +50,35 @@ func _ready():
 	Event.control_item_id += 1
 	camera_1_person.current = false
 	camera_3_person.current = false
+	#if Event.is_multiplayer == true:
+		#debug_label.visible = true
 
 func apply_control_drone(id,item_id,player_id):
-	id_control = id
-	controler_id = player_id
-	if id_control == control_item_id:
+	if id == control_item_id and controler_id == -1:
+		controler_id = player_id
 		camera_1_person.current = true
 		print("Drone camera activated")
 		print("controler_id:",controler_id)
 	else:
+		if controler_id == player_id:
+			controler_id = -1
 		camera_1_person.current = false
 		camera_3_person.current = false
 		print("controler_id:",controler_id)
 		print("Drone camera deactivated")
+	if Event.is_multiplayer == true: 
+		if controler_id == player_id:
+			id_control = id
+		controler_id_nosync = controler_id
+		sync.rpc(controler_id,id_control)
+	else: id_control = id
 
+@rpc("any_peer", "call_local", "reliable")
+func sync(c_id,id_c):
+	controler_id = c_id
+	id_control = id_c
+	debug_label.text = "controler_id:"+str(controler_id)
+	
 func app_cam(cam,id):
 	if control_item_id == id:
 		if cam == true:
@@ -88,18 +106,33 @@ func _process(delta: float):
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 
-func movedata():
-	rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
-	input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+
+@rpc("any_peer", "call_local")
+func movedata(r_dir,i_dir):
+	position = r_dir
+	rotation = i_dir
+	#if controler_id_nosync == -1:
+		#print(rotate_dir)
 
 func _physics_process(delta: float):
 	if control_item_id == id_control:
-		movedata()
+		if Event.is_multiplayer == true:
+				print("aaaa")
+				if controler_id == Event.mpp_index:
+					rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
+					input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+					movedata.rpc(position,rotation)
+					print("bbbb")
+				
+		else: 
+			rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
+			input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 		value = (rotate_dir[1])*10
+		print(value)
 		var current_rotation_speed = 2
 		if rotate_dir[1] > 0:
 			current_rotation_speed = value * 5
-			var forward = transform.basis.y
+			var forward = global_transform.basis.y
 			forward = forward.normalized()
 			apply_central_impulse(forward * value * SPEED)
 		else:
@@ -118,6 +151,8 @@ func _physics_process(delta: float):
 		if rotate_dir:
 			if rotate_dir.length() > 0.01:
 				rotate_y(deg_to_rad(-rotate_dir[0] * sensitivity * delta * 150))
+	if controler_id == -1 and multiplayer.is_server():
+		movedata.rpc(position,rotation)
 
 
 func _change_state(new_state: State):

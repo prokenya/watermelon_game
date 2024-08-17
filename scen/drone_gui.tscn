@@ -37,7 +37,9 @@ func _process(delta):
 	linar_ve.text = Event.drone_speed
 
 func _on_ch_pressed():
-	Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
+	if Event.is_multiplayer == true:
+		Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
+	else:Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
 
 var a
 func _on_cam_13_person_pressed():

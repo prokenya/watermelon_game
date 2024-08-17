@@ -1,7 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
 
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="1_piw0r"]
-[ext_resource type="PackedScene" uid="uid://dk5m0g106ms0q" path="res://scen/vfx/vfx_expp1.tscn" id="2_f1tmb"]
 
 [sub_resource type="GDScript" id="GDScript_7wmy4"]
 script/source = "extends RigidBody3D
@@ -16,18 +15,17 @@ var last_position: Vector3
 var id_control: int = 0
 @export var control_item_id: int
 var item_id = 3
-@onready var ray_cast_3d = $RayCast3D
-@onready var timer = $Timer
-@onready var area_3d = $\"../Area3D\"
 
 #drone anim
 @onready var prop1 = $drone/MeshInstance3D2
-@onready var prop2 =$drone/MeshInstance3D3
+@onready var prop2 = $drone/MeshInstance3D3
 @onready var prop3 = $drone/MeshInstance3D4
 @onready var prop4 = $drone/MeshInstance3D5
 @onready var camera_3_person = $Camera3person
 @onready var camera_1_person = $Camera1person
-@export var vfx_expp1 = preload(\"res://scen/vfx/vfx_expp1.tscn\")
+@onready var ray_cast_3d = $RayCast3D
+@onready var timer = $Timer
+@onready var vfx_expp1 = preload(\"res://scen/vfx/vfx_expp1.tscn\")
 var gravity: float = ProjectSettings.get_setting(\"physics/3d/default_gravity\")
 var sensitivity: float
 var tracked_touch_index: int = -1
@@ -35,14 +33,17 @@ var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
 var value: float = 0
-var controler_id:int
+var controler_id:int = -1
+var controler_id_nosync:int = -1
 var global_t
+@export var rotate_dir:Vector2
+@export var input_dir:Vector2
+@onready var debug_label = $\"debug label\"
+
 # Добавляем переменную для хранения направления вращения камеры
 var camera_rotation_direction: Vector3
 
 func _ready():
-	camera_1_person.current = false
-	camera_3_person.current = false
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
 	Event.connect(\"charapter_op\", _apply_user_prefs)
@@ -54,19 +55,37 @@ func _ready():
 	global_t = global_transform
 	control_item_id = Event.control_item_id + 1
 	Event.control_item_id += 1
+	camera_1_person.current = false
+	camera_3_person.current = false
+	#if Event.is_multiplayer == true:
+		#debug_label.visible = true
 
 func apply_control_drone(id,item_id,player_id):
-	Event.control_id = id
-	id_control = id
-	controler_id = player_id
-	if id_control == control_item_id:
+	if id == control_item_id and controler_id == -1:
+		controler_id = player_id
 		camera_1_person.current = true
-		print(\"drone\")
+		print(\"Drone camera activated\")
+		print(\"controler_id:\",controler_id)
 	else:
+		if controler_id == player_id:
+			controler_id = -1
 		camera_1_person.current = false
 		camera_3_person.current = false
-		print(\"drone-\")
-		
+		print(\"controler_id:\",controler_id)
+		print(\"Drone camera deactivated\")
+	if Event.is_multiplayer == true: 
+		if controler_id == player_id:
+			id_control = id
+		controler_id_nosync = controler_id
+		sync.rpc(controler_id,id_control)
+	else: id_control = id
+
+@rpc(\"any_peer\", \"call_local\", \"reliable\")
+func sync(c_id,id_c):
+	controler_id = c_id
+	id_control = id_c
+	debug_label.text = \"controler_id:\"+str(controler_id)
+	
 func app_cam(cam,id):
 	if control_item_id == id:
 		if cam == true:
@@ -98,15 +117,35 @@ func _process(delta: float):
 		var vfx_expp = vfx_expp1.instantiate()
 		vfx_expp.position = ray_cast_3d.global_position
 		get_tree().root.add_child(vfx_expp)
-		Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
+		Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
 		get_parent().queue_free()
-var impulse = Vector3(0,0,0)
+var impulse = Vector3()
+
+
+@rpc(\"any_peer\", \"call_local\")
+func movedata(r_dir,i_dir):
+	position = r_dir
+	rotation = i_dir
+	#if controler_id_nosync == -1:
+		#print(rotate_dir)
+
 func _physics_process(delta: float):
-	var rotate_dir = Input.get_vector(\"left_drone_r\",\"right_drone_r\",\"downd2\",\"upd2\")
 	if control_item_id == id_control:
+		if Event.is_multiplayer == true:
+				print(\"aaaa\")
+				if controler_id == Event.mpp_index:
+					rotate_dir = Input.get_vector(\"left_drone_r\",\"right_drone_r\",\"downd2\",\"upd2\")
+					input_dir = Input.get_vector(\"ui_left_d\", \"ui_right_d\", \"ui_up_d\", \"ui_down_d\")
+					movedata.rpc(position,rotation)
+					print(\"bbbb\")
+				
+		else: 
+			rotate_dir = Input.get_vector(\"left_drone_r\",\"right_drone_r\",\"downd2\",\"upd2\")
+			input_dir = Input.get_vector(\"ui_left_d\", \"ui_right_d\", \"ui_up_d\", \"ui_down_d\")
 		value = (rotate_dir[1])*10
+		print(value)
 		var current_rotation_speed = 2
-		if value > 0:
+		if rotate_dir[1] > 0:
 			current_rotation_speed = value * 5
 			var forward = global_transform.basis.y
 			forward = forward.normalized()
@@ -120,7 +159,6 @@ func _physics_process(delta: float):
 		#if current_rotation.x != 0:
 			#rotate_y(deg_to_rad(current_rotation.x * 10 * delta))
 			#current_rotation.x = 0
-		var input_dir = Input.get_vector(\"ui_left_d\", \"ui_right_d\", \"ui_up_d\", \"ui_down_d\")
 		if input_dir:
 			if input_dir.length() > 0.01:
 				rotate_object_local(Vector3(1,0,0), deg_to_rad(input_dir[1] * sensitivity * delta * 150))
@@ -128,12 +166,44 @@ func _physics_process(delta: float):
 		if rotate_dir:
 			if rotate_dir.length() > 0.01:
 				rotate_y(deg_to_rad(-rotate_dir[0] * sensitivity * delta * 150))
+	if controler_id == -1 and multiplayer.is_server():
+		movedata.rpc(position,rotation)
 
 
 func _change_state(new_state: State):
 	state = new_state
 
-
+#func _input(event: InputEvent):
+	#if id_control == 1:
+		#if event is InputEventScreenTouch:
+			#if event.pressed:
+				#if tracked_touch_index == -1:
+					#tracked_touch_index = event.index
+					#touch_start_position = event.position
+					#dragging = true
+			#elif event.index == tracked_touch_index:
+				#tracked_touch_index = -1
+				#dragging = false
+	#if id_control == 1:
+		#if event is InputEventScreenDrag and event.index == tracked_touch_index:
+			#if dragging:
+				## Пропускаем первый кадр, чтобы избежать резкого скачка
+				#dragging = false
+				#touch_start_position = event.position
+			#else:
+				#var delta = event.position - touch_start_position
+				#delta *= -1
+				#_rotate_camera(delta)
+				#touch_start_position = event.position
+#
+	#if event is InputEventJoypadMotion:
+		#_rotate_camera(Vector2(event.axis_value(0), event.axis_value(1)) * sensitivity)
+#
+#func _rotate_camera(delta: Vector2):
+	#current_rotation += delta * sensitivity
+	## Apply rotation to the RigidBody3D
+	##apply_torque_impulse(Vector3(0,current_rotation.x,0))
+	##current_rotation.x = 0
 "
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wnon2"]
@@ -170,12 +240,17 @@ func _on_body_entered(body):
 [sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
 radius = 2.42169
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m8eco"]
+properties/0/path = NodePath("drone:control_item_id")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
 [node name="exp_d" type="Node3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="drone" parent="." groups=["drone"] instance=ExtResource("1_piw0r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.102848, 0, -0.0890975)
 script = SubResource("GDScript_7wmy4")
-vfx_expp1 = ExtResource("2_f1tmb")
 
 [node name="RayCast3D" type="RayCast3D" parent="drone"]
 transform = Transform3D(1, 0, 0, 0, -0.00221662, -0.999998, 0, 0.999998, -0.00221662, 0, 0, -0.48729)
@@ -200,5 +275,8 @@ script = SubResource("GDScript_u5wx4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
 shape = SubResource("SphereShape3D_af6m0")
 disabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_m8eco")
 
 [connection signal="body_entered" from="drone/Area3D2" to="drone/Area3D2" method="_on_body_entered"]
