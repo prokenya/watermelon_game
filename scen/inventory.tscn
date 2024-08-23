@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://d0myxgmrgyquy"]
+[gd_scene load_steps=2 format=3 uid="uid://d0myxgmrgyquy"]
 
 [ext_resource type="Script" path="res://scripts/inventory.gd" id="1_31yev"]
-[ext_resource type="PackedScene" uid="uid://bo6mu3o42g8d8" path="res://scen/item.tscn" id="2_wf8se"]
 
 [node name="inventory" type="Control"]
 layout_mode = 3
@@ -17,15 +16,3 @@ offset_bottom = -158.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_31yev")
-
-[node name="item" parent="." instance=ExtResource("2_wf8se")]
-
-[node name="item2" parent="." instance=ExtResource("2_wf8se")]
-item_id = 3
-
-[node name="item3" parent="." instance=ExtResource("2_wf8se")]
-item_id = 1
-
-[node name="item4" parent="." instance=ExtResource("2_wf8se")]
-amount = 10
-item_id = 2

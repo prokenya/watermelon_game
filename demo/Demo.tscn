@@ -1,12 +1,12 @@
 [gd_scene load_steps=13 format=3 uid="uid://chol2xlfbq7cu"]
 
 [ext_resource type="Script" path="res://demo/src/DemoScene.gd" id="1_k7qca"]
+[ext_resource type="PackedScene" uid="uid://d2jihfohphuue" path="res://demo/components/UI.tscn" id="2_nqak5"]
 [ext_resource type="PackedScene" uid="uid://dwnhqfjq7v1pq" path="res://demo/components/Borders.tscn" id="3_cw38j"]
+[ext_resource type="PackedScene" uid="uid://domhm87hbhbg1" path="res://demo/components/Player.tscn" id="3_ht63y"]
 [ext_resource type="PackedScene" uid="uid://djhl3foqkj4e2" path="res://demo/components/Tunnel.tscn" id="3_kdh0b"]
 [ext_resource type="PackedScene" uid="uid://bb2lp50sjndus" path="res://demo/components/World.tscn" id="3_yqldq"]
 [ext_resource type="Terrain3DStorage" uid="uid://lalq1xnmbjdl" path="res://demo/data/terrain_storage.res" id="5_sl43a"]
-[ext_resource type="PackedScene" uid="uid://m6cpbilj2lg6" path="res://scen/character.tscn" id="7_kascp"]
-[ext_resource type="PackedScene" uid="uid://bmcf5pe61drxq" path="res://scen/drop/drone_exp.tscn" id="8_fuq3i"]
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="8_g2of2"]
 
 [sub_resource type="Gradient" id="Gradient_vr1m7"]
@@ -69,6 +69,8 @@ dual_scaling = true
 [node name="Demo" type="Node"]
 script = ExtResource("1_k7qca")
 
+[node name="UI" parent="." instance=ExtResource("2_nqak5")]
+
 [node name="World" parent="." instance=ExtResource("3_yqldq")]
 
 [node name="Borders" parent="." instance=ExtResource("3_cw38j")]
@@ -77,19 +79,13 @@ collision_mask = 3
 
 [node name="Tunnel" parent="." instance=ExtResource("3_kdh0b")]
 
-[node name="Terrain3D" type="Terrain3D" parent="Tunnel"]
+[node name="Player" parent="." instance=ExtResource("3_ht63y")]
+transform = Transform3D(0.176947, 0, -0.98422, 0, 1, 0, 0.98422, 0, 0.176947, 223.143, 105.348, -1833.08)
+
+[node name="Terrain3D" type="Terrain3D" parent="."]
 storage = ExtResource("5_sl43a")
 material = SubResource("Terrain3DMaterial_jrc01")
 assets = ExtResource("8_g2of2")
 render_cull_margin = 1000.0
 collision_mask = 3
 mesh_size = 64
-
-[node name="player" parent="." instance=ExtResource("7_kascp")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 346.788, 89.832, -316.248)
-
-[node name="exp_d" parent="." instance=ExtResource("8_fuq3i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 346.788, 89.3741, -312.646)
-
-[node name="exp_d2" parent="." instance=ExtResource("8_fuq3i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 350.788, 85.832, -309.248)

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/MultiplayCore/MultiPlay.gd" id="1_3ld4b"]
 [ext_resource type="PackedScene" uid="uid://dlnitytscxewx" path="res://scen/mpplayer.tscn" id="2_1kwgl"]
 [ext_resource type="PackedScene" uid="uid://bdnenmk6e4f2t" path="res://scen/main_test_s.tscn" id="3_8lj5a"]
-[ext_resource type="Script" path="res://addons/MultiplayCore/net_protocols/WebSocketNetProtocol.gd" id="4_md58b"]
+[ext_resource type="Script" path="res://addons/MultiplayCore/net_protocols/ENetProtocol.gd" id="4_6i7e1"]
 
 [node name="MultiPlayCore" type="Node"]
 script = ExtResource("1_3ld4b")
@@ -11,5 +11,6 @@ max_players = 12
 player_scene = ExtResource("2_1kwgl")
 first_scene = ExtResource("3_8lj5a")
 
-[node name="WebSocketNetProtocol" type="Node" parent="."]
-script = ExtResource("4_md58b")
+[node name="ENetProtocol" type="Node" parent="."]
+script = ExtResource("4_6i7e1")
+compression_mode = 2

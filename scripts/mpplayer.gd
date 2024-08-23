@@ -29,10 +29,13 @@ var active_item = null
 var picked_item_control:int
 @export var control_id:int
 @onready var control_idl = $Control_charapter/control_id
+@onready var namee = $name
+
 @onready var mpp: MPPlayer = get_parent()
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
+	mpp.handshake_ready.connect(_on_handshake_ready)
 	Event.connect("charapter_op", _apply_user_prefs)
 	Event.connect("control", ds_control)
 	Event.connect("jump",_on_touch_screen_button_pressed)
@@ -47,6 +50,10 @@ func _ready():
 		Event.mpp_index = mpp.player_index
 		Event.emit_signal("control",control_id,-1,mpp.player_index)
 #inventory
+
+func _on_handshake_ready(data):
+	if data.get("name") != null:
+		namee.text = data.get("name")
 
 func set_active_item(id):
 	if is_multiplayer_authority():
