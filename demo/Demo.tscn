@@ -86,6 +86,6 @@ transform = Transform3D(0.176947, 0, -0.98422, 0, 1, 0, 0.98422, 0, 0.176947, 22
 storage = ExtResource("5_sl43a")
 material = SubResource("Terrain3DMaterial_jrc01")
 assets = ExtResource("8_g2of2")
-render_cull_margin = 1000.0
+render_cull_margin = 696.21
 collision_mask = 3
 mesh_size = 64
