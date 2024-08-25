@@ -6,10 +6,10 @@ extends MPBase
 class_name MultiPlayCore
 
 ## MultiPlay Core Version
-const MP_VERSION = "1.0.0"
+const MP_VERSION = "1.1.0-beta1"
 
 ## MultiPlay Core Version Name
-const MP_VERSION_NAME = "Envelope Puppet"
+const MP_VERSION_NAME = "Packet Unit"
 
 ## On network scene loaded
 signal scene_loaded
@@ -54,6 +54,26 @@ enum ConnectionError {
 	INVALID_HANDSHAKE,
 	## Client's Multiplay version is not compatible with the server
 	VERSION_MISMATCH,
+	## Server has been closed
+	SERVER_CLOSED,
+}
+
+## List of network connection states
+enum ConnectionState {
+	## Connection had never been active before
+	IDLE,
+	## Connecting to the server
+	CONNECTING,
+	## Client and server is now exchanging data. Authentication also happens here.
+	HANDSHAKING,
+	## Client is waiting the server to send the player node back
+	AWAIT_PLR_NODE,
+	## Client's pinging the server. and is doing first time initialization.
+	PINGING,
+	## Connected and ready to go!
+	CONNECTED,
+	## Connection no longer active, whatever if it's disconnection, kicked, or server close.
+	CONNECTION_CLOSED,
 }
 
 @export_subgroup("Network")
@@ -73,6 +93,8 @@ enum ConnectionError {
 @export var first_scene: PackedScene
 ## Should Client authority be assigned automatically?
 @export var assign_client_authority: bool = true
+## Should the server automatically spawn the player scene?
+@export var auto_spawn_player_scene: bool = true
 
 @export_subgroup("Inputs")
 ## Which action key to use for swap mode.
@@ -136,6 +158,8 @@ var local_player: MPPlayer = null
 var player_count: int = 0
 ## Current scene node
 var current_scene: Node = null
+## Network connection state
+var connection_state: ConnectionState = ConnectionState.IDLE
 
 ## Debug Status
 var debug_status_txt = ""
@@ -169,7 +193,7 @@ func _ready():
 		
 		_debug_join_address = bind_address_url + ":" + str(port)
 	
-	if OS.is_debug_build():
+	if OS.is_debug_build() and _net_protocol:
 		var debug_override = _net_protocol._override_debug_url(bind_address, port)
 		
 		if !debug_override:
@@ -215,6 +239,28 @@ func _ready():
 	if OS.has_feature("debug"):
 		EngineDebugger.register_message_capture("mpc", _debugger_msg_capture)
 		EngineDebugger.send_message("mpc:session_ready", [])
+	
+	for ext in get_children():
+		if ext is MPExtension:
+			_extensions.append(ext)
+	
+			if ext is MPNetProtocolBase:
+				_net_protocol = ext
+		
+			ext.mpc = self
+			ext._mpc_ready()
+
+## Register Network Extension for this MPC (Extension API)
+func register_net_extension(ext: MPNetProtocolBase):
+	_net_protocol = ext
+
+## Register any extension
+func register_extension(ext: MPExtension):
+	if _extensions.find(ext) == -1:
+		_extensions.append(ext)
+	
+		ext.mpc = self
+		ext._mpc_ready()
 
 func _debugger_msg_capture(msg, data):
 	if msg.begins_with("start_"):
@@ -272,12 +318,6 @@ func start_solo():
 	
 	create_player(1, {})
 
-func _report_extension(ext: MPExtension):
-	_extensions.append(ext)
-	
-	if ext is MPNetProtocolBase:
-		_net_protocol = ext
-
 ## Start swap mode
 func start_swap():
 	mode = PlayMode.Swap
@@ -288,6 +328,11 @@ func start_swap():
 	
 	for i in range(0, max_players):
 		create_player(i, {})
+
+func close_server():
+	_kick_player_request_all(MultiPlayCore.ConnectionError.SERVER_CLOSED)
+	online_peer.close()
+	online_connected = false
 
 func _unhandled_input(event):
 	if mode == PlayMode.Swap:
@@ -345,6 +390,7 @@ func _online_host(act_client: bool = false, act_client_handshake_data: Dictionar
 	_init_data()
 	
 	debug_status_txt = "Server Started!"
+	connection_state = ConnectionState.CONNECTED
 	
 	is_server = true
 	
@@ -370,6 +416,7 @@ func _online_join(address: String, handshake_data: Dictionary = {}, credentials_
 	_init_data()
 	
 	debug_status_txt = "Connecting to " + address + "..."
+	connection_state = ConnectionState.CONNECTING
 	
 	_join_handshake_data = handshake_data
 	_join_credentials_data = credentials_data
@@ -402,7 +449,15 @@ func _online_join(address: String, handshake_data: Dictionary = {}, credentials_
 
 ## Create player node
 func create_player(player_id, handshake_data = {}):
-	_plr_spawner.spawn({player_id = player_id, handshake_data = handshake_data, pindex = player_count})
+	var assign_plrid = 0
+
+	# Find available ID to assign
+	for i in range(0, max_players):
+		if players.get_player_by_index(i) == null:
+			assign_plrid = i
+			break
+	
+	_plr_spawner.spawn({player_id = player_id, handshake_data = handshake_data, pindex = assign_plrid})
 
 @rpc("authority", "call_local", "reliable")
 func _net_broadcast_new_player(peer_id):
@@ -438,15 +493,17 @@ func _player_spawned(data):
 	if data.player_id == multiplayer.get_unique_id():
 		player.is_local = true
 		local_player = player
-		player._internal_peer = player
+		player._internal_peer = player.multiplayer
 		
 		if mode == PlayMode.Online:
 			debug_status_txt = "Pinging..."
+			connection_state = ConnectionState.PINGING
 		else:
 			debug_status_txt = "Ready!"
+			connection_state = ConnectionState.CONNECTED
 	
 	# First time init
-	if player_scene:
+	if player_scene and auto_spawn_player_scene:
 		player.player_node_resource_path = player_scene.resource_path
 		
 		var pscene = player_scene.instantiate()
@@ -481,6 +538,7 @@ func _on_local_player_ready():
 	connected_to_server.emit(local_player)
 	player_node_ready = true
 	debug_status_txt = "Connected!"
+	connection_state = ConnectionState.CONNECTED
 
 func _network_player_connected(player_id):
 	await get_tree().create_timer(connect_timeout_ms / 1000).timeout
@@ -488,26 +546,31 @@ func _network_player_connected(player_id):
 	var player_node = players.get_player_by_id(player_id)
 	
 	if !player_node:
-		_kick_player_handshake(player_id, ConnectionError.TIMEOUT)
+		_kick_player_request(player_id, ConnectionError.TIMEOUT)
 
 func _find_key(dictionary, value):
 	var index = dictionary.values().find(value)
 	return dictionary.keys()[index]
 
-func _kick_player_handshake(plr_id: int, reason: ConnectionError):
+func _kick_player_request(plr_id: int, reason: ConnectionError):
 	var player_node = players.get_player_by_id(plr_id)
 	
 	if !player_node:
 		players._internal_remove_player(plr_id)
 		
-	rpc_id(plr_id, "_handshake_disconnect_peer", reason)
+	rpc_id(plr_id, "_request_disconnect_peer", reason)
 
-@rpc("authority", "call_local")
-func _handshake_disconnect_peer(reason: ConnectionError):
+func _kick_player_request_all( reason: ConnectionError):
+	players._internal_clear_all()
+	
+	rpc("_request_disconnect_peer", reason)
+
+@rpc("authority", "call_local", "reliable")
+func _request_disconnect_peer(reason: ConnectionError):
 	var reason_str = str(_find_key(ConnectionError, reason))
-	MPIO.logerr("Connection Error: " + reason_str)
-	online_connected = false
+	MPIO.logerr("Disconnected: " + reason_str)
 	connection_error.emit(reason)
+	online_connected = false
 	disconnected_from_server.emit(reason_str)
 	online_peer.close()
 
@@ -517,6 +580,7 @@ func _network_player_disconnected(player_id):
 	if target_plr:
 		rpc("_net_broadcast_remove_player", player_id)
 		player_disconnected.emit(target_plr)
+		players._internal_remove_player(player_id)
 		target_plr.queue_free()
 
 # Validate network join internal data
@@ -541,17 +605,17 @@ func _join_handshake(handshake_data: Dictionary, credentials_data):
 		return
 	
 	if player_count >= max_players:
-		_kick_player_handshake(from_id, ConnectionError.SERVER_FULL)
+		_kick_player_request(from_id, ConnectionError.SERVER_FULL)
 		return
 	
 	# Kick if no join data present
 	if !_check_join_internal(handshake_data):
-		_kick_player_handshake(from_id, ConnectionError.INVALID_HANDSHAKE)
+		_kick_player_request(from_id, ConnectionError.INVALID_HANDSHAKE)
 		return
 	
 	# Check Multiplay version, kick if mismatch
 	if handshake_data._net_join_internal.mp_version != MP_VERSION:
-		_kick_player_handshake(from_id, ConnectionError.VERSION_MISMATCH)
+		_kick_player_request(from_id, ConnectionError.VERSION_MISMATCH)
 		return
 	
 	var auth_data = {}
@@ -569,7 +633,7 @@ func _join_handshake(handshake_data: Dictionary, credentials_data):
 		if ext is MPAuth:
 			var auth_result = await ext.authenticate(from_id, credentials_data, handshake_data)
 			if typeof(auth_result) == TYPE_BOOL and auth_result == false:
-				_kick_player_handshake(from_id, ConnectionError.AUTH_FAILED)
+				_kick_player_request(from_id, ConnectionError.AUTH_FAILED)
 				return
 				
 			auth_data = auth_result
@@ -587,15 +651,18 @@ func _join_handshake(handshake_data: Dictionary, credentials_data):
 @rpc("any_peer", "call_local", "reliable")
 func _internal_recv_net_data(data):
 	debug_status_txt = "Waiting for player node..."
+	connection_state = ConnectionState.AWAIT_PLR_NODE
 	
 	MPIO.plr_id = multiplayer.get_unique_id()
 	
 	_net_data = data
+	# Load current scene in the network
 	if _net_data.current_scene_path != "" and is_server == false:
 		_net_load_scene(_net_data.current_scene_path)
 
 func _client_connected():
 	debug_status_txt = "Awaiting server data..."
+	connection_state = ConnectionState.HANDSHAKING
 	online_connected = true
 	
 	# Clear net join internals, this is reserved
@@ -618,7 +685,10 @@ func _client_connect_failed():
 	connection_error.emit(ConnectionError.CONNECTION_FAILURE)
 
 func _on_local_disconnected(reason):
+	connection_state = ConnectionState.CONNECTION_CLOSED
 	debug_status_txt = "Disconnected: " + str(reason)
+	online_connected = false
+	local_player = null
 
 # Ping player
 func _physics_process(delta):

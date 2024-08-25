@@ -216,4 +216,3 @@ func _on_animation_player_animation_finished(anim_name: String):
 		cam_shid = 0
 	else:
 		cam_shid = 1
-
