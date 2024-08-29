@@ -120,9 +120,9 @@ func ds_control(id,item_id,player_id):
 		if id == control_id:
 			camera.current = true
 		if id != control_id:
-			$Control_charapter.add_child(preload("res://scen/drone_gui.tscn").instantiate())
+			$Control_charapter.add_child(preload("res://scen/gui/drone_gui.tscn").instantiate())
 		if id == control_id:
-			$Control_charapter.add_child(preload("res://scen/character_gui.tscn").instantiate())
+			$Control_charapter.add_child(preload("res://scen/gui/character_gui.tscn").instantiate())
 			camera.current = true
 			Event.control_id = control_id
 func _apply_user_prefs():
@@ -256,4 +256,3 @@ func _on_animation_player_animation_finished(anim_name: String):
 		cam_shid = 0
 	else:
 		cam_shid = 1
-

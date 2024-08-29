@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/character.gd" id="1_hwfqd"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_ch1nh"]
-[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="5_dm75i"]
+[ext_resource type="Script" path="res://scripts/map_sw.gd" id="4_j2k8y"]
+[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="5_dm75i"]
 [ext_resource type="AudioStream" uid="uid://erqx6phtv0fp" path="res://audio/music/Transferloop_-_drone_-_spaces.wav" id="7_c42dc"]
 [ext_resource type="AudioStream" uid="uid://n57g5baj44a" path="res://audio/sfx/Footsteps/FootstepsStoneDirt1.wav" id="8_5j2pe"]
 [ext_resource type="AudioStream" uid="uid://ctrpvkoufalvn" path="res://audio/sfx/Footsteps/FootstepsStoneDirt2.wav" id="9_45bso"]
@@ -181,24 +182,6 @@ _data = {
 "fade_out": SubResource("Animation_xxrsi")
 }
 
-[sub_resource type="GDScript" id="GDScript_muoad"]
-script/source = "extends AnimationPlayer
-
-@onready var node_to_node = %\"n-2-n\"
-func back_s(id):
-	get_tree().paused = false
-	if id == 1:
-		node_to_node.play(\"fade_out\")
-
-func _on_animation_finished(anim_name):
-	if anim_name == \"fade_out\":
-		get_tree().change_scene_to_file(\"res://scen/menu.tscn\")
-
-func _ready():
-	Event.connect(\"back_s\",back_s)
-	node_to_node.play(\"fade_in\")
-"
-
 [sub_resource type="Animation" id="Animation_d8ouq"]
 resource_name = "damag"
 length = 0.3
@@ -226,13 +209,9 @@ playback_mode = 1
 random_volume_offset_db = 0.4
 streams_count = 4
 stream_0/stream = ExtResource("8_5j2pe")
-stream_0/weight = 1.0
 stream_1/stream = ExtResource("9_45bso")
-stream_1/weight = 1.0
 stream_2/stream = ExtResource("10_bv7be")
-stream_2/weight = 1.0
 stream_3/stream = ExtResource("11_hb27t")
-stream_3/weight = 1.0
 
 [sub_resource type="GDScript" id="GDScript_5dq31"]
 script/source = "extends AudioStreamPlayer
@@ -245,6 +224,7 @@ func _on_finished():
 
 [node name="player" type="CharacterBody3D" groups=["player"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
 collision_layer = 3
 script = ExtResource("1_hwfqd")
 
@@ -299,6 +279,9 @@ offset_bottom = 7.0
 [node name="HBoxContainer" parent="Control_charapter/ui_b/Control" index="2"]
 grow_horizontal = 1
 
+[node name="Label" parent="Control_charapter/ui_b/Control/music/VBoxContainer" index="2"]
+visible = false
+
 [node name="menu2" type="Button" parent="Control_charapter/ui_b/Control" index="6"]
 top_level = true
 visibility_layer = 15
@@ -341,7 +324,7 @@ root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_s8e0y")
 }
-script = SubResource("GDScript_muoad")
+script = ExtResource("4_j2k8y")
 
 [node name="ColorRect" type="ColorRect" parent="Control_charapter/CanvasLayer/n-2-n"]
 anchors_preset = 15

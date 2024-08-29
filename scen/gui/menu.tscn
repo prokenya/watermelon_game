@@ -1,8 +1,8 @@
 [gd_scene load_steps=12 format=3 uid="uid://bo2s8uuybarua"]
 
-[ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_4snpv"]
-[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="2_ub5rg"]
-[ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_60fmp"]
+[ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_wmg5k"]
+[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="2_4uq3a"]
+[ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_i7mto"]
 
 [sub_resource type="GDScript" id="GDScript_mkgfn"]
 script/source = "extends Button
@@ -108,7 +108,7 @@ shadow_size = 11
 shadow_color = Color(1, 0.341176, 0.827451, 0.117647)
 
 [node name="CanvasLayer" type="CanvasLayer"]
-script = ExtResource("1_4snpv")
+script = ExtResource("1_wmg5k")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -118,7 +118,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CanvasLayer2" parent="Control" instance=ExtResource("2_ub5rg")]
+[node name="CanvasLayer2" parent="Control" instance=ExtResource("2_4uq3a")]
 visible = false
 
 [node name="menu" type="Button" parent="Control/CanvasLayer2"]
@@ -153,21 +153,21 @@ theme_override_constants/separation = 0
 
 [node name="play" type="Button" parent="Control/menu_0/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "play"
 
 [node name="play_ml" type="Button" parent="Control/menu_0/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "play_test"
 
 [node name="settings" type="Button" parent="Control/menu_0/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "settings"
@@ -175,7 +175,7 @@ script = SubResource("GDScript_ljndc")
 
 [node name="credits" type="Button" parent="Control/menu_0/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "credits"
@@ -230,7 +230,7 @@ offset_bottom = 62.0
 grow_horizontal = 0
 size_flags_horizontal = 8
 size_flags_vertical = 4
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 button_mask = 7
 text = "menu"
 script = SubResource("GDScript_7cmnv")
@@ -256,7 +256,7 @@ layout_mode = 2
 
 [node name="Label2" type="Label" parent="credits/BoxContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0.862745, 0, 0.686275, 1)
 theme_override_font_sizes/font_size = 35
 text = "discord usernames!"
@@ -264,7 +264,7 @@ horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="credits/BoxContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_60fmp")
+theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0, 0.517647, 0.364706, 1)
 theme_override_font_sizes/font_size = 35
 text = "devoloper:

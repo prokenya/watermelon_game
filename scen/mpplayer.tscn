@@ -1,7 +1,7 @@
 [gd_scene load_steps=31 format=3 uid="uid://dlnitytscxewx"]
 
 [ext_resource type="Script" path="res://scripts/mpplayer.gd" id="1_6ywoo"]
-[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/base_opt.tscn" id="2_f0wst"]
+[ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="2_f0wst"]
 [ext_resource type="Texture2D" uid="uid://cpjqg3mbuwf3q" path="res://models/textures/Scene_-_Root_baseColor.png" id="2_th3kk"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_jx4fy"]
 [ext_resource type="Texture2D" uid="uid://d0m5lrby5nxdr" path="res://models/textures/Scene_-_Root_metallicRoughness.png" id="3_x1h5e"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://varw4lx87ems" path="res://textures/1182467.160.webp" id="5_rrd7c"]
 [ext_resource type="AudioStream" uid="uid://cis8w30cm46lq" path="res://audio/sfx/Footsteps/FootstepsStoneDirt3.wav" id="6_cx0fu"]
 [ext_resource type="AudioStream" uid="uid://bp7oub08v01c0" path="res://audio/sfx/Footsteps/FootstepsStoneDirt4.wav" id="7_3w6mv"]
+[ext_resource type="Script" path="res://scripts/map_sw.gd" id="8_pvhxo"]
 [ext_resource type="AudioStream" uid="uid://erqx6phtv0fp" path="res://audio/music/Transferloop_-_drone_-_spaces.wav" id="8_vw82q"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v4cbk"]
@@ -199,24 +200,6 @@ _data = {
 "fade_out": SubResource("Animation_xxrsi")
 }
 
-[sub_resource type="GDScript" id="GDScript_muoad"]
-script/source = "extends AnimationPlayer
-
-@onready var node_to_node = %\"n-2-n\"
-func back_s(id):
-	get_tree().paused = false
-	if id == 1:
-		node_to_node.play(\"fade_out\")
-
-func _on_animation_finished(anim_name):
-	if anim_name == \"fade_out\":
-		get_tree().change_scene_to_file(\"res://scen/menu.tscn\")
-
-func _ready():
-	Event.connect(\"back_s\",back_s)
-	node_to_node.play(\"fade_in\")
-"
-
 [sub_resource type="Animation" id="Animation_d8ouq"]
 resource_name = "damag"
 length = 0.3
@@ -244,13 +227,9 @@ playback_mode = 1
 random_volume_offset_db = 0.4
 streams_count = 4
 stream_0/stream = ExtResource("4_lvqym")
-stream_0/weight = 1.0
 stream_1/stream = ExtResource("5_dmoer")
-stream_1/weight = 1.0
 stream_2/stream = ExtResource("6_cx0fu")
-stream_2/weight = 1.0
 stream_3/stream = ExtResource("7_3w6mv")
-stream_3/weight = 1.0
 
 [sub_resource type="GDScript" id="GDScript_5dq31"]
 script/source = "extends AudioStreamPlayer
@@ -369,7 +348,7 @@ root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_s8e0y")
 }
-script = SubResource("GDScript_muoad")
+script = ExtResource("8_pvhxo")
 
 [node name="ColorRect" type="ColorRect" parent="Control_charapter/CanvasLayer/n-2-n"]
 anchors_preset = 15

@@ -1,12 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://cqn6qgtemelvm"]
+[gd_scene load_steps=5 format=3 uid="uid://cqn6qgtemelvm"]
 
 [ext_resource type="Script" path="res://scripts/music.gd" id="2_2luiw"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="2_x5s8u"]
+[ext_resource type="Script" path="res://scripts/console.gd" id="3_83wbt"]
 
 [sub_resource type="GDScript" id="GDScript_tk30l"]
 script/source = "extends CanvasLayer
 
-@onready var active_layer = [$Control/MENU,$Control/cheats,$Control/music]
+@onready var active_layer = [$Control/MENU,$Control/cheats,$Control/music,$Control/console]
 
 func _on_perfomance_pressed():
 	pressed(0)
@@ -17,6 +18,8 @@ func _on_cheats_pressed():
 func _on_audio_pressed():
 	pressed(2)
 
+func _on_console_pressed() -> void:
+	pressed(3)
 
 func pressed(id):
 	for i in range(len(active_layer)):
@@ -123,8 +126,6 @@ func _on_time_s_value_changed(value):
 
 func _on_reset_drone_pos_pressed():
 	Event.emit_signal(\"reset_drone_pos\")
-
-
 "
 
 [node name="base_opt" type="CanvasLayer"]
@@ -183,12 +184,12 @@ theme_override_font_sizes/font_size = 35
 text = "cheats"
 
 [node name="console" type="Button" parent="Control/HBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 35
 text = "console"
 
 [node name="MENU" type="Control" parent="Control"]
+visible = false
 layout_mode = 1
 anchor_top = 0.116
 anchor_right = 1.0
@@ -368,9 +369,43 @@ max_value = 1.0
 step = 0.001
 value = 1.0
 
+[node name="console" type="Control" parent="Control"]
+layout_mode = 1
+anchor_top = 0.117
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.183998
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_83wbt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/console"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/console/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_x5s8u")
+theme_override_font_sizes/normal_font_size = 35
+text = "console..."
+scroll_following = true
+
+[node name="LineEdit" type="LineEdit" parent="Control/console/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "console..."
+expand_to_text_length = true
+
 [connection signal="pressed" from="Control/HBoxContainer/perfomance" to="." method="_on_perfomance_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/audio" to="." method="_on_audio_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/cheats" to="." method="_on_cheats_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/console" to="." method="_on_console_pressed"]
 [connection signal="value_changed" from="Control/MENU/base_cont/VBoxContainer/sensitivity_Slider" to="." method="_on_sensitivity_slider_value_changed"]
 [connection signal="toggled" from="Control/MENU/base_cont/VBoxContainer/shadows" to="." method="_on_shadows_toggled"]
 [connection signal="toggled" from="Control/MENU/base_cont/VBoxContainer/cam_ch" to="." method="_on_cam_ch_toggled"]
@@ -383,3 +418,4 @@ value = 1.0
 [connection signal="pressed" from="Control/cheats/VBoxContainer/spawn_enemy" to="." method="_on_spawn_enemy_pressed"]
 [connection signal="pressed" from="Control/cheats/VBoxContainer/reset_drone_pos" to="." method="_on_reset_drone_pos_pressed"]
 [connection signal="value_changed" from="Control/cheats/VBoxContainer/time_s" to="." method="_on_time_s_value_changed"]
+[connection signal="text_submitted" from="Control/console/VBoxContainer/LineEdit" to="Control/console" method="_on_line_edit_text_submitted"]

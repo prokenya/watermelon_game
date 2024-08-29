@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bbixcbvwmq3ff"]
+[gd_scene load_steps=13 format=3 uid="uid://bbixcbvwmq3ff"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_2tjw5"]
-[ext_resource type="Terrain3DStorage" uid="uid://x77midkd2r2t" path="res://scen/levels/level-1-s.res" id="2_jnml3"]
+[ext_resource type="Terrain3DStorage" uid="uid://x77midkd2r2t" path="res://scen/levels/level-1-s.res" id="2_38inl"]
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="3_mc6md"]
+[ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="4_ctnfa"]
+[ext_resource type="PackedScene" uid="uid://bmcf5pe61drxq" path="res://scen/drop/drone_exp.tscn" id="5_qy7nn"]
 
 [sub_resource type="Gradient" id="Gradient_j5tn0"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -46,7 +48,7 @@ _shader_parameters = {
 "noise3_scale": 0.225,
 "noise_texture": SubResource("NoiseTexture2D_m34vj"),
 "tri_scale_reduction": 0.3,
-"vertex_normals_distance": 128.0,
+"vertex_normals_distance": 16.0,
 "world_noise_blend_far": 1.0,
 "world_noise_blend_near": 0.5,
 "world_noise_height": 64.0,
@@ -76,10 +78,10 @@ glow_bloom = 0.06
 script = ExtResource("1_2tjw5")
 
 [node name="spawn" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.0295, 30, -38.9503)
 
 [node name="Terrain3D" type="Terrain3D" parent="."]
-storage = ExtResource("2_jnml3")
+storage = ExtResource("2_38inl")
 material = SubResource("Terrain3DMaterial_vxc4n")
 assets = ExtResource("3_mc6md")
 mesh_lods = 10
@@ -90,3 +92,9 @@ transform = Transform3D(1, 0, 0, 0, 0.649793, 0.760111, 0, -0.760111, 0.649793, 
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_l3ryl")
+
+[node name="drone" parent="." instance=ExtResource("4_ctnfa")]
+transform = Transform3D(0.433013, -0.25, 0, 0.25, 0.433013, 0, 0, 0, 0.5, -22, 2, -26)
+
+[node name="exp_d" parent="." instance=ExtResource("5_qy7nn")]
+transform = Transform3D(0.482963, -0.12941, 0, 0.12941, 0.482963, 0, 0, 0, 0.5, -26, 2, -21)

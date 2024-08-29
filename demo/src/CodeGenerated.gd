@@ -39,4 +39,3 @@ func _ready():
 	$UI/TextureRect.texture = ImageTexture.create_from_image(img)
 
 		
-

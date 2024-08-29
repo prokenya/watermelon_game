@@ -168,7 +168,7 @@ func add_item_by_id_mp(item_id,player_id):
 func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 	if slot_id >= 0 and slot_id < MAX_SLOTS and items[slot_id] == null:
 		# Add directly to the specified slot
-		var new_item = preload("res://scen/item.tscn").instantiate()
+		var new_item = preload("res://scen/gui/item.tscn").instantiate()
 		new_item.item_id = item_id
 		new_item.amount = amount # количество
 		add_child(new_item)
@@ -192,7 +192,7 @@ func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 				amount -= addable_amount
 		
 		if items[i] == null and amount > 0:
-			var new_item = preload("res://scen/item.tscn").instantiate()
+			var new_item = preload("res://scen/gui/item.tscn").instantiate()
 			new_item.item_id = item_id
 			new_item.amount = amount # количество
 			add_child(new_item)
