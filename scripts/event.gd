@@ -1,6 +1,6 @@
 extends Node
 
-# op_signals
+#op_signals
 signal charapter_op()
 signal world_s_op()
 signal global_op()
@@ -20,14 +20,16 @@ signal control(id:int,item_id:int,player_id:int)
 var control_item_id: int = 0 #counter
 var control_id:int = 255
 var player_control_id:int
-# drone
+#drone
 var drone_speed: String = "0"
 signal cam_1_3p(cam: bool,id:int)
 signal reset_drone_pos()
 #iter_call
 signal back_s(id: int)
 signal menu()
-
+##console
+signal printd(data)
+signal run_comand(comand: String)
 #multiplayer
 signal host()
 signal join()

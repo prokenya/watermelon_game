@@ -29,7 +29,6 @@ var id_control: int = 0
 var active_item = null
 var picked_item_control:int
 var control_id:int
-@onready var control_idl = $Control_charapter/control_id
 
 func _ready():
 	user_prefs = UserPref.load_or_create()
@@ -88,7 +87,7 @@ func ds_control(id,item_id,player_id):
 		camera.current = true
 	if id != control_id:
 		$Control_charapter.add_child(preload("res://scen/gui/drone_gui.tscn").instantiate())
-	if id == control_id:
+	if id == control_id and Event.control_id != control_id:
 		$Control_charapter.add_child(preload("res://scen/gui/character_gui.tscn").instantiate())
 		camera.current = true
 		Event.control_id = control_id
@@ -108,7 +107,6 @@ func _apply_user_prefs():
 		3: get_viewport().msaa_3d = Viewport.MSAA_8X
 
 func _process(delta: float):
-	control_idl.text = "player_id"+str(control_id)+"\ncurrent_id"+str(Event.control_id)
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)

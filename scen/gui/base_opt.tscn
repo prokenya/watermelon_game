@@ -8,6 +8,7 @@
 script/source = "extends CanvasLayer
 
 @onready var active_layer = [$Control/MENU,$Control/cheats,$Control/music,$Control/console]
+@export var active_layer_id: int = 3
 
 func _on_perfomance_pressed():
 	pressed(0)
@@ -22,9 +23,9 @@ func _on_console_pressed() -> void:
 	pressed(3)
 
 func pressed(id):
-	for i in range(len(active_layer)):
-		active_layer[i].visible = false
-	active_layer[id].visible = true
+	active_layer[active_layer_id].visible = false
+	active_layer_id = id
+	active_layer[active_layer_id].visible = true
 
 var user_prefs: UserPref
 
@@ -387,6 +388,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="LineEdit" type="LineEdit" parent="Control/console/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_x5s8u")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "console..."
+expand_to_text_length = true
+virtual_keyboard_type = 1
+
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/console/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -394,13 +403,6 @@ theme = ExtResource("2_x5s8u")
 theme_override_font_sizes/normal_font_size = 35
 text = "console..."
 scroll_following = true
-
-[node name="LineEdit" type="LineEdit" parent="Control/console/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("2_x5s8u")
-theme_override_font_sizes/font_size = 35
-placeholder_text = "console..."
-expand_to_text_length = true
 
 [connection signal="pressed" from="Control/HBoxContainer/perfomance" to="." method="_on_perfomance_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/audio" to="." method="_on_audio_pressed"]

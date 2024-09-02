@@ -28,7 +28,6 @@ var dragging: bool = false
 var active_item = null
 var picked_item_control:int
 @export var control_id:int
-@onready var control_idl = $Control_charapter/control_id
 @onready var namee = $name
 
 @onready var mpp: MPPlayer = get_parent()
@@ -141,8 +140,6 @@ func _apply_user_prefs():
 		3: get_viewport().msaa_3d = Viewport.MSAA_8X
 
 func _process(delta: float):
-	if is_multiplayer_authority():
-		control_idl.text = "player_id"+str(control_id)+"\ncurrent_id"+str(Event.control_id)
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)

@@ -13,8 +13,7 @@ func on_run_command(cmd: String) -> void:
 		return
 	var result = expression.execute([], self)
 	if result != null:
-		rich_text_label.push_color(Color.GREEN)
-		rich_text_label.add_text("\n" + str(result))
+		printd(result,Color.GREEN)
 		# Do stuff with the result
 
 # Reload the current scene
@@ -28,6 +27,18 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 func clear():
 	rich_text_label.text = ""
 
-func printd(data):
-	rich_text_label.push_color(Color.YELLOW)
+func printd(data,color:Color = Color.YELLOW):
+	rich_text_label.push_color(color)
 	rich_text_label.add_text("\n" + str(data))
+
+func get_cid():
+	Event.emit_signal("printd","current_id> " + str(Event.control_id)+"\nplayer_id> " + str(Event.player_control_id))
+
+func help():
+	var script = self.get_script()
+	var method_list = script.get_method_list()
+	for method in method_list:
+		printd(method.name)
+func _ready() -> void:
+	Event.connect("run_comand",on_run_command)
+	Event.connect("printd",printd)
