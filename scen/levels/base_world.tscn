@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcitnb1o1i8h2"]
+
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_lfukr"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c27pc"]
+
+[sub_resource type="Sky" id="Sky_y7ebw"]
+sky_material = SubResource("ProceduralSkyMaterial_c27pc")
+
+[sub_resource type="Environment" id="Environment_l3ryl"]
+background_mode = 2
+sky = SubResource("Sky_y7ebw")
+glow_enabled = true
+glow_normalized = true
+glow_bloom = 0.06
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_lfukr")
+
+[node name="spawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.649793, 0.760111, 0, -0.760111, 0.649793, 0, 48, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_l3ryl")

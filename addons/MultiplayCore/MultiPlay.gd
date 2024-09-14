@@ -177,6 +177,8 @@ var _debug_join_address = ""
 var _debug_bootui = null
 
 func _ready():
+	if Event.start_world_args.has("world"):
+		first_scene = load(Event.start_world_args["world"])
 	if Engine.is_editor_hint():
 		child_entered_tree.connect(_tool_child_refresh_warns)
 		child_exiting_tree.connect(_tool_child_refresh_warns)

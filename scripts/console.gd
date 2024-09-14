@@ -32,7 +32,7 @@ func printd(data,color:Color = Color.YELLOW):
 	rich_text_label.add_text("\n" + str(data))
 
 func get_cid():
-	Event.emit_signal("printd","current_id> " + str(Event.control_id)+"\nplayer_id> " + str(Event.player_control_id))
+	printd("current_id> " + str(Event.control_id)+"\nplayer_id> " + str(Event.player_control_id))
 
 func help():
 	var script = self.get_script()

@@ -2,22 +2,18 @@ extends CanvasLayer
 
 func _ready():
 	node_to_node.play("fade_in")
+
 var id
 @onready var node_to_node = $"Control/n-2-n"
-var level2  = preload("res://scen/levels/level-1.tscn")
-var level1 = preload("res://scen/levels/multi_play_core.tscn")
 func _on_play_pressed():
 	id = 0
 	node_to_node.play("fade_out")
 
 func _on_n_2n_animation_finished(anim_name):
 	if anim_name == "fade_out":
-		if id == 0:
-			get_tree().change_scene_to_packed(level1)
-			Event.is_multiplayer = true
-		if id == 1:
-			Event.is_multiplayer = false
-			get_tree().change_scene_to_packed(level2)
+		$Control/menu_0.visible = false
+		$Control/select_level.visible = true
+		node_to_node.play("fade_in")
 
 
 func _on_play_ml_pressed():

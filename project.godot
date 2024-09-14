@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Роб"
+config/name="wg"
 config/tags=PackedStringArray("dangeon_party")
 run/main_scene="res://scen/gui/menu.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
@@ -24,6 +24,7 @@ boot_splash/minimum_display_time=100
 SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
 Event="*res://scripts/event.gd"
 MPIO="*res://addons/MultiplayCore/MPIO.gd"
+ResourceCache="*res://resources/ResourceCache.gd"
 
 [display]
 

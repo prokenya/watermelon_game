@@ -1,8 +1,6 @@
 extends Node3D
-
-@onready var player = $player
+@export var players: Array
 @onready var spawn: Node3D = $spawn
-
 @onready var directional_light_3d = $DirectionalLight3D
 @onready var enemy = preload("res://scen/enemy.tscn")
 var user_prefs: UserPref
@@ -15,9 +13,24 @@ func _ready():
 	Event.connect("global_op",op_world_S)
 	Event.connect("control", ds_control)
 	if Event.is_multiplayer == false:
-		var player = preload("res://scen/character.tscn").instantiate()
+		var player = load("res://scen/character.tscn").instantiate()
 		player.position = spawn.position
 		add_child(player)
+	call_deferred("find_players_in_group")
+	await get_tree().create_timer(0.2).timeout
+	players[Event.mpp_index].position = spawn.position
+
+func find_players_in_group() -> void:
+	players = []
+	var scene_tree = get_tree()
+
+	# Проверка на то, что группа существует и не пуста
+	if scene_tree.has_group("player"):
+		for node in scene_tree.get_nodes_in_group("player"):
+			players.append(node)
+
+	# Выводим найденные узлы
+	print("Players in group: ", players)
 
 func ds_control(id):
 	if id != 0:

@@ -35,7 +35,6 @@ func _ready():
 	_apply_user_prefs()
 	Event.connect("charapter_op", _apply_user_prefs)
 	Event.connect("control", ds_control)
-	Event.connect("fire",_on_fire_pressed)
 	Event.connect("jump",_on_touch_screen_button_pressed)
 	Event.connect("_active_item",_active_item)
 	Event.connect("pick_up",pick_up)
@@ -45,6 +44,7 @@ func _ready():
 	Event.control_item_id = Event.control_item_id + 1
 	Event.player_control_id = control_id
 	Event.emit_signal("control",control_id,-1,-1)
+	Event.printc("ready",Color.BROWN)
 #inventory
 func _active_item(id):
 	if active_item != null:
@@ -190,8 +190,6 @@ func _on_touch_screen_button_pressed():
 	if freejump or is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
-func _on_fire_pressed():
-	Event.emit_signal("_on_fire_pressed",-1)
 func _on_area_3d_area_entered(area: Area3D):
 	if area.editor_description == "hurt":
 		hp -= 10

@@ -1,5 +1,4 @@
 extends AnimationPlayer
-
 @onready var node_to_node = %"n-2-n"
 var idex:int
 func back_s(id):
