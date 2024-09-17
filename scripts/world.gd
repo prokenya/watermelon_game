@@ -6,6 +6,8 @@ extends Node3D
 var user_prefs: UserPref
 
 func _ready():
+	if Event.start_world_args.has("spawn_point"):
+		spawn.position = Event.start_world_args["spawn_point"]
 	user_prefs = UserPref.load_or_create()
 	op_world_S()
 	Event.connect("world_s_op",op_world_S)
@@ -19,6 +21,7 @@ func _ready():
 	call_deferred("find_players_in_group")
 	await get_tree().create_timer(0.2).timeout
 	players[Event.mpp_index].position = spawn.position
+	
 
 func find_players_in_group() -> void:
 	players = []

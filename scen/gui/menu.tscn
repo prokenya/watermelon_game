@@ -338,6 +338,7 @@ label_settings = SubResource("LabelSettings_eeghs")
 [connection signal="pressed" from="Control/menu_0/VBoxContainer/credits" to="Control/menu_0/VBoxContainer/credits" method="_on_pressed"]
 [connection signal="animation_finished" from="Control/n-2-n" to="." method="_on_n_2n_animation_finished"]
 [connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_toggled"]
+[connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox2" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_2_toggled"]
 [connection signal="item_activated" from="Control/select_level/VBoxContainer/ItemList" to="Control/select_level/VBoxContainer/ItemList" method="_on_item_activated"]
 [connection signal="pressed" from="Control/select_level/menu" to="Control/select_level/menu" method="_on_pressed"]
 [connection signal="pressed" from="credits/menu" to="credits/menu" method="_on_pressed"]
