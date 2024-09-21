@@ -13,7 +13,6 @@ func _ready():
 	Event.connect("world_s_op",op_world_S)
 	Event.connect("spawn_enemy",spawn_enemy)
 	Event.connect("global_op",op_world_S)
-	Event.connect("control", ds_control)
 	if Event.is_multiplayer == false:
 		var player = load("res://scen/character.tscn").instantiate()
 		player.position = spawn.position
@@ -21,6 +20,7 @@ func _ready():
 	call_deferred("find_players_in_group")
 	await get_tree().create_timer(0.2).timeout
 	players[Event.mpp_index].position = spawn.position
+	Event.printc("players in world:"+str(len(players))+"\n"+str(players))
 	
 
 func find_players_in_group() -> void:
@@ -35,9 +35,6 @@ func find_players_in_group() -> void:
 	# Выводим найденные узлы
 	print("Players in group: ", players)
 
-func ds_control(id):
-	if id != 0:
-		pass
 func op_world_S():
 	directional_light_3d.shadow_enabled = user_prefs.shadows
 	if user_prefs.high_graphics == true:

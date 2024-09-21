@@ -57,15 +57,15 @@ func apply_control_drone(id,item_id,player_id):
 	if id == control_item_id and controler_id == -1:
 		controler_id = player_id
 		camera_1_person.current = true
-		print("Drone camera activated")
-		print("controler_id:",controler_id)
+		#print("Drone camera activated")
+		#print("controler_id:",controler_id)
 	else:
 		if controler_id == player_id:
 			controler_id = -1
 		camera_1_person.current = false
 		camera_3_person.current = false
-		print("controler_id:",controler_id)
-		print("Drone camera deactivated")
+		#print("controler_id:",controler_id)
+		#print("Drone camera deactivated")
 	if Event.is_multiplayer == true: 
 		if controler_id == player_id:
 			id_control = id
@@ -117,12 +117,10 @@ func movedata(r_dir,i_dir):
 func _physics_process(delta: float):
 	if control_item_id == id_control:
 		if Event.is_multiplayer == true:
-				print("aaaa")
 				if controler_id == Event.mpp_index:
 					rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
 					input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 					movedata.rpc(position,rotation)
-					print("bbbb")
 				
 		else: 
 			rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")

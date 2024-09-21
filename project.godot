@@ -26,6 +26,10 @@ Event="*res://scripts/event.gd"
 MPIO="*res://addons/MultiplayCore/MPIO.gd"
 ResourceCache="*res://resources/ResourceCache.gd"
 
+[debug]
+
+file_logging/enable_file_logging=true
+
 [display]
 
 window/stretch/mode="viewport"

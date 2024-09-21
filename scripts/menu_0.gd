@@ -15,12 +15,6 @@ func _on_n_2n_animation_finished(anim_name):
 		$Control/select_level.visible = true
 		node_to_node.play("fade_in")
 
-
-func _on_play_ml_pressed():
-	id = 1
-	node_to_node.play("fade_out")
-
-
 func _on_credits_pressed():
 	$Control/menu_0.visible = false
 	$Control/PanelContainer.visible = true

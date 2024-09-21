@@ -39,6 +39,27 @@ func help():
 	var method_list = script.get_method_list()
 	for method in method_list:
 		printd(method.name)
+
+func get_log():
+	var log_file_path = "user://logs/godot.log"
+	# Проверяем, существует ли файл
+	if FileAccess.file_exists(log_file_path):
+		var file = FileAccess.open(log_file_path, FileAccess.READ)
+		
+		if file:
+			printd("Чтение данных из файла лога:")
+			
+			# Читаем весь файл построчно
+			while not file.eof_reached():
+				var line = file.get_line()
+				printd(line)  # Выводим считанную строку
+			
+			file.close()  # Закрываем файл
+		else:
+			printd("Не удалось открыть файл.",Color.RED)
+	else:
+		printd("Файл не существует.",Color.RED)
+
 func _ready() -> void:
 	Event.connect("run_comand",on_run_command)
 	Event.connect("printd",printd)
