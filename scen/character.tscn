@@ -226,6 +226,7 @@ func _on_finished():
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 collision_layer = 3
 script = ExtResource("1_hwfqd")
+SPEED = 5.0
 
 [node name="AudioListener3D" type="AudioListener3D" parent="."]
 

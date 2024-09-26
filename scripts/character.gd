@@ -155,6 +155,8 @@ func _input(event: InputEvent):
 	if id_control == 0:
 		if Event.is_inventory_active == true:
 			return  # Если инвентарь активен, не обрабатывать события для игрока
+		if Event.move_gui == true:
+			return
 		
 		if event is InputEventScreenTouch:
 			if event.pressed:

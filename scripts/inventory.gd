@@ -212,5 +212,5 @@ func _draw():
 		var col = Color.DARK_GRAY
 		var rect = Rect2(get_pos_by_id(i), SLOT_SIZE)
 		if i == active_slot:
-			col = Color.GRAY
+			col = Color.YELLOW
 		draw_rect(rect, col)

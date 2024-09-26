@@ -96,23 +96,35 @@ func pick_up_mp(mp_id):
 
 func drop_item_s(id,amount):
 	if is_multiplayer_authority():
-		var p_id = mpp.player_index
-		drop_item.rpc(id,amount,p_id)
+		var data = {
+		"spawn_obj_id": id,
+		"obj_position": hand.global_position + global_transform.basis.x,
+		"obj_rotation": head.global_rotation,
+		"obj_scale": Vector3(1, 1, 1),
+		"amount": amount,
+		"impulse": Vector3(0, 0, 0),
+		"pl_id": Event.mpp_index
+		}
+		Event.emit_signal("spawn_obj",data)
+		#var p_id = mpp.player_index
+		#drop_item.rpc(id,amount,p_id)
 
-@rpc("any_peer", "call_local", "reliable")
-func drop_item(item_id,amount,p_id):
-	var dropped_item_scene
-	if mpp.player_index == p_id:
-		match item_id:
-			0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
-			1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
-			2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
-			3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
-		for i in range(amount):
-			var dropped_item = dropped_item_scene.instantiate()
-			dropped_item.position = hand.global_position + global_transform.basis.x
-			dropped_item.rotation = head.global_rotation
-			get_parent().add_child(dropped_item)
+#@rpc("any_peer", "call_local", "reliable")
+#func drop_item(item_id,amount,p_id):
+	#var dropped_item_scene
+	#if mpp.player_index == p_id:
+		#Event.spawn_item(item_id,hand.global_position + Vector3(0,1,0),
+		#head.rotation,Vector3(0.4,0.4,0.4),amount,Vector3(0,0,0),Event.mpp_index)
+		#match item_id:
+			#0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
+			#1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
+			#2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
+			#3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
+		#for i in range(amount):
+			#var dropped_item = dropped_item_scene.instantiate()
+			#dropped_item.position = hand.global_position + global_transform.basis.x
+			#dropped_item.rotation = head.global_rotation
+			#get_parent().add_child(dropped_item)
 
 func ds_control(id,item_id,player_id):
 	if is_multiplayer_authority():
@@ -190,6 +202,8 @@ func _input(event: InputEvent):
 		if control_id == Event.control_id:
 			if Event.is_inventory_active == true:
 				return  # Если инвентарь активен, не обрабатывать события для игрока
+			if Event.move_gui == true:
+				return
 			
 			if event is InputEventScreenTouch:
 				if event.pressed:

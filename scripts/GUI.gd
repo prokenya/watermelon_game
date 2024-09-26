@@ -11,14 +11,12 @@ var is_paused = false
 func pressed():
 	if gui.visible == true:
 		gui.visible = false
-		$"../../..".set_physics_process(false)
 		menu.visible = true
 	else:
 		gui.visible = true
 		menu.visible = false
-		$"../../..".set_physics_process(true)
 	is_paused = not is_paused
-	get_tree().paused = is_paused
+	Event.move_gui = is_paused
 
 func _ready():
 	Event.connect("menu", pressed)

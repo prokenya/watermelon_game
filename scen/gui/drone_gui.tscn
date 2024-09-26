@@ -17,9 +17,7 @@ func preessed():
 		menu.visible = true
 	else: gui.visible = true;menu.visible = false;$\"../../..\".set_physics_process(true)
 	is_paused = not is_paused
-	if Event.is_multiplayer == true:
-		get_tree().paused = false
-	else: get_tree().paused = is_paused
+	Event.move_gui = is_paused
 
 func _ready():
 	Event.connect(\"control\", ds_control)

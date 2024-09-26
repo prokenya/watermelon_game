@@ -24,6 +24,8 @@
 [ext_resource type="PackedScene" uid="uid://cr7oe3avnadsj" path="res://scen/drop/watermelon.tscn" id="23_8rled"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5gscs"]
+sky_top_color = Color(0.276906, 0.333808, 0.412953, 1)
+sky_curve = 0.106066
 
 [sub_resource type="Sky" id="Sky_y7ebw"]
 sky_material = SubResource("ProceduralSkyMaterial_5gscs")
@@ -123,7 +125,7 @@ albedo_texture = ExtResource("2_a61ap")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rnafv"]
 
-[sub_resource type="Resource" id="Resource_ye78r"]
+[sub_resource type="Resource" id="Resource_nfa2a"]
 script = ExtResource("6_8vpc8")
 amount = 75
 enabled = true
@@ -132,7 +134,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_wtkea"]
+[sub_resource type="Resource" id="Resource_k2fpk"]
 script = ExtResource("7_nxmyj")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(20, 360, 20)
@@ -143,7 +145,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_tf23a"]
+[sub_resource type="Resource" id="Resource_dwq2q"]
 script = ExtResource("8_0b8nj")
 iterations = 3
 offset_step = 0.2
@@ -155,7 +157,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_mq2uo"]
+[sub_resource type="Resource" id="Resource_bgkec"]
 script = ExtResource("9_312er")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -171,15 +173,15 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_wla8p"]
+[sub_resource type="Resource" id="Resource_ek5ck"]
 script = ExtResource("5_8mmjo")
-stack = Array[ExtResource("8_3ca07")]([SubResource("Resource_ye78r"), SubResource("Resource_wtkea"), SubResource("Resource_tf23a"), SubResource("Resource_mq2uo")])
+stack = Array[ExtResource("8_3ca07")]([SubResource("Resource_nfa2a"), SubResource("Resource_k2fpk"), SubResource("Resource_dwq2q"), SubResource("Resource_bgkec")])
 
 [sub_resource type="Resource" id="Resource_g8bsm"]
 script = ExtResource("12_6m262")
 radius = 4.42488
 
-[sub_resource type="Resource" id="Resource_n4efo"]
+[sub_resource type="Resource" id="Resource_cbrjk"]
 script = ExtResource("6_8vpc8")
 amount = 270
 enabled = true
@@ -188,7 +190,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_3tcfk"]
+[sub_resource type="Resource" id="Resource_vqr02"]
 script = ExtResource("7_nxmyj")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(3, 360, 3)
@@ -199,7 +201,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_3ioy7"]
+[sub_resource type="Resource" id="Resource_vgipn"]
 script = ExtResource("8_0b8nj")
 iterations = 3
 offset_step = 0.2
@@ -211,7 +213,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_15yln"]
+[sub_resource type="Resource" id="Resource_7bksr"]
 script = ExtResource("9_312er")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -227,9 +229,9 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_th0po"]
+[sub_resource type="Resource" id="Resource_bsuq3"]
 script = ExtResource("5_8mmjo")
-stack = Array[ExtResource("8_3ca07")]([SubResource("Resource_n4efo"), SubResource("Resource_3tcfk"), SubResource("Resource_3ioy7"), SubResource("Resource_15yln")])
+stack = Array[ExtResource("8_3ca07")]([SubResource("Resource_cbrjk"), SubResource("Resource_vqr02"), SubResource("Resource_vgipn"), SubResource("Resource_7bksr")])
 
 [sub_resource type="Resource" id="Resource_o4ret"]
 script = ExtResource("15_io3t5")
@@ -313,7 +315,6 @@ _data = {
 lightmap_size_hint = Vector2i(14, 21)
 
 [node name="main_test_s" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.44042, -4, 0)
 script = ExtResource("1_ectqd")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -400,7 +401,7 @@ shape = SubResource("BoxShape3D_rnafv")
 [node name="ProtonScatter" type="Node3D" parent="NavigationRegion3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.395, 0, -2.59251)
 script = ExtResource("4_lf7o3")
-modifier_stack = SubResource("Resource_wla8p")
+modifier_stack = SubResource("Resource_ek5ck")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(15, 15, 15)
 
@@ -419,7 +420,7 @@ shape = SubResource("Resource_g8bsm")
 transform = Transform3D(0.498206, 0, 0, 0, 0.498206, 0, 0, 0, 0.498206, 13.5578, 2.14216, 0)
 script = ExtResource("4_lf7o3")
 keep_static_colliders = true
-modifier_stack = SubResource("Resource_th0po")
+modifier_stack = SubResource("Resource_bsuq3")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(15, 15, 15)
 
@@ -558,6 +559,9 @@ sleeping = true
 
 [node name="spawn" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+
+[node name="ak_drop2" parent="." instance=ExtResource("22_8vfdx")]
+transform = Transform3D(0.322538, 0, 0, 0, 0.322538, 0, 0, 0, 0.322559, 0.55958, 1, -5)
 
 [connection signal="body_entered" from="button/Area3D" to="button" method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="button/Area3D" to="button" method="_on_area_3d_body_exited"]

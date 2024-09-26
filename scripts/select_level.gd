@@ -54,7 +54,7 @@ func _on_item_activated(index: int) -> void:
 		if base_prefs == true:
 			args["world"] = tscn_files[index]
 			Event.start_world_args = args
-		else:Event.start_world_args = {}
+		else:Event.start_world_args = {"world":tscn_files[index]}
 		get_tree().change_scene_to_file("res://scen/gui/multi_play_core.tscn")
 
 

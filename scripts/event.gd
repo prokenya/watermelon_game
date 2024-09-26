@@ -8,6 +8,7 @@ signal charapter_op()
 signal world_s_op()
 signal global_op()
 signal spawn_enemy()
+signal spawn_obj(data: Dictionary)
 #iter_call
 signal back_s(id: int)
 signal menu()
@@ -34,6 +35,7 @@ signal control(id:int,item_id:int,player_id:int)
 var control_item_id: int = 0 #counter
 var control_id:int = 255
 var player_control_id:int
+var move_gui:bool
 #drone
 var drone_speed: String = "0"
 signal cam_1_3p(cam: bool,id:int)
