@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
+[gd_scene load_steps=6 format=3 uid="uid://bmcf5pe61drxq"]
 
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="1_piw0r"]
 
@@ -14,6 +14,7 @@ var user_prefs: UserPref
 var last_position: Vector3
 var id_control: int = 0
 @export var control_item_id: int
+@export var damage = 99
 var item_id = 3
 
 #drone anim
@@ -117,7 +118,8 @@ func _process(delta: float):
 		var vfx_expp = vfx_expp1.instantiate()
 		vfx_expp.position = ray_cast_3d.global_position
 		get_tree().root.add_child(vfx_expp)
-		Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
+		if control_item_id == id_control:
+			Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
 		get_parent().queue_free()
 var impulse = Vector3()
 
@@ -209,34 +211,6 @@ func _change_state(new_state: State):
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wnon2"]
 radius = 0.051
 
-[sub_resource type="GDScript" id="GDScript_u5wx4"]
-script/source = "extends Area3D
-
-var  repulsion_force = 25
-
-func _on_body_entered(body):
-	print(body)
-	if body is CharacterBody3D:
-		# Вычисляем направление отталкивания от центра Area3D
-		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
-		
-		# Вычисляем отталкивающую силу
-		var force = direction * repulsion_force
-		
-		# Применяем силу к скорости CharacterBody3D
-		body.velocity += force
-
-	elif body is RigidBody3D:
-		# Вычисляем направление отталкивания от центра Area3D
-		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
-		
-		# Вычисляем отталкивающую силу
-		var force = direction * repulsion_force
-		
-		# Применяем силу к RigidBody3D с использованием add_central_force
-		body.apply_central_impulse(force)
-"
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
 radius = 2.42169
 
@@ -251,6 +225,7 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 [node name="drone" parent="." groups=["drone"] instance=ExtResource("1_piw0r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.102848, 0, -0.0890975)
 script = SubResource("GDScript_7wmy4")
+damage = 99
 
 [node name="RayCast3D" type="RayCast3D" parent="drone"]
 transform = Transform3D(1, 0, 0, 0, -0.00221662, -0.999998, 0, 0.999998, -0.00221662, 0, 0, -0.48729)
@@ -265,12 +240,11 @@ wait_time = 3.0
 one_shot = true
 autostart = true
 
-[node name="Area3D2" type="Area3D" parent="drone"]
-editor_description = "hurt1m"
+[node name="Area3D2" type="Area3D" parent="drone" groups=["damage"]]
+editor_description = "99"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102848, 0, 0.0890975)
 collision_layer = 15
 collision_mask = 15
-script = SubResource("GDScript_u5wx4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
 shape = SubResource("SphereShape3D_af6m0")

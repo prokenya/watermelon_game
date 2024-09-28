@@ -6,7 +6,7 @@
 [sub_resource type="GDScript" id="GDScript_byupa"]
 script/source = "extends StaticBody3D
 @onready var mine = $\".\"
-
+@export var damage = 100
 @onready var anim = $AnimationPlayer
 @export var vfx_expp1 = preload(\"res://scen/vfx/vfx_expp1.tscn\")
 @onready var exp_s = $base
@@ -61,8 +61,6 @@ func _on_hurt_body_entered(body):
 		
 		# Применяем силу к RigidBody3D с использованием add_central_force
 		body.apply_central_impulse(force)
-
-
 "
 
 [sub_resource type="BoxMesh" id="BoxMesh_ufhxi"]
@@ -139,7 +137,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5i6ui")
 transform = Transform3D(1.085, 0, 0, 0, 1, 0, 0, 0, 1.08, 0, -0.000907898, 0)
 shape = SubResource("BoxShape3D_av25h")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="." groups=["damage"]]
 collision_layer = 15
 collision_mask = 15
 

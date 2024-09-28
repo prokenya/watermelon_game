@@ -241,25 +241,17 @@ func _on_touch_screen_button_pressed():
 
 func _on_area_3d_area_entered(area: Area3D):
 	if is_multiplayer_authority():
-		if area.editor_description == "hurt":
-			hp -= 10
+		if area.is_in_group("damage"):
+			hp -= area.get_parent().damage
 			playeranim_gui.play("damag")
-		if area.editor_description == "hurt1x":
-			hp -= 100
-			playeranim_gui.play("damag")
-		if area.editor_description == "hurt1m" or area.editor_description == "0":
-			hp -= 150
-			playeranim_gui.play("damag")
-		if hp <= 0:
-			position = Vector3(0,-255,0)
-			if multiplayer.is_server():
-				print("hurt1x")
-				playeranim_gui.play("damag")
-			else:
-				Event.emit_signal("back_s",1)
-				print("hurt1x")
-				playeranim_gui.play("damag")
-		Event.hp_char = hp
+			if hp <= 0:
+				position = Vector3(0,-255,0)
+				if multiplayer.is_server():
+					playeranim_gui.play("damag")
+				else:
+					Event.emit_signal("back_s",1)
+					playeranim_gui.play("damag")
+			Event.hp_char = hp
 	
 
 func _on_animation_player_animation_finished(anim_name: String):

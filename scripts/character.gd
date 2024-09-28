@@ -70,18 +70,16 @@ func pick_up(id):
 		Event.emit_signal("add_item",picked_item_id,-1)
 
 func drop_item(item_id,amount):
-	var dropped_item_scene
-	match item_id:
-		0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
-		1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
-		2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
-		3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
-	for i in range(amount):
-		var dropped_item = dropped_item_scene.instantiate()
-		dropped_item.position = hand.global_position + global_transform.basis.x
-		dropped_item.rotation = hand.global_rotation
-		get_tree().root.add_child(dropped_item)
-		#Event.emit_signal("control",0) # curent cam problem fix
+		var data = {
+		"spawn_obj_id": item_id,
+		"obj_position": hand.global_position + global_transform.basis.x,
+		"obj_rotation": head.global_rotation,
+		"obj_scale": Vector3(1, 1, 1),
+		"amount": amount,
+		"impulse": Vector3(0, 0, 0),
+		"pl_id": Event.mpp_index
+		}
+		Event.emit_signal("spawn_obj",data)
 func ds_control(id,item_id,player_id):
 	if id == control_id:
 		camera.current = true
@@ -193,20 +191,13 @@ func _on_touch_screen_button_pressed():
 		velocity.y = JUMP_VELOCITY
 
 func _on_area_3d_area_entered(area: Area3D):
-	if area.editor_description == "hurt":
-		hp -= 10
+	if area.is_in_group("damage"):
+		hp -= area.get_parent().damage
+		print(hp)
 		playeranim_gui.play("damag")
-	if area.editor_description == "hurt1x":
-		hp -= 100
-		playeranim_gui.play("damag")
-	if area.editor_description == "hurt1m" or area.editor_description == "0":
-		hp -= 150
-		playeranim_gui.play("damag")
-	if hp <= 0:
-		Event.emit_signal("back_s",1)
-		print("hurt1x")
-		playeranim_gui.play("damag")
-	Event.hp_char = hp
+		if hp <= 0:
+			Event.emit_signal("back_s",1)
+		Event.hp_char = hp
 	
 
 func _on_animation_player_animation_finished(anim_name: String):

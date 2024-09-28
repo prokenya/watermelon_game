@@ -108,9 +108,6 @@ func _on_shadows_toggled(toggled_on):
 		user_prefs.save()
 		Event.emit_signal(\"world_s_op\")
 
-func _on_spawn_enemy_pressed():
-	Event.emit_signal(\"spawn_enemy\")
-
 func _on_high_graphics_toggled(toggled_on):
 	if user_prefs:
 		user_prefs.high_graphics = toggled_on
@@ -341,12 +338,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 35
 text = "infinite_hp"
 
-[node name="spawn_enemy" type="Button" parent="Control/cheats/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("2_x5s8u")
-theme_override_font_sizes/font_size = 35
-text = "spawn_enemy"
-
 [node name="reset_drone_pos" type="Button" parent="Control/cheats/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_x5s8u")
@@ -392,9 +383,9 @@ grow_vertical = 2
 layout_mode = 2
 theme = ExtResource("2_x5s8u")
 theme_override_font_sizes/font_size = 35
-placeholder_text = "console..."
+placeholder_text = "write the command"
 expand_to_text_length = true
-virtual_keyboard_type = 1
+select_all_on_focus = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/console/VBoxContainer"]
 layout_mode = 2
@@ -417,7 +408,8 @@ scroll_following = true
 [connection signal="value_changed" from="Control/music/VBoxContainer/HSlider" to="Control/music" method="_on_h_slider_value_changed"]
 [connection signal="toggled" from="Control/cheats/VBoxContainer/free_jump" to="." method="_on_free_jump_toggled"]
 [connection signal="toggled" from="Control/cheats/VBoxContainer/infinite_hp" to="." method="_on_infinite_hp_toggled"]
-[connection signal="pressed" from="Control/cheats/VBoxContainer/spawn_enemy" to="." method="_on_spawn_enemy_pressed"]
 [connection signal="pressed" from="Control/cheats/VBoxContainer/reset_drone_pos" to="." method="_on_reset_drone_pos_pressed"]
 [connection signal="value_changed" from="Control/cheats/VBoxContainer/time_s" to="." method="_on_time_s_value_changed"]
+[connection signal="focus_entered" from="Control/console/VBoxContainer/LineEdit" to="Control/console/VBoxContainer/LineEdit" method="_on_focus_entered"]
+[connection signal="focus_exited" from="Control/console/VBoxContainer/LineEdit" to="Control/console/VBoxContainer/LineEdit" method="_on_focus_exited"]
 [connection signal="text_submitted" from="Control/console/VBoxContainer/LineEdit" to="Control/console" method="_on_line_edit_text_submitted"]

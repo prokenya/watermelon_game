@@ -51,6 +51,10 @@ enabled=PackedStringArray("res://addons/MultiplayCore/plugin.cfg", "res://addons
 import/blender/enabled.android=true
 import/fbx/enabled=false
 
+[global_group]
+
+damage=""
+
 [importer_defaults]
 
 animation_library={
@@ -187,6 +191,7 @@ pointing/emulate_touch_from_mouse=true
 
 3d/run_on_separate_thread=true
 3d/physics_engine="JoltPhysics3D"
+jolt_3d/limits/max_temporary_memory=128
 
 [rendering]
 

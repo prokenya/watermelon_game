@@ -21,7 +21,7 @@ func reload() -> void:
 	get_tree().reload_current_scene()
 
 func clear():
-	rich_text_label.text = ""
+	rich_text_label.clear()
 
 func printd(data,color:Color = Color.YELLOW):
 	rich_text_label.push_color(color)
@@ -40,9 +40,8 @@ func help() -> void:
 	printd("get_cid() - Displays current control ID, player ID, and the number of players in the world.")
 	printd("get_log() - Reads and prints lines from the log file if it exists.")
 	printd("tp(x: int = 0, y: int = 0, z: int = 0, pl_id: int = Event.mpp_index) - Teleports a player to specified coordinates.")
-	printd("spawn_obj(id: int, pos: Vector3 = Vector3(0, 100, 0), amount: int = 1) - Spawns an object at a specified position.")
+	printd("spawn(id: int, x: int = 0, y: int = 10, z: int = 0, amount: int = 1) - Spawns an object with a specified ID and amount at given coordinates.")
 	printd("time(uscale: float) - Changes the time scale in the game. Default is 1.0 for normal speed.")
-
 
 
 func get_log():
@@ -68,14 +67,15 @@ func get_log():
 func time(uscale:float):
 	Engine.time_scale = uscale
 
-func tp(x:int = 0,y:int = 0,z:int = 0,pl_id:int = Event.mpp_index):
-	find_players_in_group()
-	players[pl_id].position = Vector3(x,y,z)
+func tp(x = 1, y = 1, z = 1, pl_id: int = Event.mpp_index):
+	# Обновляем позицию игрока
+	players[pl_id].position = Vector3(float(x), float(y), float(z))
 
-func spawn_obj(id:int,pos:Vector3 = Vector3(0,100,0),amount:int = 1):
+
+func spawn(id:int,x = 0,y = 10,z = 0,amount:int = 1):
 	var data = {
 		"spawn_obj_id": id,
-		"obj_position": pos,
+		"obj_position": Vector3(x,y,z),
 		"obj_rotation": Vector3.UP,
 		"obj_scale": Vector3(1, 1, 1),
 		"amount": amount,

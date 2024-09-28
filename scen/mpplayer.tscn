@@ -394,9 +394,8 @@ script = SubResource("GDScript_5dq31")
 replication_config = SubResource("SceneReplicationConfig_trvfa")
 
 [node name="name" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8396, 0)
-billboard = 2
-fixed_size = true
+transform = Transform3D(2.765, 0, 0, 0, 2.765, 0, 0, 0, 2.765, 0, 1.8396, 0)
+billboard = 1
 text = "player"
 
 [connection signal="animation_finished" from="animation_player" to="." method="_on_animation_player_animation_finished"]

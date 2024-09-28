@@ -7,7 +7,6 @@ var start_world_args: Dictionary
 signal charapter_op()
 signal world_s_op()
 signal global_op()
-signal spawn_enemy()
 signal spawn_obj(data: Dictionary)
 #iter_call
 signal back_s(id: int)
