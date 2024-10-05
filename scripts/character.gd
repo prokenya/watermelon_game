@@ -26,7 +26,7 @@ var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
 var id_control: int = 0
-var active_item = null
+var active_item_id:int = -1
 var picked_item_control:int
 var control_id:int
 
@@ -47,22 +47,36 @@ func _ready():
 	Event.printc("ready",Color.BROWN)
 #inventory
 func _active_item(id):
-	if active_item != null:
-		hand.remove_child(active_item)
-		active_item.queue_free()
-	if id == 0:
-		active_item = preload("res://scen/drone_inv.tscn").instantiate()
-		active_item.position = hand.position
-	elif id == 1:
-		active_item = preload("res://scen/watermelon_gun.tscn").instantiate()
-		active_item.position = hand.position
-	elif id == 2:
-		active_item = preload("res://scen/watermelon_inv.tscn").instantiate()
-		active_item.position = hand.position
-	else:
-		active_item = null
-		return
-	hand.add_child(active_item)
+	if hand.get_children() != null and active_item_id != id:
+		for child in hand.get_children():
+			hand.remove_child(child)
+			child.queue_free()
+	var data = {
+		"spawn_obj_id": id,
+		"obj_position": Vector3(0,0,0),
+		"obj_scale": Vector3(0.7, 0.7, 0.7),
+		"amount": 1,
+		"impulse": Vector3(0, 0, 0),
+		"pl_id": Event.mpp_index,
+		"spawn_parent": $Node3D/hand,
+		"inventory": true
+		}
+	if id != -1 and active_item_id != id:
+		Event.emit_signal("spawn_obj",data)
+	active_item_id = id
+	#if id == 0:
+		#active_item = preload("res://scen/drone_inv.tscn").instantiate()
+		#active_item.position = hand.position
+	#elif id == 1:
+		#active_item = preload("res://scen/watermelon_gun.tscn").instantiate()
+		#active_item.position = hand.position
+	#elif id == 2:
+		#active_item = preload("res://scen/watermelon_inv.tscn").instantiate()
+		#active_item.position = hand.position
+	#else:
+		#active_item = null
+		#return
+	#hand.add_child(active_item)
 
 func pick_up(id):
 	if picked_item != null:

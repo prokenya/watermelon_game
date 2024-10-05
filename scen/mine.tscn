@@ -137,7 +137,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5i6ui")
 transform = Transform3D(1.085, 0, 0, 0, 1, 0, 0, 0, 1.08, 0, -0.000907898, 0)
 shape = SubResource("BoxShape3D_av25h")
 
-[node name="Area3D" type="Area3D" parent="." groups=["damage"]]
+[node name="Area3D" type="Area3D" parent="."]
 collision_layer = 15
 collision_mask = 15
 
@@ -159,7 +159,7 @@ volume_db = 20.0
 max_distance = 30.0
 bus = &"SFX"
 
-[node name="hurt" type="Area3D" parent="."]
+[node name="hurt" type="Area3D" parent="." groups=["damage"]]
 editor_description = "hurt1m"
 collision_layer = 15
 collision_mask = 15

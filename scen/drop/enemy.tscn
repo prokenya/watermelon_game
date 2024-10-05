@@ -43,7 +43,7 @@ debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(0, 0.603922, 0.423529, 1)
 
-[node name="Area3D" type="Area3D" parent="." groups=["damage"]]
+[node name="Area3D" type="Area3D" parent="." groups=["damage", "enemy"]]
 editor_description = "100"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]

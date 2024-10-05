@@ -2,6 +2,15 @@ extends Node3D
 @export var players: Array
 @onready var spawn: Node3D = $spawn
 @onready var directional_light_3d = $DirectionalLight3D
+@onready var spawn_parent: Node3D = $"."
+@export var items = {
+	-1: ["res://scen/drop/enemy.tscn", "-", "-"],
+	0: ["res://scen/drop/drone.tscn", "res://scen/drone_inv.tscn", "res://textures/icons/drone.png"],
+	1: ["res://scen/drop/ak_drop.tscn", "res://scen/watermelon_gun.tscn", "res://textures/icons/ak_w.png"],
+	2: ["res://scen/drop/watermelon.tscn", "res://scen/watermelon_inv.tscn", "res://textures/icons/watermelon.png"],
+	3: ["res://scen/drop/drone_exp.tscn", "-", "-"],
+	4: ["res://scen/drop/bullet.tscn", "-", "-"]
+}
 var user_prefs: UserPref
 
 func _ready():
@@ -16,9 +25,10 @@ func _ready():
 		var player = load("res://scen/character.tscn").instantiate()
 		player.position = spawn.position
 		add_child(player)
-	call_deferred("find_players_in_group")
 	await get_tree().create_timer(0.2).timeout
-	players[Event.mpp_index].position = spawn.position
+	await find_players_in_group()
+	if Event.mpp_index >= 0 and Event.mpp_index < players.size():
+		players[Event.mpp_index].position = spawn.position
 
 func find_players_in_group() -> void:
 	players = []
@@ -28,6 +38,9 @@ func find_players_in_group() -> void:
 	if scene_tree.has_group("player"):
 		for node in scene_tree.get_nodes_in_group("player"):
 			players.append(node)
+		print("Игроки найдены: ", players)
+	else:
+		print("Группа 'player' не найдена или пуста.")
 
 func op_world_S():
 	directional_light_3d.shadow_enabled = user_prefs.shadows
@@ -51,6 +64,8 @@ func spawn_obj(data: Dictionary):
 		data["impulse"] = Vector3(0, 0, 0)
 	if not data.has("pl_id"):
 		data["pl_id"] = 255
+	if not data.has("inventory"):
+		data["inventory"] = false
 	if Event.is_multiplayer == true:
 		spawn_objrpc.rpc(data)
 	else:
@@ -62,20 +77,19 @@ func spawn_objrpc(data: Dictionary):
 
 func spawn_objs(data: Dictionary):
 	var dropped_item_scene
-	match data["spawn_obj_id"]:
-		-1: dropped_item_scene = preload("res://scen/drop/enemy.tscn")
-		0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
-		1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
-		2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
-		3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
-		4: dropped_item_scene = preload("res://scen/drop/bullet.tscn")
-		
+	if not data["inventory"]:
+		dropped_item_scene = load(items[data["spawn_obj_id"]][0])
+	else:
+		if items[data["spawn_obj_id"]][1] != "-":
+			dropped_item_scene = load(items[data["spawn_obj_id"]][1])
 	for i in range(data["amount"]):
 		var dropped_item = dropped_item_scene.instantiate()
 		dropped_item.position = data["obj_position"]
 		dropped_item.rotation = data["obj_rotation"]
 		dropped_item.scale = dropped_item.scale * data["obj_scale"]
-		add_child(dropped_item)
+		if not data.has("spawn_parent"):
+			add_child(dropped_item)
+		else: data["spawn_parent"].add_child(dropped_item)
 		if dropped_item is RigidBody3D:
 			dropped_item.linear_velocity = data["impulse"]
 			dropped_item.angular_velocity = data["impulse"]

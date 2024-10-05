@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmcf5pe61drxq"]
+[gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
 
 [ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/drop/drone.tscn" id="1_piw0r"]
 
@@ -211,6 +211,33 @@ func _change_state(new_state: State):
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wnon2"]
 radius = 0.051
 
+[sub_resource type="GDScript" id="GDScript_qdu7h"]
+resource_name = "push"
+script/source = "extends Area3D
+
+var  repulsion_force = 25
+func _on_body_entered(body):
+	print(body)
+	if body is CharacterBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к скорости CharacterBody3D
+		body.velocity += force
+	elif body is RigidBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к RigidBody3D с использованием add_central_force
+		body.apply_central_impulse(force)
+"
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
 radius = 2.42169
 
@@ -245,6 +272,7 @@ editor_description = "99"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102848, 0, 0.0890975)
 collision_layer = 15
 collision_mask = 15
+script = SubResource("GDScript_qdu7h")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
 shape = SubResource("SphereShape3D_af6m0")

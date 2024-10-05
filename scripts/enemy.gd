@@ -59,5 +59,5 @@ func _process(delta):
 		op_tg_loc(target.global_transform.origin)
 
 func _on_area_3d_area_entered(area: Area3D) -> void:
-	if area.is_in_group("damage"):
+	if area.is_in_group("damage") and not area.is_in_group("enemy"):
 		queue_free()

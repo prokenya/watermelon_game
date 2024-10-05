@@ -54,6 +54,7 @@ import/fbx/enabled=false
 [global_group]
 
 damage=""
+enemy=""
 
 [importer_defaults]
 

@@ -30,6 +30,8 @@ func _ready():
 		if child is Item: # чтобы другие ноды не брало
 			items[i] = child
 			i += 1
+	active_item_c = 0
+	active_item = -1
 	up_item_pos()
 	load_inventory()
 	Event.connect("add_item", add_item_by_id_mp)

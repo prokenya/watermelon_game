@@ -69,6 +69,7 @@ func time(uscale:float):
 
 func tp(x = 1, y = 1, z = 1, pl_id: int = Event.mpp_index):
 	# Обновляем позицию игрока
+	find_players_in_group()
 	players[pl_id].position = Vector3(float(x), float(y), float(z))
 
 
