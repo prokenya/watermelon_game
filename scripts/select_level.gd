@@ -6,6 +6,8 @@ var tscn_files: Array = ["res://scen/levels/level-1.tscn",
 @onready var item_list: ItemList = $"."
 var args = {"spawn_point": Vector3(0,100,0) }
 var base_prefs:bool = false
+var level_index:int 
+@onready var n_2_n: AnimationPlayer = $"../../../n-2-n"
 
 func _ready():
 	var levels_path: String = "user://levels"
@@ -43,19 +45,8 @@ func _ready():
 		#Event.printc("Не удалось открыть директорию: " + directory_path,Color.RED)
 
 
-func _on_item_activated(index: int) -> void:
-	if Event.is_multiplayer == false:
-		if base_prefs == true:
-			args["world"] = tscn_files[index]
-			Event.start_world_args = args
-		else:Event.start_world_args = {}
-		get_tree().change_scene_to_file(tscn_files[index])
-	if Event.is_multiplayer == true:
-		if base_prefs == true:
-			args["world"] = tscn_files[index]
-			Event.start_world_args = args
-		else:Event.start_world_args = {"world":tscn_files[index]}
-		get_tree().change_scene_to_file("res://scen/gui/multi_play_core.tscn")
+func _on_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	level_index = index
 
 
 func _on_check_box_toggled(toggled_on: bool) -> void:
@@ -64,3 +55,20 @@ func _on_check_box_toggled(toggled_on: bool) -> void:
 
 func _on_check_box_2_toggled(toggled_on: bool) -> void:
 	base_prefs = toggled_on
+
+
+func _on_button_pressed() -> void:
+	n_2_n.play("fade_out")
+	await get_tree().create_timer(0.3).timeout
+	if Event.is_multiplayer == false:
+		if base_prefs == true:
+			args["world"] = tscn_files[level_index]
+			Event.start_world_args = args
+		else:Event.start_world_args = {}
+		get_tree().change_scene_to_file(tscn_files[level_index])
+	if Event.is_multiplayer == true:
+		if base_prefs == true:
+			args["world"] = tscn_files[level_index]
+			Event.start_world_args = args
+		else:Event.start_world_args = {"world":tscn_files[level_index]}
+		get_tree().change_scene_to_file("res://scen/gui/multi_play_core.tscn")

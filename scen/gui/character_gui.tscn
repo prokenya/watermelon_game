@@ -67,6 +67,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
 script = ExtResource("1_366xt")
 
 [node name="hp" type="Label" parent="."]
@@ -196,7 +197,6 @@ grow_vertical = 0
 
 [node name="pick_up" type="Button" parent="."]
 unique_name_in_owner = true
-visible = false
 self_modulate = Color(1, 1, 1, 0.411765)
 top_level = true
 light_mask = 3
@@ -215,6 +215,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
+focus_mode = 1
 theme = ExtResource("2_rh2mb")
 button_mask = 7
 text = "pick_up"

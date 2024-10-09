@@ -220,6 +220,7 @@ uppercase = true
 
 [node name="sensitivity_Slider" type="HSlider" parent="Control/MENU/base_cont/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme = ExtResource("2_x5s8u")
 min_value = 0.05
@@ -287,6 +288,7 @@ horizontal_alignment = 1
 
 [node name="music" type="HSlider" parent="Control/music/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme = ExtResource("2_x5s8u")
 max_value = 1.0
@@ -301,6 +303,7 @@ horizontal_alignment = 1
 
 [node name="HSlider" type="HSlider" parent="Control/music/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme = ExtResource("2_x5s8u")
 max_value = 1.0
@@ -353,6 +356,7 @@ horizontal_alignment = 1
 
 [node name="time_s" type="HSlider" parent="Control/cheats/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_vertical = 4
 theme = ExtResource("2_x5s8u")
@@ -385,7 +389,7 @@ theme = ExtResource("2_x5s8u")
 theme_override_font_sizes/font_size = 35
 placeholder_text = "write the command"
 expand_to_text_length = true
-select_all_on_focus = true
+caret_force_displayed = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/console/VBoxContainer"]
 layout_mode = 2

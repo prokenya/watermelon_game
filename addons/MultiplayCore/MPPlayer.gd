@@ -30,6 +30,8 @@ var is_swap_focused: bool = false
 var player_node_resource_path: String = ""
 
 var _local_got_handshake = false
+# Determine if handshake event has already been emitted
+var _handshake_is_ready = false
 
 ## On player ready. Only emit locally
 signal player_ready
@@ -46,7 +48,7 @@ func _ready():
 		is_ready = true
 		player_ready.emit()
 		_send_handshake_data(handshake_data)
-		mpc.connected_to_server.emit()
+		mpc.connected_to_server.emit(self)
 	
 	_internal_peer = multiplayer.multiplayer_peer
 	#_internal_peer = multiplayer.multiplayer_peer
@@ -122,10 +124,13 @@ func _recv_handshake_data(hs):
 	_on_handshake_ready()
 
 func _on_handshake_ready():
+	if _handshake_is_ready:
+		return
 	if handshake_data.keys().has("_net_internal"):
 		if handshake_data._net_internal.keys().has("auth_data"):
 			auth_data = handshake_data._net_internal.auth_data
 	handshake_ready.emit(handshake_data)
+	_handshake_is_ready = true
 
 func _check_if_net_from_id(id):
 	if mpc.mode != mpc.PlayMode.Online:
@@ -135,6 +140,7 @@ func _check_if_net_from_id(id):
 @rpc("authority", "call_local")
 func _send_handshake_data(data):
 	handshake_data = data
+	_handshake_is_ready = false
 	_on_handshake_ready()
 
 @rpc("any_peer", "call_local")

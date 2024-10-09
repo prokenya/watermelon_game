@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://bo2s8uuybarua"]
+[gd_scene load_steps=16 format=3 uid="uid://bo2s8uuybarua"]
 
 [ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_wmg5k"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="2_4uq3a"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_i7mto"]
 [ext_resource type="Script" path="res://scripts/select_level.gd" id="5_5mpaj"]
+[ext_resource type="ArrayMesh" uid="uid://pe65vyi7myeg" path="res://models/mesh/watermelon.tres" id="5_tvg7f"]
 
 [sub_resource type="GDScript" id="GDScript_mkgfn"]
 script/source = "extends Button
@@ -108,6 +109,32 @@ font_color = Color(4.57242e-07, 0.411091, 0.114304, 1)
 shadow_size = 11
 shadow_color = Color(1, 0.341176, 0.827451, 0.117647)
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_67xna"]
+particle_flag_rotate_y = true
+emission_shape_scale = Vector3(1, 1, 0.145)
+emission_shape = 1
+emission_sphere_radius = 10.25
+angle_min = -720.0
+angle_max = 720.0
+inherit_velocity_ratio = 1.0
+velocity_pivot = Vector3(0, 0, 13.36)
+direction = Vector3(0, 0, 80.225)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+angular_velocity_min = -249.23
+angular_velocity_max = 144.0
+orbit_velocity_min = -0.246
+orbit_velocity_max = 0.431
+gravity = Vector3(0, 0, 2.165)
+scale_min = 0.65
+scale_max = 1.5
+
+[sub_resource type="Environment" id="Environment_b0rlh"]
+background_mode = 1
+ambient_light_color = Color(1, 1, 1, 1)
+fog_light_color = Color(0.398543, 0.592049, 0.58517, 1)
+fog_sky_affect = 0.494
+
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_wmg5k")
 metadata/_edit_horizontal_guides_ = [111.0]
@@ -137,7 +164,6 @@ text = "menu"
 script = SubResource("GDScript_mkgfn")
 
 [node name="menu_0" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/menu_0"]
 anchors_preset = 8
@@ -177,26 +203,13 @@ action_mode = 0
 text = "credits"
 script = SubResource("GDScript_oiqsv")
 
-[node name="holst" type="CanvasLayer" parent="Control"]
-layer = -8
-
-[node name="ColorRect" type="ColorRect" parent="Control/holst"]
-show_behind_parent = true
-light_mask = 2
-visibility_layer = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
 [node name="n-2-n" type="AnimationPlayer" parent="Control"]
 libraries = {
 "": SubResource("AnimationLibrary_s8e0y")
 }
 
 [node name="ColorRect" type="ColorRect" parent="Control/n-2-n"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -206,6 +219,7 @@ color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="select_level" type="Control" parent="Control"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -243,6 +257,13 @@ theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 35
 text = "base_world_prefs"
 
+[node name="Button" type="Button" parent="Control/select_level/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_i7mto")
+theme_override_font_sizes/font_size = 40
+text = "play"
+
 [node name="ItemList" type="ItemList" parent="Control/select_level/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -257,7 +278,7 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -64.0
-offset_bottom = 62.0
+offset_bottom = 53.0
 grow_horizontal = 0
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -331,6 +352,46 @@ testers:
 "
 label_settings = SubResource("LabelSettings_eeghs")
 
+[node name="bg" type="CanvasLayer" parent="."]
+layer = -128
+
+[node name="bg" type="Node3D" parent="bg"]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="bg/bg"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 6.55, 0, 0, 0)
+cast_shadow = 0
+gi_mode = 0
+amount = 35
+lifetime = 5.0
+preprocess = 10.0
+randomness = 0.42
+fixed_fps = 60
+transform_align = 1
+process_material = SubResource("ParticleProcessMaterial_67xna")
+draw_pass_1 = ExtResource("5_tvg7f")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="bg/bg"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="bg/bg/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="bg/bg/SubViewportContainer/SubViewport"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 14.575, 0, 36.7637)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="bg/bg"]
+environment = SubResource("Environment_b0rlh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="bg/bg"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 23.9588, 0, 0)
+
 [connection signal="pressed" from="Control/CanvasLayer2/menu" to="Control/CanvasLayer2/menu" method="_on_pressed"]
 [connection signal="pressed" from="Control/menu_0/VBoxContainer/play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Control/menu_0/VBoxContainer/settings" to="Control/menu_0/VBoxContainer/settings" method="_on_pressed"]
@@ -338,6 +399,8 @@ label_settings = SubResource("LabelSettings_eeghs")
 [connection signal="animation_finished" from="Control/n-2-n" to="." method="_on_n_2n_animation_finished"]
 [connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_toggled"]
 [connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox2" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_2_toggled"]
+[connection signal="pressed" from="Control/select_level/VBoxContainer/HBoxContainer/Button" to="Control/select_level/VBoxContainer/ItemList" method="_on_button_pressed"]
 [connection signal="item_activated" from="Control/select_level/VBoxContainer/ItemList" to="Control/select_level/VBoxContainer/ItemList" method="_on_item_activated"]
+[connection signal="item_clicked" from="Control/select_level/VBoxContainer/ItemList" to="Control/select_level/VBoxContainer/ItemList" method="_on_item_clicked"]
 [connection signal="pressed" from="Control/select_level/menu" to="Control/select_level/menu" method="_on_pressed"]
 [connection signal="pressed" from="credits/menu" to="credits/menu" method="_on_pressed"]

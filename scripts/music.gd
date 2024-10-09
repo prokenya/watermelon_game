@@ -13,9 +13,9 @@ func _ready() -> void:
 	bus_index = AudioServer.get_bus_index(bus_name)
 	bus_index2 = AudioServer.get_bus_index(bus_name2)
 	user_prefs = UserPref.load_or_create()
-	op_audio()
+	up_audio()
 
-func op_audio():
+func up_audio():
 	_on_h_slider_value_changed(user_prefs.SFX_lv)
 	if user_prefs:
 		sfx.value = user_prefs.SFX_lv

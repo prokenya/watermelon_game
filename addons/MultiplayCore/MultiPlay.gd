@@ -6,7 +6,7 @@ extends MPBase
 class_name MultiPlayCore
 
 ## MultiPlay Core Version
-const MP_VERSION = "1.1.0-beta1"
+const MP_VERSION = "1.1.0-beta2"
 
 ## MultiPlay Core Version Name
 const MP_VERSION_NAME = "Packet Unit"
@@ -25,6 +25,10 @@ signal disconnected_from_server(reason: String)
 signal connection_error(reason: ConnectionError)
 ## Emit when swap index has changed. Only emit in Swap Play mode
 signal swap_changed(to_index: int, old_index: int)
+## On server started
+signal server_started
+## On server stopped
+signal server_stopped
 
 ## Methods to use for multiplayer game
 enum PlayMode {
@@ -335,6 +339,7 @@ func close_server():
 	_kick_player_request_all(MultiPlayCore.ConnectionError.SERVER_CLOSED)
 	online_peer.close()
 	online_connected = false
+	server_stopped.emit()
 
 func _unhandled_input(event):
 	if mode == PlayMode.Swap:
@@ -413,6 +418,8 @@ func _online_host(act_client: bool = false, act_client_handshake_data: Dictionar
 		#create_player(1, act_client_handshake_data)
 		_network_player_connected(1)
 		_client_connected()
+	
+	server_started.emit()
 
 func _online_join(address: String, handshake_data: Dictionary = {}, credentials_data: Dictionary = {}):
 	_init_data()
@@ -437,7 +444,7 @@ func _online_join(address: String, handshake_data: Dictionary = {}, credentials_
 		url_path = "/" + url_path
 	
 	var portsplit = hostname.split(":")
-	var port_num = 80
+	var port_num = port
 	
 	if portsplit.size() > 1:
 		port_num = int(portsplit[1])
@@ -462,22 +469,14 @@ func create_player(player_id, handshake_data = {}):
 	_plr_spawner.spawn({player_id = player_id, handshake_data = handshake_data, pindex = assign_plrid})
 
 @rpc("authority", "call_local", "reliable")
-func _net_broadcast_new_player(peer_id):
-	var target_plr = players.get_player_by_id(peer_id)
-	
-	if target_plr:
-		player_connected.emit(target_plr)
-
-@rpc("authority", "call_local", "reliable")
 func _net_broadcast_remove_player(peer_id: int):
 	var target_plr = players.get_player_by_id(peer_id)
 	
 	if target_plr:
 		player_count = player_count - 1
 		
-		if !is_server:
-			player_disconnected.emit(target_plr)
-			players._internal_remove_player(peer_id)
+		player_disconnected.emit(target_plr)
+		players._internal_remove_player(peer_id)
 
 func _player_spawned(data):
 	MPIO.plr_id = multiplayer.get_unique_id()
@@ -509,17 +508,20 @@ func _player_spawned(data):
 		player.player_node_resource_path = player_scene.resource_path
 		
 		var pscene = player_scene.instantiate()
+		
+		if assign_client_authority:
+			pscene.set_multiplayer_authority(data.player_id, true)
+		
 		player.add_child(pscene, true)
 		
 		player.player_node = pscene
-
-	if assign_client_authority:
-		player.set_multiplayer_authority(data.player_id, true)
+	
+	player.set_multiplayer_authority(data.player_id, false)
 	
 	players._internal_add_player(data.player_id, player)
 	
-	if is_server:
-		rpc("_net_broadcast_new_player", player.player_id)
+	if connection_state == ConnectionState.CONNECTED:
+		player_connected.emit(player)
 	
 	return player
 
@@ -581,8 +583,6 @@ func _network_player_disconnected(player_id):
 	
 	if target_plr:
 		rpc("_net_broadcast_remove_player", player_id)
-		player_disconnected.emit(target_plr)
-		players._internal_remove_player(player_id)
 		target_plr.queue_free()
 
 # Validate network join internal data
@@ -714,10 +714,9 @@ func _net_load_scene(scene_path: String, respawn_players = true):
 		current_scene.queue_free()
 		current_scene = null
 	
-	if !FileAccess.file_exists(scene_path):
-		if !FileAccess.file_exists(scene_path + ".remap"):
-			MPIO.logerr("Target scene doesn't exist")
-			return
+	if !ResourceLoader.exists(scene_path):
+		MPIO.logerr("Target scene doesn't exist")
+		return
 	
 	var scene_pack = load(scene_path)
 	var scene_node = scene_pack.instantiate()
