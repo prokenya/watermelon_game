@@ -2,7 +2,7 @@ extends Node
 
 #world_data
 var start_world_args: Dictionary
-
+var items: Dictionary
 #op_signals
 signal charapter_op()
 signal world_s_op()

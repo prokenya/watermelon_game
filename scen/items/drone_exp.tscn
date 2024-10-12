@@ -1,4 +1,9 @@
-extends RigidBody3D
+[gd_scene load_steps=7 format=3 uid="uid://bmcf5pe61drxq"]
+
+[ext_resource type="PackedScene" uid="uid://ijyj2vmqstqj" path="res://scen/items/drone.tscn" id="1_piw0r"]
+
+[sub_resource type="GDScript" id="GDScript_7wmy4"]
+script/source = "extends RigidBody3D
 
 enum State { IDLE, FLY }
 var state: State = State.IDLE
@@ -9,7 +14,8 @@ var user_prefs: UserPref
 var last_position: Vector3
 var id_control: int = 0
 @export var control_item_id: int
-var item_id = 0
+@export var damage = 99
+var item_id = 3
 
 #drone anim
 @onready var prop1 = $drone/MeshInstance3D2
@@ -18,8 +24,10 @@ var item_id = 0
 @onready var prop4 = $drone/MeshInstance3D5
 @onready var camera_3_person = $Camera3person
 @onready var camera_1_person = $Camera1person
-
-var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+@onready var ray_cast_3d = $RayCast3D
+@onready var timer = $Timer
+@onready var vfx_expp1 = preload(\"res://scen/vfx/vfx_expp1.tscn\")
+var gravity: float = ProjectSettings.get_setting(\"physics/3d/default_gravity\")
 var sensitivity: float
 var tracked_touch_index: int = -1
 var touch_start_position: Vector2
@@ -31,7 +39,7 @@ var controler_id_nosync:int = -1
 var global_t
 @export var rotate_dir:Vector2
 @export var input_dir:Vector2
-@onready var debug_label = $"debug label"
+@onready var debug_label = $\"debug label\"
 
 # Добавляем переменную для хранения направления вращения камеры
 var camera_rotation_direction: Vector3
@@ -39,10 +47,10 @@ var camera_rotation_direction: Vector3
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
-	Event.connect("charapter_op", _apply_user_prefs)
-	Event.connect("control", apply_control_drone)
-	Event.connect("cam_1_3p",app_cam)
-	Event.connect("reset_drone_pos",reset_drone_pos)
+	Event.connect(\"charapter_op\", _apply_user_prefs)
+	Event.connect(\"control\", apply_control_drone)
+	Event.connect(\"cam_1_3p\",app_cam)
+	Event.connect(\"reset_drone_pos\",reset_drone_pos)
 	last_position = position
 	camera_rotation_direction = Vector3(0, 0, 1) # Инициализируем направление камеры вперед
 	global_t = global_transform
@@ -57,15 +65,11 @@ func apply_control_drone(id,item_id,player_id):
 	if id == control_item_id and controler_id == -1:
 		controler_id = player_id
 		camera_1_person.current = true
-		#print("Drone camera activated")
-		#print("controler_id:",controler_id)
 	else:
 		if controler_id == player_id:
 			controler_id = -1
 		camera_1_person.current = false
 		camera_3_person.current = false
-		#print("controler_id:",controler_id)
-		#print("Drone camera deactivated")
 	if Event.is_multiplayer == true: 
 		if controler_id == player_id:
 			id_control = id
@@ -73,11 +77,11 @@ func apply_control_drone(id,item_id,player_id):
 		sync.rpc(controler_id,id_control)
 	else: id_control = id
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc(\"any_peer\", \"call_local\", \"reliable\")
 func sync(c_id,id_c):
 	controler_id = c_id
 	id_control = id_c
-	debug_label.text = "controler_id:"+str(controler_id)
+	debug_label.text = \"controler_id:\"+str(controler_id)
 	
 func app_cam(cam,id):
 	if control_item_id == id:
@@ -103,11 +107,20 @@ func _process(delta: float):
 		last_position = position
 		_change_state(State.FLY)
 	if control_item_id == Event.control_id:
-		Event.drone_speed = "m/c" + str(round(linear_velocity))
+		Event.drone_speed = \"m/c\" + str(round(linear_velocity))
+	if ray_cast_3d.is_colliding() and timer.is_stopped():
+		$Area3D2/CollisionShape3D.disabled = false
+		await get_tree().create_timer(0.1).timeout
+		var vfx_expp = vfx_expp1.instantiate()
+		vfx_expp.position = ray_cast_3d.global_position
+		get_tree().root.add_child(vfx_expp)
+		if control_item_id == id_control:
+			Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
+		get_parent().queue_free()
 var impulse = Vector3()
 
 
-@rpc("any_peer", "call_local")
+@rpc(\"any_peer\", \"call_local\")
 func movedata(r_dir,i_dir):
 	position = r_dir
 	rotation = i_dir
@@ -118,13 +131,13 @@ func _physics_process(delta: float):
 	if control_item_id == id_control:
 		if Event.is_multiplayer == true:
 				if controler_id == Event.mpp_index:
-					rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
-					input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+					rotate_dir = Input.get_vector(\"left_drone_r\",\"right_drone_r\",\"downd2\",\"upd2\")
+					input_dir = Input.get_vector(\"ui_left_d\", \"ui_right_d\", \"ui_up_d\", \"ui_down_d\")
 					movedata.rpc(position,rotation)
 				
 		else: 
-			rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
-			input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+			rotate_dir = Input.get_vector(\"left_drone_r\",\"right_drone_r\",\"downd2\",\"upd2\")
+			input_dir = Input.get_vector(\"ui_left_d\", \"ui_right_d\", \"ui_up_d\", \"ui_down_d\")
 		value = (rotate_dir[1])*10
 		var current_rotation_speed = 2
 		if rotate_dir[1] > 0:
@@ -186,3 +199,79 @@ func _change_state(new_state: State):
 	## Apply rotation to the RigidBody3D
 	##apply_torque_impulse(Vector3(0,current_rotation.x,0))
 	##current_rotation.x = 0
+"
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wnon2"]
+radius = 0.051
+
+[sub_resource type="GDScript" id="GDScript_qdu7h"]
+resource_name = "push"
+script/source = "extends Area3D
+
+var  repulsion_force = 25
+func _on_body_entered(body):
+	print(body)
+	if body is CharacterBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к скорости CharacterBody3D
+		body.velocity += force
+	elif body is RigidBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к RigidBody3D с использованием add_central_force
+		body.apply_central_impulse(force)
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
+radius = 2.42169
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m8eco"]
+properties/0/path = NodePath("drone:control_item_id")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="exp_d" type="Node3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="drone" parent="." groups=["drone"] instance=ExtResource("1_piw0r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.102848, 0, -0.0890975)
+script = SubResource("GDScript_7wmy4")
+damage = 99
+
+[node name="RayCast3D" type="RayCast3D" parent="drone"]
+transform = Transform3D(1, 0, 0, 0, -0.00221662, -0.999998, 0, 0.999998, -0.00221662, 0, 0, -0.48729)
+collision_mask = 7
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="drone/RayCast3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122619, -0.0226251, 5.00317e-05)
+mesh = SubResource("CapsuleMesh_wnon2")
+
+[node name="Timer" type="Timer" parent="drone"]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="Area3D2" type="Area3D" parent="drone" groups=["damage"]]
+editor_description = "99"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102848, 0, 0.0890975)
+collision_layer = 15
+collision_mask = 15
+script = SubResource("GDScript_qdu7h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="drone/Area3D2"]
+shape = SubResource("SphereShape3D_af6m0")
+disabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_m8eco")
+
+[connection signal="body_entered" from="drone/Area3D2" to="drone/Area3D2" method="_on_body_entered"]

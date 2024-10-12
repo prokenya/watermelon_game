@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://f4frv3c4bcu"]
+
+[ext_resource type="Script" path="res://scripts/world_item.gd" id="1_050dn"]
+[ext_resource type="ArrayMesh" uid="uid://b573fu7717567" path="res://models/mesh/abeme.tres" id="1_q4sn8"]
+[ext_resource type="AudioStream" uid="uid://xts72xw63322" path="res://audio/sfx/o-privet.ogg" id="3_h78hd"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uwlvo"]
+bounce = 0.59
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4s7jo"]
+data = PackedVector3Array(0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, 0.5, 0, 1, 0, 0.5, 0, -0.5, -0.5, 0, 0.5, 0, 1, 0, 0.5, 0, 0.5, 0.5, 0, -0.5, 0, 1, 0, -0.5, 0, -0.5, -0.5, 0, -0.5, 0, 1, 0, -0.5, 0, 0.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3gn7l"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="RigidBody3D" type="RigidBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+collision_layer = 6
+collision_mask = 3
+physics_material_override = SubResource("PhysicsMaterial_uwlvo")
+script = ExtResource("1_050dn")
+item_id = 5
+
+[node name="Abeme" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_q4sn8")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("ConcavePolygonShape3D_4s7jo")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_3gn7l")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_h78hd")
+volume_db = 15.238
+autoplay = true

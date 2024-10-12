@@ -1,15 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://bo6mu3o42g8d8"]
 
 [ext_resource type="Script" path="res://scripts/item.gd" id="1_rcrp7"]
-[ext_resource type="Texture2D" uid="uid://dlujk7dtqri0v" path="res://textures/icons/drone.png" id="2_x3l4a"]
+[ext_resource type="Texture2D" uid="uid://8yws851geem1" path="res://icon.png" id="2_7tiby"]
 
 [node name="item" type="Node2D"]
 script = ExtResource("1_rcrp7")
-item_id = 0
+amount = 0
+item_id = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.0592593, 0.0592593)
-texture = ExtResource("2_x3l4a")
+texture = ExtResource("2_7tiby")
 region_rect = Rect2(50, 50, 50, 50)
 
 [node name="Label" type="Label" parent="."]

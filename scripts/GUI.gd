@@ -7,6 +7,8 @@ var item_id
 var control_id
 @onready var gui = $"."
 @onready var menu = $"../ui_b"
+@onready var pos: Label = $pos
+
 var is_paused = false
 func pressed():
 	if gui.visible == true:
@@ -26,6 +28,7 @@ func _ready():
 
 func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)
+	pos.text = "pos:" + str(round(get_parent().get_parent().position))
 
 func ds_control(id,item_id,player_id):
 	if id != Event.player_control_id:

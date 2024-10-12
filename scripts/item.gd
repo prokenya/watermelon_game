@@ -1,18 +1,12 @@
-@tool
 extends Node2D
 class_name Item
-
-const ITEM_DRONE = preload("res://textures/icons/drone.png")
-const ITEM_ak_w = preload("res://textures/icons/ak_w.png")
-const ITEM_watermelon = preload("res://textures/icons/watermelon.png")
-const ITEM_DRONE_EXP = preload("res://icon.png")
-
-const ITEM_TEXTURES = [
-	ITEM_DRONE, ITEM_ak_w, ITEM_watermelon,ITEM_DRONE_EXP
-	]
-const ITEM_STACK_LIM = [
-	3,1,10,3
-]
+var default_item = ["res://scen/drop/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
+"res://textures/1182467.160.webp",1]
+var items:Dictionary = InventoryManager.items
+var config = ConfigFile.new()
+var sprite
+var ITEM_TEXTURES: Array = InventoryManager.ITEM_TEXTURES
+var ITEM_STACK_LIM: Array = InventoryManager.ITEM_STACK_LIM
 @export var amount: int = 1
 @export var item_id: int = -1
 var curent_amount = -1
@@ -21,14 +15,10 @@ var curent_id: int = -1
 var desired_size = Vector2(64,64)
 
 func get_texture(idx: int) -> Texture:
-	if idx < 0:
-		return null
-	return ITEM_TEXTURES[min(idx, len(ITEM_TEXTURES) - 1)]
+	return ITEM_TEXTURES[idx]
 
 func _ready():
-	var texture_size = ITEM_TEXTURES[item_id].get_size()
-	var scale_factor = desired_size / texture_size
-	$Sprite2D.scale = scale_factor
+	sprite = $Sprite2D
 	update_texture()
 
 func _process(delta):
@@ -42,6 +32,9 @@ func _process(delta):
 		amount = ITEM_STACK_LIM[item_id]
 
 func update_texture():
-	var sprite = $Sprite2D
 	if sprite != null:
 		sprite.texture = get_texture(item_id)
+		var texture_size = ITEM_TEXTURES[item_id].get_size()
+		var scale_factor = desired_size / texture_size
+		sprite.scale = scale_factor
+	

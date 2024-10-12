@@ -3,14 +3,7 @@ extends Node3D
 @onready var spawn: Node3D = $spawn
 @onready var directional_light_3d = $DirectionalLight3D
 @onready var spawn_parent: Node3D = $"."
-@export var items = {
-	-1: ["res://scen/drop/enemy.tscn", "-", "-"],
-	0: ["res://scen/drop/drone.tscn", "res://scen/drone_inv.tscn", "res://textures/icons/drone.png"],
-	1: ["res://scen/drop/ak_drop.tscn", "res://scen/watermelon_gun.tscn", "res://textures/icons/ak_w.png"],
-	2: ["res://scen/drop/watermelon.tscn", "res://scen/watermelon_inv.tscn", "res://textures/icons/watermelon.png"],
-	3: ["res://scen/drop/drone_exp.tscn", "-", "-"],
-	4: ["res://scen/drop/bullet.tscn", "-", "-"]
-}
+@export var items:Dictionary
 var user_prefs: UserPref
 
 func _ready():
@@ -29,6 +22,7 @@ func _ready():
 	await find_players_in_group()
 	if Event.mpp_index >= 0 and Event.mpp_index < players.size():
 		players[Event.mpp_index].position = spawn.position
+	items = Event.items
 
 func find_players_in_group() -> void:
 	players = []
@@ -78,10 +72,9 @@ func spawn_objrpc(data: Dictionary):
 func spawn_objs(data: Dictionary):
 	var dropped_item_scene
 	if not data["inventory"]:
-		dropped_item_scene = load(items[data["spawn_obj_id"]][0])
+		dropped_item_scene = InventoryManager.items[data["spawn_obj_id"]][0]
 	else:
-		if items[data["spawn_obj_id"]][1] != "-":
-			dropped_item_scene = load(items[data["spawn_obj_id"]][1])
+		dropped_item_scene = InventoryManager.items[data["spawn_obj_id"]][1]
 	for i in range(data["amount"]):
 		var dropped_item = dropped_item_scene.instantiate()
 		dropped_item.position = data["obj_position"]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkmn3fni2q3pg"]
+
+[ext_resource type="ArrayMesh" uid="uid://b573fu7717567" path="res://models/mesh/abeme.tres" id="2_evoel"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Abeme" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_evoel")

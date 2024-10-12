@@ -1,16 +1,17 @@
-[gd_scene load_steps=41 format=4 uid="uid://bdnenmk6e4f2t"]
+[gd_scene load_steps=42 format=4 uid="uid://bdnenmk6e4f2t"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_ectqd"]
 [ext_resource type="Texture2D" uid="uid://dup4vwmgwyf41" path="res://textures/prototype/Dark/texture_04.png" id="1_oehe3"]
 [ext_resource type="Texture2D" uid="uid://cknnpbe7gnutf" path="res://textures/prototype/Green/texture_01.png" id="2_a61ap"]
 [ext_resource type="Texture2D" uid="uid://cjmy06h4u2c4r" path="res://textures/prototype/Orange/texture_01.png" id="4_drs5p"]
+[ext_resource type="PackedScene" uid="uid://f4frv3c4bcu" path="res://scen/items/abeme.tscn" id="12_v84cv"]
 [ext_resource type="Texture2D" uid="uid://varw4lx87ems" path="res://textures/1182467.160.webp" id="14_whqx1"]
 [ext_resource type="AudioStream" uid="uid://bbhfg3cbhi5rf" path="res://audio/sfx/on.ogg" id="15_ek63r"]
 [ext_resource type="AudioStream" uid="uid://3myxn1aftmdc" path="res://audio/sfx/off.ogg" id="16_rr4q3"]
 [ext_resource type="PackedScene" uid="uid://djyme3vqxbqwg" path="res://scen/vfx/vfx_fire_1.tscn" id="17_ratdr"]
 [ext_resource type="PackedScene" uid="uid://cxjxhji71pdka" path="res://scen/mine.tscn" id="19_qrgk1"]
-[ext_resource type="PackedScene" uid="uid://d2sa2ulk5du35" path="res://scen/drop/ak_drop.tscn" id="22_8vfdx"]
-[ext_resource type="PackedScene" uid="uid://cr7oe3avnadsj" path="res://scen/drop/watermelon.tscn" id="23_8rled"]
+[ext_resource type="PackedScene" uid="uid://d2sa2ulk5du35" path="res://scen/items/ak_drop.tscn" id="22_8vfdx"]
+[ext_resource type="PackedScene" uid="uid://cr7oe3avnadsj" path="res://scen/items/watermelon.tscn" id="23_8rled"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5gscs"]
 sky_top_color = Color(0.276906, 0.333808, 0.412953, 1)
@@ -197,13 +198,6 @@ script = ExtResource("1_ectqd")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_614wv")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(0.913439, 0.0464309, 0.404319, -0.406976, 0.104212, 0.907475, 0, -0.993471, 0.114088, -4.96946, 3.43271, 0.400622)
-light_color = Color(0.976471, 0, 0.419608, 1)
-light_energy = 16.0
-light_bake_mode = 1
-shadow_enabled = true
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.736215, 0.676747, 0, -0.676747, 0.736215, 0, 13.3715, 25.4336)
 light_bake_mode = 1
@@ -364,7 +358,7 @@ mesh = SubResource("PrismMesh_xl3aq")
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(0.276627, 0, 0.960977, 0, 1, 0, -0.960977, 0, 0.276627, -5.91517, 1.52162, 1.44296)
 modulate = Color(0.635294, 1, 0.32549, 1)
-text = "..."
+text = "Арбузівград > 50км"
 horizontal_alignment = 0
 autowrap_mode = 1
 
@@ -404,6 +398,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
 
 [node name="ak_drop2" parent="." instance=ExtResource("22_8vfdx")]
 transform = Transform3D(0.322538, 0, 0, 0, 0.322538, 0, 0, 0, 0.322559, 0.55958, 1, -5)
+
+[node name="RigidBody3D" parent="." instance=ExtResource("12_v84cv")]
+transform = Transform3D(0.21895, 0, 0.449512, 0, 0.5, 0, -0.449512, 0, 0.21895, -5.21036, 0.675835, 1.19388)
+
+[node name="Label3D2" type="Label3D" parent="."]
+transform = Transform3D(0.276627, 0, 0.960977, 0, 1, 0, -0.960977, 0, 0.276627, -5.91517, 1.79105, 1.44296)
+modulate = Color(0.635294, 1, 0.32549, 1)
+text = "item ids range -1 to 5"
+horizontal_alignment = 0
+autowrap_mode = 1
 
 [connection signal="body_entered" from="button/Area3D" to="button" method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="button/Area3D" to="button" method="_on_area_3d_body_exited"]

@@ -26,6 +26,7 @@ var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
 var active_item = null
+var active_item_id:int = -1
 var picked_item_control:int
 @export var control_id:int
 @onready var namee = $name
@@ -62,22 +63,15 @@ func set_active_item(id):
 @rpc("any_peer", "call_local", "reliable")
 func _active_item(id,p_id):
 	if mpp.player_index == p_id:
-		if active_item != null:
-			hand.remove_child(active_item)
-			active_item.queue_free()
-		if id == 0:
-			active_item = preload("res://scen/drone_inv.tscn").instantiate()
+		if hand.get_children() != null and active_item_id != id:
+			for child in hand.get_children():
+				hand.remove_child(child)
+				child.queue_free()
+		if id != -1 and active_item_id != id:
+			active_item = InventoryManager.items[id][1].instantiate()
 			active_item.position = hand.position
-		elif id == 1:
-			active_item = preload("res://scen/watermelon_gun.tscn").instantiate()
-			active_item.position = hand.position
-		elif id == 2:
-			active_item = preload("res://scen/watermelon_inv.tscn").instantiate()
-			active_item.position = hand.position
-		else:
-			active_item = null
-			return
-		hand.add_child(active_item)
+			hand.add_child(active_item)
+		active_item_id = id
 
 func pick_up(id):
 	pick_up_mp.rpc(id)

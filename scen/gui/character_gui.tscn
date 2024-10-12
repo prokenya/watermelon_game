@@ -234,6 +234,23 @@ theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_font_sizes/font_size = 25
 script = SubResource("GDScript_x21m7")
 
+[node name="pos" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.806
+anchor_right = 0.806
+offset_left = -96.5121
+offset_right = 159.488
+offset_bottom = 64.0
+grow_horizontal = 2
+size_flags_vertical = 0
+theme = ExtResource("2_rh2mb")
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "pos()"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="VBoxContainer/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/fire" to="." method="_on_fire_pressed"]
 [connection signal="pressed" from="Button" to="Button" method="_on_pressed"]
