@@ -1,27 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://bo2s8uuybarua"]
+[gd_scene load_steps=13 format=3 uid="uid://bo2s8uuybarua"]
 
 [ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_wmg5k"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="2_4uq3a"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_i7mto"]
 [ext_resource type="Script" path="res://scripts/select_level.gd" id="5_5mpaj"]
 [ext_resource type="ArrayMesh" uid="uid://pe65vyi7myeg" path="res://models/mesh/watermelon.tres" id="5_tvg7f"]
-
-[sub_resource type="GDScript" id="GDScript_mkgfn"]
-script/source = "extends Button
-
-
-
-func _on_pressed():
-	$\"../../menu_0\".visible = true
-	$\"..\".visible = false
-"
-
-[sub_resource type="GDScript" id="GDScript_ljndc"]
-script/source = "extends Button
-
-func _on_pressed():
-	$\"../../../CanvasLayer2\".visible = true;$\"../..\".visible = false
-"
 
 [sub_resource type="GDScript" id="GDScript_oiqsv"]
 script/source = "extends Button
@@ -30,6 +13,13 @@ func _on_pressed():
 	%credits.visible = true
 	$\"../..\".visible = false 
 "
+
+[sub_resource type="LabelSettings" id="LabelSettings_eeghs"]
+line_spacing = 8.74
+font_size = 31
+font_color = Color(4.57242e-07, 0.411091, 0.114304, 1)
+shadow_size = 11
+shadow_color = Color(1, 0.341176, 0.827451, 0.117647)
 
 [sub_resource type="Animation" id="Animation_lvddx"]
 resource_name = "fade_in"
@@ -93,22 +83,6 @@ _data = {
 "fade_out": SubResource("Animation_xxrsi")
 }
 
-[sub_resource type="GDScript" id="GDScript_7cmnv"]
-resource_name = "s"
-script/source = "extends Button
-
-func _on_pressed():
-	$\"../../Control/menu_0\".visible = true
-	%credits.visible = false
-"
-
-[sub_resource type="LabelSettings" id="LabelSettings_eeghs"]
-line_spacing = 8.74
-font_size = 31
-font_color = Color(4.57242e-07, 0.411091, 0.114304, 1)
-shadow_size = 11
-shadow_color = Color(1, 0.341176, 0.827451, 0.117647)
-
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_67xna"]
 particle_flag_rotate_y = true
 emission_shape_scale = Vector3(1, 1, 0.145)
@@ -147,10 +121,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CanvasLayer2" parent="Control" instance=ExtResource("2_4uq3a")]
+[node name="menub" type="CanvasLayer" parent="Control"]
+layer = 128
 visible = false
 
-[node name="menu" type="Button" parent="Control/CanvasLayer2"]
+[node name="menu" type="Button" parent="Control/menub"]
+top_level = true
+visibility_layer = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -161,11 +138,10 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 button_mask = 7
 text = "menu"
-script = SubResource("GDScript_mkgfn")
 
-[node name="menu_0" type="CanvasLayer" parent="Control"]
+[node name="menu" type="CanvasLayer" parent="Control"]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/menu_0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/menu"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -180,43 +156,34 @@ grow_vertical = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 0
 
-[node name="play" type="Button" parent="Control/menu_0/VBoxContainer"]
+[node name="multiplayer" type="Button" parent="Control/menu/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_i7mto")
+theme_override_font_sizes/font_size = 75
+action_mode = 0
+text = "multiplayer"
+
+[node name="play" type="Button" parent="Control/menu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "play"
 
-[node name="settings" type="Button" parent="Control/menu_0/VBoxContainer"]
+[node name="settings" type="Button" parent="Control/menu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "settings"
-script = SubResource("GDScript_ljndc")
 
-[node name="credits" type="Button" parent="Control/menu_0/VBoxContainer"]
+[node name="credits" type="Button" parent="Control/menu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 75
 action_mode = 0
 text = "credits"
 script = SubResource("GDScript_oiqsv")
-
-[node name="n-2-n" type="AnimationPlayer" parent="Control"]
-libraries = {
-"": SubResource("AnimationLibrary_s8e0y")
-}
-
-[node name="ColorRect" type="ColorRect" parent="Control/n-2-n"]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-metadata/_edit_use_anchors_ = true
 
 [node name="select_level" type="Control" parent="Control"]
 visible = false
@@ -227,7 +194,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/select_level"]
+[node name="PanelContainer" type="PanelContainer" parent="Control/select_level"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -235,36 +202,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="Control/select_level/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/select_level/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/select_level/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 35
 text = "select level"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/select_level/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/select_level/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="CheckBox" type="CheckBox" parent="Control/select_level/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3_i7mto")
-theme_override_font_sizes/font_size = 35
-text = "is_multiplayer"
-
-[node name="CheckBox2" type="CheckBox" parent="Control/select_level/VBoxContainer/HBoxContainer"]
+[node name="CheckBox2" type="CheckBox" parent="Control/select_level/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_font_sizes/font_size = 35
 text = "base_world_prefs"
 
-[node name="Button" type="Button" parent="Control/select_level/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("3_i7mto")
-theme_override_font_sizes/font_size = 40
-text = "play"
-
-[node name="ItemList" type="ItemList" parent="Control/select_level/VBoxContainer"]
+[node name="ItemList" type="ItemList" parent="Control/select_level/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_i7mto")
@@ -272,47 +229,31 @@ theme_override_font_sizes/font_size = 35
 fixed_icon_size = Vector2i(100, 100)
 script = ExtResource("5_5mpaj")
 
-[node name="menu" type="Button" parent="Control/select_level"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -64.0
-offset_bottom = 53.0
-grow_horizontal = 0
-size_flags_horizontal = 8
-size_flags_vertical = 4
-button_mask = 7
-text = "menu"
-script = SubResource("GDScript_mkgfn")
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/select_level/PanelContainer/VBoxContainer"]
+layout_mode = 2
 
-[node name="credits" type="Control" parent="."]
+[node name="Button2" type="Button" parent="Control/select_level/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 8
+theme = ExtResource("3_i7mto")
+theme_override_font_sizes/font_size = 60
+text = "play"
+
+[node name="settings" parent="Control" instance=ExtResource("2_4uq3a")]
+visible = false
+
+[node name="credits" type="Control" parent="Control"]
 unique_name_in_owner = true
 visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="menu" type="Button" parent="credits"]
-top_level = true
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -64.0
-offset_bottom = 62.0
-grow_horizontal = 0
-size_flags_horizontal = 8
-size_flags_vertical = 4
-theme = ExtResource("3_i7mto")
-button_mask = 7
-text = "menu"
-script = SubResource("GDScript_7cmnv")
-
-[node name="BoxContainer" type="BoxContainer" parent="credits"]
+[node name="BoxContainer" type="BoxContainer" parent="Control/credits"]
 top_level = true
 layout_mode = 1
 anchors_preset = 8
@@ -328,10 +269,10 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="credits/BoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/credits/BoxContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="credits/BoxContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="Control/credits/BoxContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0.862745, 0, 0.686275, 1)
@@ -339,7 +280,7 @@ theme_override_font_sizes/font_size = 35
 text = "discord usernames!"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="credits/BoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Control/credits/BoxContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0, 0.517647, 0.364706, 1)
@@ -351,6 +292,21 @@ testers:
 @alexeyprogamer
 "
 label_settings = SubResource("LabelSettings_eeghs")
+
+[node name="n-2-n" type="AnimationPlayer" parent="Control"]
+libraries = {
+"": SubResource("AnimationLibrary_s8e0y")
+}
+
+[node name="ColorRect" type="ColorRect" parent="Control/n-2-n"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="bg" type="CanvasLayer" parent="."]
 layer = -128
@@ -392,15 +348,13 @@ environment = SubResource("Environment_b0rlh")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="bg/bg"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 23.9588, 0, 0)
 
-[connection signal="pressed" from="Control/CanvasLayer2/menu" to="Control/CanvasLayer2/menu" method="_on_pressed"]
-[connection signal="pressed" from="Control/menu_0/VBoxContainer/play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="Control/menu_0/VBoxContainer/settings" to="Control/menu_0/VBoxContainer/settings" method="_on_pressed"]
-[connection signal="pressed" from="Control/menu_0/VBoxContainer/credits" to="Control/menu_0/VBoxContainer/credits" method="_on_pressed"]
+[connection signal="pressed" from="Control/menub/menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="Control/menu/VBoxContainer/multiplayer" to="." method="_on_multiplayer_pressed"]
+[connection signal="pressed" from="Control/menu/VBoxContainer/play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Control/menu/VBoxContainer/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Control/menu/VBoxContainer/credits" to="." method="_on_credits_pressed"]
+[connection signal="toggled" from="Control/select_level/PanelContainer/VBoxContainer/HBoxContainer/CheckBox2" to="Control/select_level/PanelContainer/VBoxContainer/ItemList" method="_on_check_box_2_toggled"]
+[connection signal="item_activated" from="Control/select_level/PanelContainer/VBoxContainer/ItemList" to="Control/select_level/PanelContainer/VBoxContainer/ItemList" method="_on_item_activated"]
+[connection signal="item_clicked" from="Control/select_level/PanelContainer/VBoxContainer/ItemList" to="Control/select_level/PanelContainer/VBoxContainer/ItemList" method="_on_item_clicked"]
+[connection signal="pressed" from="Control/select_level/PanelContainer/VBoxContainer/HBoxContainer2/Button2" to="Control/select_level/PanelContainer/VBoxContainer/ItemList" method="_on_button_pressed"]
 [connection signal="animation_finished" from="Control/n-2-n" to="." method="_on_n_2n_animation_finished"]
-[connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_toggled"]
-[connection signal="toggled" from="Control/select_level/VBoxContainer/HBoxContainer/CheckBox2" to="Control/select_level/VBoxContainer/ItemList" method="_on_check_box_2_toggled"]
-[connection signal="pressed" from="Control/select_level/VBoxContainer/HBoxContainer/Button" to="Control/select_level/VBoxContainer/ItemList" method="_on_button_pressed"]
-[connection signal="item_activated" from="Control/select_level/VBoxContainer/ItemList" to="Control/select_level/VBoxContainer/ItemList" method="_on_item_activated"]
-[connection signal="item_clicked" from="Control/select_level/VBoxContainer/ItemList" to="Control/select_level/VBoxContainer/ItemList" method="_on_item_clicked"]
-[connection signal="pressed" from="Control/select_level/menu" to="Control/select_level/menu" method="_on_pressed"]
-[connection signal="pressed" from="credits/menu" to="credits/menu" method="_on_pressed"]

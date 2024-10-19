@@ -1,16 +1,255 @@
-[gd_scene load_steps=5 format=3 uid="uid://dy3e2u4rv26uq"]
+[gd_scene load_steps=14 format=3 uid="uid://dy3e2u4rv26uq"]
 
 [ext_resource type="Script" path="res://addons/MultiplayCore/MultiPlay.gd" id="1_516nj"]
 [ext_resource type="PackedScene" uid="uid://dlnitytscxewx" path="res://scen/mpplayer.tscn" id="2_3grxk"]
-[ext_resource type="PackedScene" uid="uid://bdnenmk6e4f2t" path="res://scen/levels/main_test_s.tscn" id="3_owwxo"]
+[ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_6iqdx"]
 [ext_resource type="Script" path="res://addons/MultiplayCore/net_protocols/ENetProtocol.gd" id="4_mn1yh"]
+[ext_resource type="Script" path="res://scripts/NetworkGUIDemo.gd" id="5_8dbey"]
+[ext_resource type="Texture2D" uid="uid://bks4fnxw0alvi" path="res://textures/GUI/spinner.png" id="6_a2jld"]
+[ext_resource type="PackedScene" uid="uid://bdnenmk6e4f2t" path="res://scen/levels/main_test_s.tscn" id="6_jj5fv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67w23"]
+bg_color = Color(0, 0, 0, 0.247059)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5fmhj"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0.333333)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Animation" id="Animation_cdskr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureRect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_osufp"]
+resource_name = "spin"
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureRect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bhxad"]
+_data = {
+"RESET": SubResource("Animation_cdskr"),
+"spin": SubResource("Animation_osufp")
+}
+
+[sub_resource type="GDScript" id="GDScript_aj2i0"]
+resource_name = "multiplayer"
+script/source = "extends \"res://scripts/select_level.gd\"
+
+@onready var control: Panel = $\"../..\"
+@onready var mpc: MultiPlayCore = $\"../../../..\"
+
+func _on_host_pressed() -> void:
+	if base_prefs == true:
+		args[\"world\"] = tscn_files[level_index]
+		Event.start_world_args = args
+	mpc.first_scene = load(tscn_files[level_index])
+	await get_tree().create_timer(0.4).timeout
+	control.host_game()
+"
 
 [node name="MultiPlayCore" type="Node"]
 script = ExtResource("1_516nj")
 max_players = 12
 player_scene = ExtResource("2_3grxk")
-first_scene = ExtResource("3_owwxo")
+first_scene = ExtResource("6_jj5fv")
+debug_gui_enabled = false
 
 [node name="ENetProtocol" type="Node" parent="."]
 script = ExtResource("4_mn1yh")
-compression_mode = 2
+
+[node name="menub" type="CanvasLayer" parent="."]
+layer = 128
+
+[node name="Control" type="Panel" parent="menub" node_paths=PackedStringArray("mpc", "host_btn", "join_btn", "address_bar", "button_layout", "connecting_layout", "connect_fail_layout", "connect_fail_label")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_6iqdx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_67w23")
+script = ExtResource("5_8dbey")
+mpc = NodePath("../..")
+host_btn = NodePath("VBoxContainer/Layout/Buttons/Host")
+join_btn = NodePath("VBoxContainer/Layout/Buttons/HBoxContainer/Join")
+address_bar = NodePath("VBoxContainer/Layout/Buttons/Address")
+button_layout = NodePath("VBoxContainer/Layout/Buttons")
+connecting_layout = NodePath("VBoxContainer/Layout/Connecting")
+connect_fail_layout = NodePath("VBoxContainer/Layout/ConnectionFailure")
+connect_fail_label = NodePath("VBoxContainer/Layout/ConnectionFailure/Layout/Reason")
+
+[node name="menu" type="Button" parent="menub/Control"]
+top_level = true
+visibility_layer = 3
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 62.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+button_mask = 7
+text = "menu"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menub/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -305.0
+offset_top = -281.0
+offset_right = 305.0
+offset_bottom = 281.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Layout" type="VBoxContainer" parent="menub/Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="GameTitle" type="Label" parent="menub/Control/VBoxContainer/Layout"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_6iqdx")
+theme_override_font_sizes/font_size = 36
+text = "multiplayer game"
+
+[node name="ConnectionFailure" type="PanelContainer" parent="menub/Control/VBoxContainer/Layout"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5fmhj")
+
+[node name="Layout" type="VBoxContainer" parent="menub/Control/VBoxContainer/Layout/ConnectionFailure"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="menub/Control/VBoxContainer/Layout/ConnectionFailure/Layout"]
+layout_mode = 2
+text = "Connection Failed"
+
+[node name="Reason" type="Label" parent="menub/Control/VBoxContainer/Layout/ConnectionFailure/Layout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Reason: ERR"
+
+[node name="Buttons" type="VBoxContainer" parent="menub/Control/VBoxContainer/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Host" type="Button" parent="menub/Control/VBoxContainer/Layout/Buttons"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Host"
+
+[node name="Address" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "127.0.0.1:4200"
+placeholder_text = "Address"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="menub/Control/VBoxContainer/Layout/Buttons"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NAME" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "NAME"
+
+[node name="Join" type="Button" parent="menub/Control/VBoxContainer/Layout/Buttons/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.35
+text = "Join"
+
+[node name="Connecting" type="VBoxContainer" parent="menub/Control/VBoxContainer/Layout"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Spinner" type="Control" parent="menub/Control/VBoxContainer/Layout/Connecting"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="menub/Control/VBoxContainer/Layout/Connecting/Spinner"]
+modulate = Color(1, 1, 1, 0.678431)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(15, 15)
+texture = ExtResource("6_a2jld")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="menub/Control/VBoxContainer/Layout/Connecting/Spinner"]
+libraries = {
+"": SubResource("AnimationLibrary_bhxad")
+}
+autoplay = "spin"
+
+[node name="Label" type="Label" parent="menub/Control/VBoxContainer/Layout/Connecting"]
+modulate = Color(1, 1, 1, 0.498039)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Connecting..."
+horizontal_alignment = 1
+
+[node name="ItemList" type="ItemList" parent="menub/Control/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_6iqdx")
+theme_override_font_sizes/font_size = 35
+auto_height = true
+fixed_icon_size = Vector2i(100, 100)
+script = SubResource("GDScript_aj2i0")
+
+[connection signal="player_connected" from="." to="." method="_on_player_connected"]
+[connection signal="pressed" from="menub/Control/menu" to="menub/Control" method="_on_menu_pressed"]
+[connection signal="pressed" from="menub/Control/VBoxContainer/Layout/Buttons/Host" to="menub/Control/VBoxContainer/ItemList" method="_on_host_pressed"]
+[connection signal="item_activated" from="menub/Control/VBoxContainer/ItemList" to="menub/Control/VBoxContainer/ItemList" method="_on_item_activated"]
+[connection signal="item_clicked" from="menub/Control/VBoxContainer/ItemList" to="menub/Control/VBoxContainer/ItemList" method="_on_item_clicked"]

@@ -7,7 +7,7 @@ var tscn_files: Array = ["res://scen/levels/level-1.tscn",
 var args = {"spawn_point": Vector3(0,100,0) }
 var base_prefs:bool = false
 var level_index:int 
-@onready var n_2_n: AnimationPlayer = $"../../../n-2-n"
+@onready var n_2_n: AnimationPlayer = $"../../../../n-2-n"
 
 func _ready():
 	var levels_path: String = "user://levels"
@@ -22,7 +22,8 @@ func _ready():
 	# Получаем список всех .tscn файлов
 	#get_tscn_files_in_directory(levels_path)
 	for i in len(tscn_files):
-		item_list.add_item(tscn_files[i],load("res://textures/1182467.160.webp"))
+		item_list.add_item(tscn_files[i].replace("res://scen/levels/",""),
+		load("res://textures/1182467.160.webp"))
 # Функция для поиска всех .tscn файлов в указанной директории
 #func get_tscn_files_in_directory(directory_path: String):
 	#Event.printc("поиск пользовательских уровней...")
@@ -48,27 +49,16 @@ func _ready():
 func _on_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	level_index = index
 
-
-func _on_check_box_toggled(toggled_on: bool) -> void:
-	Event.is_multiplayer = toggled_on
-
-
 func _on_check_box_2_toggled(toggled_on: bool) -> void:
 	base_prefs = toggled_on
 
 
 func _on_button_pressed() -> void:
 	n_2_n.play("fade_out")
-	await get_tree().create_timer(0.3).timeout
+	await get_tree().create_timer(0.4).timeout
 	if Event.is_multiplayer == false:
 		if base_prefs == true:
 			args["world"] = tscn_files[level_index]
 			Event.start_world_args = args
 		else:Event.start_world_args = {}
 		get_tree().change_scene_to_file(tscn_files[level_index])
-	if Event.is_multiplayer == true:
-		if base_prefs == true:
-			args["world"] = tscn_files[level_index]
-			Event.start_world_args = args
-		else:Event.start_world_args = {"world":tscn_files[level_index]}
-		get_tree().change_scene_to_file("res://scen/gui/multi_play_core.tscn")

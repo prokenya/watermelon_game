@@ -170,29 +170,34 @@ func _input(event: InputEvent):
 		if Event.move_gui == true:
 			return
 		
+		# Обработка касаний экрана
 		if event is InputEventScreenTouch:
 			if event.pressed:
 				if tracked_touch_index == -1:
-					tracked_touch_index = event.index
+					# Запоминаем первый палец
 					touch_start_position = event.position
-					dragging = true
+					tracked_touch_index = event.index
 			elif event.index == tracked_touch_index:
 				tracked_touch_index = -1
-				dragging = false
-		if event is InputEventScreenDrag and event.index == tracked_touch_index:
-			if dragging:
-				# Пропускаем первый кадр, чтобы избежать резкого скачка
-				dragging = false
-				touch_start_position = event.position
+
+		# Обработка перетаскивания
+		if event is InputEventScreenDrag:
+			# Проверяем, отслеживается ли палец
+			if event.index != tracked_touch_index:
+				return
 			else:
+				# Рассчитываем и применяем изменение
 				var delta = event.position - touch_start_position
 				delta *= -1
 				_rotate_camera(delta)
 				touch_start_position = event.position
 
-
+	# Обработка джойстика
 	if event is InputEventJoypadMotion:
 		_rotate_camera(Vector2(event.axis_value(0), event.axis_value(1)) * sensitivity)
+
+
+
 
 func _rotate_camera(delta: Vector2):
 	current_rotation += delta * sensitivity

@@ -18,7 +18,10 @@ signal run_comand(comand: String)
 signal host()
 signal join()
 var is_multiplayer:bool = false
+var mppnode
+var mpcnode
 var mpp_index:int
+signal _on_player_connected(mpplayer)
 #player
 signal _active_item(item_id)
 var hp_char: int

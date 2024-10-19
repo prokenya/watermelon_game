@@ -44,6 +44,7 @@ signal swap_unfocused(new_swap: MPPlayer)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Event.mppnode = $"."
 	if mpc.mode != mpc.PlayMode.Online:
 		is_ready = true
 		player_ready.emit()

@@ -52,6 +52,7 @@ func _ready():
 #inventory
 
 func _on_handshake_ready(data):
+	print(data)
 	if data.get("name") != null:
 		namee.text = data.get("name")
 
@@ -239,11 +240,12 @@ func _on_area_3d_area_entered(area: Area3D):
 			hp -= area.get_parent().damage
 			playeranim_gui.play("damag")
 			if hp <= 0:
-				position = Vector3(0,-255,0)
 				if multiplayer.is_server():
 					playeranim_gui.play("damag")
 				else:
-					Event.emit_signal("back_s",1)
+					mpp.disconnect_player()
+					mpp.despawn_node()
+					get_tree().change_scene_to_file("res://scen/gui/menu.tscn")
 					playeranim_gui.play("damag")
 			Event.hp_char = hp
 	

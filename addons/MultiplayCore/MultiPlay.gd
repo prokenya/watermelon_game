@@ -181,6 +181,7 @@ var _debug_join_address = ""
 var _debug_bootui = null
 
 func _ready():
+	Event.mpcnode = $"."
 	if Event.start_world_args.has("world"):
 		first_scene = load(Event.start_world_args["world"])
 	if Engine.is_editor_hint():
@@ -729,3 +730,7 @@ func _net_load_scene(scene_path: String, respawn_players = true):
 		players.respawn_node_all()
 	
 	scene_loaded.emit()
+
+
+func _on_player_connected(player: MPPlayer) -> void:
+	Event.emit_signal("_on_player_connected")

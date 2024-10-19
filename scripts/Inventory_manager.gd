@@ -6,8 +6,15 @@ var WORLD_ITEM: Array = []
 var HEND_ITEM: Array = []
 var default_item = ["res://scen/items/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
 "res://textures/1182467.160.webp",1]
-var items:Dictionary = {}
-var config = ConfigFile.new()
+var items:Dictionary = {
+	-1:["res://scen/items/enemy.tscn", 0, 0, 1],
+	0:["res://scen/items/drone.tscn", "res://scen/items/inventory/drone_inv.tscn", "res://textures/icons/drone.png", 3],
+	1:["res://scen/items/ak_drop.tscn", "res://scen/items/inventory/watermelon_gun.tscn", "res://textures/icons/ak_w.png", 1],
+	2:["res://scen/items/watermelon.tscn", "res://scen/items/inventory/watermelon_inv.tscn", "res://textures/icons/watermelon.png", 10],
+	3:["res://scen/items/drone_exp.tscn", 0, 0, 3],
+	4:["res://scen/items/bullet.tscn", 0, 0, 1],
+	5:["res://scen/items/abeme.tscn", "res://scen/items/inventory/abeme_inv.tscn", "res://textures/model_0.png", 5]
+	}
 func _ready() -> void:
 	items = update_item(items)
 	items = defitems(items)
@@ -21,21 +28,36 @@ func defitems(data: Dictionary):
 	return data
 
 func update_item(data: Dictionary) -> Dictionary:
-	var err = config.load("res://resources/items.cfg")
+	var config = ConfigFile.new()
+	var config_path = "user://items.cfg"
 
-	if err != OK:
-		print_debug("Ошибка загрузки файла:", err)
-		return {}
-	
-	var loaded_data = {}
-
-	for key in config.get_section_keys("Items"):
-		loaded_data[int(key)] = config.get_value("Items", key)
+	# Сохраняем данные, если передан непустой словарь
 	if not data.is_empty():
 		for key in data.keys():
-			config.set_value("Items", str(key),data[key])
-		config.save("res://resources/items.cfg")
+			config.set_value("Items", str(key), data[key])
+		var save_err = config.save(config_path)
+		if save_err != OK:
+			print_debug("Ошибка сохранения файла:", save_err)
+			return {}
+
+	# Загружаем данные из файла
+	var load_err = config.load(config_path)
+	if load_err != OK:
+		print_debug("Ошибка загрузки файла:", load_err)
+		return {}
+	
+	# Проверка, существует ли секция "Items"
+	if not config.has_section("Items"):
+		print_debug("Секция 'Items' не найдена в файле конфигурации.")
+		return {}
+
+	# Читаем данные из секции "Items"
+	var loaded_data = {}
+	for key in config.get_section_keys("Items"):
+		loaded_data[int(key)] = config.get_value("Items", key)
+	
 	return loaded_data
+
 
 func set_data_type(items: Dictionary):
 	for i in items.keys():
