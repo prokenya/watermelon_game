@@ -17,6 +17,10 @@ var last_position: Vector3
 var picked_item_id: int
 var picked_item: Object
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+@onready var camera_3d: Camera3D = $Node3D/Camera3D
+@onready var guinode: CanvasLayer = $Control_charapter/gui
+
+
 var cam_ch: bool
 var cam_shid: int = 0
 var freejump: bool
@@ -25,26 +29,44 @@ var tracked_touch_index: int = -1
 var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
-var id_control: int = 0
 var active_item_id:int = -1
 var picked_item_control:int
-var control_id:int
+
+var control_item_id:int
+var picked_controlled_object_type:String
+var active_gui
 
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
 	Event.connect("charapter_op", _apply_user_prefs)
-	Event.connect("control", ds_control)
 	Event.connect("jump",_on_touch_screen_button_pressed)
 	Event.connect("_active_item",_active_item)
 	Event.connect("pick_up",pick_up)
 	Event.connect("drop_item",drop_item)
+	Event.connect("update_control",apply_control)
 	last_position = position
-	control_id = Event.control_item_id + 1
-	Event.control_item_id = Event.control_item_id + 1
-	Event.player_control_id = control_id
-	Event.emit_signal("control",control_id,-1,-1)
-	Event.printc("ready",Color.BROWN)
+	apply_control({
+	"control_id": control_item_id,
+	"controlled_object_type":"player",
+	"multiplayer_index":Event.mpp_index
+	})
+
+var gui = {
+	"player": preload("res://scen/gui/character_gui.tscn"),
+	"drone": preload("res://scen/gui/drone_gui.tscn")
+}
+
+func apply_control(control_info: Dictionary):
+	if control_info["control_id"] == control_item_id:
+		camera_3d.current = true
+		
+	for child in guinode.get_children():
+		child.queue_free()
+	var gui_scene = gui.get(control_info["controlled_object_type"], null)
+	if gui_scene:
+		guinode.add_child(gui_scene.instantiate())
+
 #inventory
 func _active_item(id):
 	if hand.get_children() != null and active_item_id != id:
@@ -94,15 +116,6 @@ func drop_item(item_id,amount):
 		"pl_id": Event.mpp_index
 		}
 		Event.emit_signal("spawn_obj",data)
-func ds_control(id,item_id,player_id):
-	if id == control_id:
-		camera.current = true
-	if id != control_id:
-		$Control_charapter.add_child(preload("res://scen/gui/drone_gui.tscn").instantiate())
-	if id == control_id and Event.control_id != control_id:
-		$Control_charapter.add_child(preload("res://scen/gui/character_gui.tscn").instantiate())
-		camera.current = true
-		Event.control_id = control_id
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -123,17 +136,26 @@ func _process(delta: float):
 		last_position = position
 		_change_state(State.WALK)
 		_play_footstep_anim()
+
 	if ray_cast_3d.is_colliding():
 		picked_item = ray_cast_3d.get_collider()
 		if picked_item != null:
 			picked_item_id = picked_item.item_id
-			if picked_item.item_id == 0 or picked_item.item_id == 3:
-				picked_item_control = picked_item.control_item_id
-			else:picked_item_control = -1
-			#print("->",picked_item_id)
-			Event.emit_signal("usev",true,picked_item_id,picked_item_control,-1)
+			
+			if picked_item.get("control_item_id") != null:
+				picked_item_control = picked_item.get("control_item_id")
+			else:
+				picked_item_control = -1
+			
+			if picked_item.get("controlled_object_type") != null:
+				picked_controlled_object_type = picked_item.get("controlled_object_type")
+			else:
+				picked_controlled_object_type = "null"
+			Event.emit_signal("usev", true, picked_item_id, picked_item_control, -1)
 	else: 
-		Event.emit_signal("usev",false,-1,-1,-1)
+		Event.emit_signal("usev", false, -1, -1, -1)
+
+
 func _physics_process(delta: float):
 	SimpleGrass.set_player_position(global_position)
 	if not is_on_floor():
@@ -164,40 +186,35 @@ func _play_footstep_anim():
 func footstep():
 	footstep_audio.play()
 func _input(event: InputEvent):
-	if id_control == 0:
-		if Event.is_inventory_active == true:
-			return  # Если инвентарь активен, не обрабатывать события для игрока
-		if Event.move_gui == true:
-			return
-		
-		# Обработка касаний экрана
-		if event is InputEventScreenTouch:
-			if event.pressed:
-				if tracked_touch_index == -1:
-					# Запоминаем первый палец
-					touch_start_position = event.position
-					tracked_touch_index = event.index
-			elif event.index == tracked_touch_index:
-				tracked_touch_index = -1
-
-		# Обработка перетаскивания
-		if event is InputEventScreenDrag:
-			# Проверяем, отслеживается ли палец
-			if event.index != tracked_touch_index:
-				return
-			else:
-				# Рассчитываем и применяем изменение
-				var delta = event.position - touch_start_position
-				delta *= -1
-				_rotate_camera(delta)
+	if Event.is_inventory_active == true:
+		return  # Если инвентарь активен, не обрабатывать события для игрока
+	if Event.move_gui == true:
+		return
+	
+	# Обработка касаний экрана
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			if tracked_touch_index == -1:
+				# Запоминаем первый палец
 				touch_start_position = event.position
+				tracked_touch_index = event.index
+		elif event.index == tracked_touch_index:
+			tracked_touch_index = -1
 
+	# Обработка перетаскивания
+	if event is InputEventScreenDrag:
+		# Проверяем, отслеживается ли палец
+		if event.index != tracked_touch_index:
+			return
+		else:
+			# Рассчитываем и применяем изменение
+			var delta = event.position - touch_start_position
+			delta *= -1
+			_rotate_camera(delta)
+			touch_start_position = event.position
 	# Обработка джойстика
 	if event is InputEventJoypadMotion:
 		_rotate_camera(Vector2(event.axis_value(0), event.axis_value(1)) * sensitivity)
-
-
-
 
 func _rotate_camera(delta: Vector2):
 	current_rotation += delta * sensitivity

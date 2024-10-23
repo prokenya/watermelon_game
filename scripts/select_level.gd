@@ -7,7 +7,7 @@ var tscn_files: Array = ["res://scen/levels/level-1.tscn",
 var args = {"spawn_point": Vector3(0,100,0) }
 var base_prefs:bool = false
 var level_index:int 
-@onready var n_2_n: AnimationPlayer = $"../../../../n-2-n"
+@onready var n_2_n: AnimationPlayer = %"n-2-n"
 
 func _ready():
 	var levels_path: String = "user://levels"
@@ -18,7 +18,6 @@ func _ready():
 		var user_dir = DirAccess.open("user://")
 		if user_dir:
 			user_dir.make_dir(levels_path)  # Создаем папку levels
-	
 	# Получаем список всех .tscn файлов
 	#get_tscn_files_in_directory(levels_path)
 	for i in len(tscn_files):

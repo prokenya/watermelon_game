@@ -24,6 +24,27 @@ func _ready():
 		players[Event.mpp_index].position = spawn.position
 	items = Event.items
 
+func management_update():
+	var scene_tree = get_tree()
+	var groups = ["player", "drone"]
+	
+	for group in groups:
+		if scene_tree.has_group(group):
+			for node in scene_tree.get_nodes_in_group(group):
+				Event.control_id_counter += 1
+				node.control_item_id = Event.control_id_counter
+				
+
+				rpc("sync_control_id", node.name, Event.control_id_counter)
+
+# Синхронизация ID через RPC
+@rpc("call_remote")
+func sync_control_id(node_name: String, control_id: int):
+	var node = get_node(node_name)
+	if node:
+		node.control_item_id = control_id
+
+
 func find_players_in_group() -> void:
 	players = []
 	var scene_tree = get_tree()
@@ -76,13 +97,18 @@ func spawn_objs(data: Dictionary):
 	else:
 		dropped_item_scene = InventoryManager.items[data["spawn_obj_id"]][1]
 	for i in range(data["amount"]):
+		
 		var dropped_item = dropped_item_scene.instantiate()
+		
 		dropped_item.position = data["obj_position"]
 		dropped_item.rotation = data["obj_rotation"]
 		dropped_item.scale = dropped_item.scale * data["obj_scale"]
-		if not data.has("spawn_parent"):
+		
+		if data.has("spawn_parent"):
+			data["spawn_parent"].add_child(dropped_item)
+		else:
 			add_child(dropped_item)
-		else: data["spawn_parent"].add_child(dropped_item)
+		
 		if dropped_item is RigidBody3D:
 			dropped_item.linear_velocity = data["impulse"]
 			dropped_item.angular_velocity = data["impulse"]

@@ -41,7 +41,7 @@ func _on_ch_pressed():
 
 var a
 func _on_cam_13_person_pressed():
-	var id = Event.control_id
+	var id = Event.control_info[\"control_id\"]
 	if a:
 		Event.emit_signal(\"cam_1_3p\",false,id)
 	else:

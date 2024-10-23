@@ -294,6 +294,7 @@ testers:
 label_settings = SubResource("LabelSettings_eeghs")
 
 [node name="n-2-n" type="AnimationPlayer" parent="Control"]
+unique_name_in_owner = true
 libraries = {
 "": SubResource("AnimationLibrary_s8e0y")
 }

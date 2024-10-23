@@ -6,9 +6,9 @@ extends Control
 var item_id
 var control_id
 @onready var gui = $"."
-@onready var menu = $"../ui_b"
+@onready var menu = $"../../ui_b"
 @onready var pos: Label = $pos
-
+@onready var player_node
 var is_paused = false
 func pressed():
 	if gui.visible == true:
@@ -22,13 +22,13 @@ func pressed():
 
 func _ready():
 	Event.connect("menu", pressed)
-	Event.connect("control", ds_control)
 	Event.connect("usev", visus)
+	player_node = get_parent().get_parent().get_parent()
 
 
 func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)
-	pos.text = "pos:" + str(round(get_parent().get_parent().position))
+	pos.text = "pos:" + str(round(player_node.position))
 
 func ds_control(id,item_id,player_id):
 	if id != Event.player_control_id:
@@ -36,7 +36,7 @@ func ds_control(id,item_id,player_id):
 
 func visus(vis,item_id,control,mp_id):
 	if mp_id != -1:
-		if mp_id == get_parent().get_parent().mpp.player_index:
+		if mp_id == player_node.mpp.player_index:
 			pick_up.visible = vis
 			use.visible = vis
 			item_id = item_id
@@ -54,10 +54,15 @@ func _on_touch_screen_button_pressed():
 func _on_fire_pressed():
 	var mpp = -1
 	if Event.is_multiplayer == true:
-		mpp = get_parent().get_parent().mpp.player_index
+		mpp = player_node.mpp.player_index
 	if control_id != -1:
-		Event.control_id = control_id
-		Event.emit_signal("control",control_id,item_id,mpp)
+		var data = {
+		"control_id": control_id,
+		"controller_id":player_node.control_item_id,
+		"controlled_object_type":player_node.picked_controlled_object_type,
+		"multiplayer_index":-1
+		}
+		Event.set_control(data)
 		print("Applying control for ID:",control_id)
 	Event.emit_signal("on_fire",mpp)
 

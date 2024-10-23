@@ -101,7 +101,7 @@ script = ExtResource("5_8dbey")
 mpc = NodePath("../..")
 host_btn = NodePath("VBoxContainer/Layout/Buttons/Host")
 join_btn = NodePath("VBoxContainer/Layout/Buttons/HBoxContainer/Join")
-address_bar = NodePath("VBoxContainer/Layout/Buttons/Address")
+address_bar = NodePath("VBoxContainer/Layout/Buttons/HBoxContainer/Address")
 button_layout = NodePath("VBoxContainer/Layout/Buttons")
 connecting_layout = NodePath("VBoxContainer/Layout/Connecting")
 connect_fail_layout = NodePath("VBoxContainer/Layout/ConnectionFailure")
@@ -175,22 +175,22 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Host"
 
-[node name="Address" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons"]
+[node name="NAME" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "127.0.0.1:4200"
-placeholder_text = "Address"
+placeholder_text = "NAME"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="menub/Control/VBoxContainer/Layout/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="NAME" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons/HBoxContainer"]
+[node name="Address" type="LineEdit" parent="menub/Control/VBoxContainer/Layout/Buttons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-placeholder_text = "NAME"
+text = "127.0.0.1:4200"
+placeholder_text = "Address"
 
 [node name="Join" type="Button" parent="menub/Control/VBoxContainer/Layout/Buttons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)

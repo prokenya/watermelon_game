@@ -81,7 +81,6 @@ func apply_control_drone(id,item_id,player_id):
 func sync(c_id,id_c):
 	controler_id = c_id
 	id_control = id_c
-	debug_label.text = \"controler_id:\"+str(controler_id)
 	
 func app_cam(cam,id):
 	if control_item_id == id:
