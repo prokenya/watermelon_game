@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://dy3e2u4rv26uq"]
+[gd_scene load_steps=15 format=3 uid="uid://dy3e2u4rv26uq"]
 
 [ext_resource type="Script" path="res://addons/MultiplayCore/MultiPlay.gd" id="1_516nj"]
 [ext_resource type="PackedScene" uid="uid://dlnitytscxewx" path="res://scen/mpplayer.tscn" id="2_3grxk"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_6iqdx"]
 [ext_resource type="Script" path="res://addons/MultiplayCore/net_protocols/ENetProtocol.gd" id="4_mn1yh"]
+[ext_resource type="Script" path="res://scripts/object_spawner.gd" id="4_tx765"]
 [ext_resource type="Script" path="res://scripts/NetworkGUIDemo.gd" id="5_8dbey"]
 [ext_resource type="Texture2D" uid="uid://bks4fnxw0alvi" path="res://textures/GUI/spinner.png" id="6_a2jld"]
 [ext_resource type="PackedScene" uid="uid://bdnenmk6e4f2t" path="res://scen/levels/main_test_s.tscn" id="6_jj5fv"]
@@ -82,6 +83,13 @@ max_players = 12
 player_scene = ExtResource("2_3grxk")
 first_scene = ExtResource("6_jj5fv")
 debug_gui_enabled = false
+
+[node name="objects" type="Node3D" parent="."]
+script = ExtResource("4_tx765")
+
+[node name="OBJECTS_SPAWNER" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scen/items/abeme.tscn", "res://scen/items/ak_drop.tscn", "res://scen/items/bullet.tscn", "res://scen/items/drone.tscn")
+spawn_path = NodePath("../objects")
 
 [node name="ENetProtocol" type="Node" parent="."]
 script = ExtResource("4_mn1yh")

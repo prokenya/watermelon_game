@@ -5,11 +5,11 @@
 
 [sub_resource type="GDScript" id="GDScript_2p3pq"]
 script/source = "extends CanvasLayer
-@onready var val = %val
+@onready var val = %Label
 @onready var linar_ve = %linar_ve
 
 @onready var gui = $\".\"
-@onready var menu = $\"../ui_b\"
+@onready var menu = $\"../../ui_b\"
 var is_paused = false
 func preessed():
 	if gui.visible == true:
@@ -20,12 +20,7 @@ func preessed():
 	Event.move_gui = is_paused
 
 func _ready():
-	Event.connect(\"control\", ds_control)
 	Event.connect(\"menu\",preessed)
-
-func ds_control(id,item_id,player_id):
-	if item_id != 0 or item_id != 3 and id != -1:
-		queue_free()
 
 func _on_val_drag_ended(value_changed):
 	val.value = 0
@@ -36,8 +31,18 @@ func _process(delta):
 
 func _on_ch_pressed():
 	if Event.is_multiplayer == true:
-		Event.emit_signal(\"control\",Event.player_control_id,-1,Event.mpp_index)
-	else:Event.emit_signal(\"control\",Event.player_control_id,-1,-1)
+		Event.set_control({
+		\"control_id\": Event.control_info[\"controller_id\"],
+		\"controller_id\": Event.control_info[\"controller_id\"],
+		\"controlled_object_type\":\"player\",
+		\"multiplayer_index\":Event.mpp_index
+	})
+	else:Event.set_control({
+		\"control_id\": Event.control_info[\"controller_id\"],
+		\"controller_id\": Event.control_info[\"controller_id\"],
+		\"controlled_object_type\":\"player\",
+		\"multiplayer_index\":-1
+	})
 
 var a
 func _on_cam_13_person_pressed():
@@ -80,9 +85,9 @@ var a: bool = true
 
 func _on_pressed():
 	if a:
-		$\"..\".modulate.a = 0.00
+		$\"..\".visible = false
 	else:
-		$\"..\".modulate.a = 1.00
+		$\"..\".visible = true
 	a = !a
 "
 
@@ -215,15 +220,16 @@ script = SubResource("GDScript_1giln")
 [node name="left-right" parent="." instance=ExtResource("2_nu77o")]
 offset_top = -300.0
 offset_bottom = 0.0
-deadzone_size = 5.0
+deadzone_size = 0.0
 action_left = "left_drone_r"
 action_right = "right_drone_r"
 action_up = "upd2"
 action_down = "downd2"
+plusonly_y = true
 
 [node name="Tip" parent="left-right/Base" index="0"]
-offset_top = 0.0
-offset_bottom = 100.0
+offset_top = 25.0
+offset_bottom = 125.0
 
 [connection signal="pressed" from="menu2" to="menu2" method="_on_pressed"]
 [connection signal="pressed" from="VBoxContainer/ch" to="." method="_on_ch_pressed"]

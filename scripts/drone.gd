@@ -29,8 +29,8 @@ var global_t
 @export var input_dir:Vector2
 @onready var debug_label = $"debug label"
 
-var id_control: int = 0
-var controller_id:int = -1
+var control_id: int = 0
+@export var controller_id:int = -1
 var controlled_object_type:String = "drone"
 var controler_id_nosync:int = -1
 @export var control_item_id: int
@@ -47,6 +47,8 @@ func _ready():
 	last_position = position
 	camera_rotation_direction = Vector3(0, 0, 1) # Инициализируем направление камеры вперед
 	global_t = global_transform
+	Event.control_id_counter += 1
+	control_item_id = Event.control_id_counter
 	#if Event.is_multiplayer == true:
 		#debug_label.visible = true
 
@@ -54,13 +56,10 @@ func apply_control_drone(control_info:Dictionary):
 	if control_info["control_id"] == control_item_id:
 		camera_1_person.current = true
 		controller_id = control_info["controller_id"]
-	
-
-@rpc("any_peer", "call_local", "reliable")
-func sync(c_id,id_c):
-	controller_id = c_id
-	id_control = id_c
-	debug_label.text = "controller_id:"+str(controller_id)
+		control_id = control_info["control_id"]
+	else:
+		control_id = -1
+		controller_id = -1
 	
 func app_cam(cam,id):
 	if control_item_id == id:
@@ -68,6 +67,7 @@ func app_cam(cam,id):
 			camera_3_person.current = true
 		else:
 			camera_1_person.current = true
+
 func _apply_user_prefs():
 	sensitivity = user_prefs.sensitivity
 	var index = user_prefs.MSAA
@@ -85,7 +85,7 @@ func _process(delta: float):
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.FLY)
-	if control_item_id == Event.control_info["controller_id"]:
+	if control_item_id == Event.control_info["control_id"]:
 		Event.drone_speed = "m/c" + str(round(linear_velocity))
 var impulse = Vector3()
 
@@ -98,9 +98,11 @@ func movedata(r_dir,i_dir):
 		#print(rotate_dir)
 
 func _physics_process(delta: float):
-	if control_item_id == id_control:
+	if control_item_id == control_id:
 		if Event.is_multiplayer == true:
-				if controller_id == Event.mpp_index:
+				print(controller_id)
+				if controller_id == Event.control_info["controller_id"]:
+					print("move")
 					rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
 					input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 					movedata.rpc(position,rotation)
@@ -139,7 +141,7 @@ func _change_state(new_state: State):
 	state = new_state
 
 #func _input(event: InputEvent):
-	#if id_control == 1:
+	#if control_id == 1:
 		#if event is InputEventScreenTouch:
 			#if event.pressed:
 				#if tracked_touch_index == -1:
@@ -149,7 +151,7 @@ func _change_state(new_state: State):
 			#elif event.index == tracked_touch_index:
 				#tracked_touch_index = -1
 				#dragging = false
-	#if id_control == 1:
+	#if control_id == 1:
 		#if event is InputEventScreenDrag and event.index == tracked_touch_index:
 			#if dragging:
 				## Пропускаем первый кадр, чтобы избежать резкого скачка

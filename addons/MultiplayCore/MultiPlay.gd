@@ -722,7 +722,7 @@ func _net_load_scene(scene_path: String, respawn_players = true):
 	var scene_pack = load(scene_path)
 	var scene_node = scene_pack.instantiate()
 	
-	add_child(scene_node, true)
+	add_child(scene_node)
 	
 	current_scene = scene_node
 	

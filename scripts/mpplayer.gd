@@ -30,26 +30,48 @@ var active_item_id:int = -1
 var picked_item_control:int
 @export var control_id:int
 @onready var namee = $name
-
+@onready var guinode: CanvasLayer = $Control_charapter/gui
+var control_item_id:int
+var picked_controlled_object_type:String
+var picked_controller_id:int
 @onready var mpp: MPPlayer = get_parent()
 func _ready():
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
 	mpp.handshake_ready.connect(_on_handshake_ready)
 	Event.connect("charapter_op", _apply_user_prefs)
-	Event.connect("control", ds_control)
+	Event.connect("update_control", apply_control)
 	Event.connect("jump",_on_touch_screen_button_pressed)
 	Event.connect("_active_item",set_active_item)
 	Event.connect("pick_up",pick_up)
 	Event.connect("drop_item",drop_item_s)
 	last_position = position
-	control_id = Event.control_item_id + 1
-	Event.control_item_id = Event.control_item_id + 1
+	Event.control_id_counter += 1
+	control_id = Event.control_id_counter
 	if is_multiplayer_authority():
-		Event.player_control_id = control_id
 		Event.mpp_index = mpp.player_index
-		Event.emit_signal("control",control_id,-1,mpp.player_index)
-#inventory
+		apply_control({
+			"control_id": control_item_id,
+			"controlled_object_type":"player",
+			"multiplayer_index":Event.mpp_index
+			})
+
+
+var gui = {
+	"player": preload("res://scen/gui/character_gui.tscn"),
+	"drone": preload("res://scen/gui/drone_gui.tscn")
+}
+
+func apply_control(control_info: Dictionary):
+	if is_multiplayer_authority():
+		if control_info["control_id"] == control_item_id:
+			camera.current = true
+			
+		for child in guinode.get_children():
+			child.queue_free()
+		var gui_scene = gui.get(control_info["controlled_object_type"], null)
+		if gui_scene:
+			guinode.add_child(gui_scene.instantiate())
 
 func _on_handshake_ready(data):
 	print(data)
@@ -59,9 +81,10 @@ func _on_handshake_ready(data):
 func set_active_item(id):
 	if is_multiplayer_authority():
 		var p_id = mpp.player_index
-		_active_item.rpc(id,p_id)
+		#_active_item.rpc(id,p_id)
+		_active_item.call_deferred(id,p_id)
 
-@rpc("any_peer", "call_local", "reliable")
+#@rpc("any_peer", "call_local", "reliable")
 func _active_item(id,p_id):
 	if mpp.player_index == p_id:
 		if hand.get_children() != null and active_item_id != id:
@@ -101,36 +124,7 @@ func drop_item_s(id,amount):
 		"pl_id": Event.mpp_index
 		}
 		Event.emit_signal("spawn_obj",data)
-		#var p_id = mpp.player_index
-		#drop_item.rpc(id,amount,p_id)
 
-#@rpc("any_peer", "call_local", "reliable")
-#func drop_item(item_id,amount,p_id):
-	#var dropped_item_scene
-	#if mpp.player_index == p_id:
-		#Event.spawn_item(item_id,hand.global_position + Vector3(0,1,0),
-		#head.rotation,Vector3(0.4,0.4,0.4),amount,Vector3(0,0,0),Event.mpp_index)
-		#match item_id:
-			#0: dropped_item_scene = preload("res://scen/drop/drone.tscn")
-			#1: dropped_item_scene = preload("res://scen/drop/ak_drop.tscn")
-			#2: dropped_item_scene = preload("res://scen/drop/watermelon.tscn")
-			#3: dropped_item_scene = preload("res://scen/drop/drone_exp.tscn")
-		#for i in range(amount):
-			#var dropped_item = dropped_item_scene.instantiate()
-			#dropped_item.position = hand.global_position + global_transform.basis.x
-			#dropped_item.rotation = head.global_rotation
-			#get_parent().add_child(dropped_item)
-
-func ds_control(id,item_id,player_id):
-	if is_multiplayer_authority():
-		if id == control_id:
-			camera.current = true
-		if id != control_id:
-			$Control_charapter.add_child(preload("res://scen/gui/drone_gui.tscn").instantiate())
-		if id == control_id and camera.current == false:
-			$Control_charapter.add_child(preload("res://scen/gui/character_gui.tscn").instantiate())
-			camera.current = true
-			Event.control_id = control_id
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -155,13 +149,21 @@ func _process(delta: float):
 		picked_item = ray_cast_3d.get_collider()
 		if picked_item != null:
 			picked_item_id = picked_item.item_id
-			if picked_item.item_id == 0 or picked_item.item_id == 3:
-				picked_item_control = picked_item.control_item_id
-			else:picked_item_control = -1
-			#print("->",picked_item_control)
-			Event.emit_signal("usev",true,picked_item_id,picked_item_control,mpp.player_index)
+			
+			if picked_item.get("control_item_id") != null:
+				picked_item_control = picked_item.get("control_item_id")
+			else:
+				picked_item_control = -1
+			
+			if picked_item.get("controlled_object_type") != null:
+				picked_controlled_object_type = picked_item.get("controlled_object_type")
+			else:
+				picked_controlled_object_type = "null"
+			if picked_item.get("controller_id") != null:
+				picked_controller_id = picked_item.get("controller_id")
+			Event.emit_signal("usev", true, picked_item_id, picked_item_control,mpp.player_index)
 	else: 
-		Event.emit_signal("usev",false,-1,-1,mpp.player_index)
+		Event.emit_signal("usev", false, -1, -1, mpp.player_index)
 func _physics_process(delta: float):
 	SimpleGrass.set_player_position(global_position)
 	if is_multiplayer_authority():
@@ -194,31 +196,30 @@ func footstep():
 	footstep_audio.play()
 func _input(event: InputEvent):
 	if is_multiplayer_authority():
-		if control_id == Event.control_id:
-			if Event.is_inventory_active == true:
-				return  # Если инвентарь активен, не обрабатывать события для игрока
-			if Event.move_gui == true:
-				return
-			
-			if event is InputEventScreenTouch:
-				if event.pressed:
-					if tracked_touch_index == -1:
-						tracked_touch_index = event.index
-						touch_start_position = event.position
-						dragging = true
-				elif event.index == tracked_touch_index:
-					tracked_touch_index = -1
-					dragging = false
-			if event is InputEventScreenDrag and event.index == tracked_touch_index:
-				if dragging:
-					# Пропускаем первый кадр, чтобы избежать резкого скачка
-					dragging = false
+		if Event.is_inventory_active == true:
+			return  # Если инвентарь активен, не обрабатывать события для игрока
+		if Event.move_gui == true:
+			return
+		
+		if event is InputEventScreenTouch:
+			if event.pressed:
+				if tracked_touch_index == -1:
+					tracked_touch_index = event.index
 					touch_start_position = event.position
-				else:
-					var delta = event.position - touch_start_position
-					delta *= -1
-					_rotate_camera(delta)
-					touch_start_position = event.position
+					dragging = true
+			elif event.index == tracked_touch_index:
+				tracked_touch_index = -1
+				dragging = false
+		if event is InputEventScreenDrag and event.index == tracked_touch_index:
+			if dragging:
+				# Пропускаем первый кадр, чтобы избежать резкого скачка
+				dragging = false
+				touch_start_position = event.position
+			else:
+				var delta = event.position - touch_start_position
+				delta *= -1
+				_rotate_camera(delta)
+				touch_start_position = event.position
 
 
 		if event is InputEventJoypadMotion:
@@ -249,7 +250,6 @@ func _on_area_3d_area_entered(area: Area3D):
 					playeranim_gui.play("damag")
 			Event.hp_char = hp
 	
-
 func _on_animation_player_animation_finished(anim_name: String):
 	if anim_name == "cam_go_shaking_right":
 		cam_shid = 0

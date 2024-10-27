@@ -29,8 +29,7 @@ func printd(data,color:Color = Color.YELLOW):
 
 func get_cid():
 	find_players_in_group()
-	printd("current_id> " + str(Event.control_id)+"\nplayer_id> " + str(Event.player_control_id) +
-	"\nplayers in world:"+str(len(players))+"\n"+str(players))
+	printd("players in world:"+str(len(players))+"\n"+str(players) + "\n"+str(Event.control_info))
 
 func help() -> void:
 	printd("Available Commands:")
@@ -42,7 +41,6 @@ func help() -> void:
 	printd("tp(x: int = 0, y: int = 0, z: int = 0, pl_id: int = Event.mpp_index) - Teleports a player to specified coordinates.")
 	printd("spawn(id: int, x: int = 0, y: int = 10, z: int = 0, amount: int = 1) - Spawns an object with a specified ID and amount at given coordinates.")
 	printd("time(uscale: float) - Changes the time scale in the game. Default is 1.0 for normal speed.")
-
 
 func get_log():
 	var log_file_path = "user://logs/godot.log"

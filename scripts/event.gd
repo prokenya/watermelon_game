@@ -32,7 +32,7 @@ signal jump()
 signal usev(vis: bool,item_id: int,control:int,player_id:int)
 signal on_fire(player_id:int)
 var move_gui:bool
-###gui_control
+###sw_control
 var control_id_counter:int = -1
 var control_info = {
 	"control_id": -1,
@@ -43,6 +43,7 @@ var control_info = {
 signal update_control(data:Dictionary)
 func set_control(data):
 	Event.emit_signal("update_control",data)
+	control_info = data
 #drone
 var drone_speed: String = "0"
 signal cam_1_3p(cam: bool,id:int)

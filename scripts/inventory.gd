@@ -163,7 +163,7 @@ func get_item_id(item: Node2D) -> int:
 
 func add_item_by_id_mp(item_id,player_id):
 	if Event.is_multiplayer == true:
-		if player_id == get_parent().get_parent().get_parent().get_parent().player_index:
+		if player_id == get_parent().player_node.mpp.player_index:
 			add_item_by_id(item_id)
 	else: add_item_by_id(item_id)
 

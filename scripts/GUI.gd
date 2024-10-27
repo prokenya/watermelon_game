@@ -55,12 +55,12 @@ func _on_fire_pressed():
 	var mpp = -1
 	if Event.is_multiplayer == true:
 		mpp = player_node.mpp.player_index
-	if control_id != -1:
+	if control_id != -1 and player_node.picked_controller_id == -1:
 		var data = {
 		"control_id": control_id,
 		"controller_id":player_node.control_item_id,
 		"controlled_object_type":player_node.picked_controlled_object_type,
-		"multiplayer_index":-1
+		"multiplayer_index":mpp
 		}
 		Event.set_control(data)
 		print("Applying control for ID:",control_id)
@@ -69,6 +69,6 @@ func _on_fire_pressed():
 
 func _on_pick_up_pressed():
 	if Event.is_multiplayer == true:
-		Event.emit_signal("pick_up",get_parent().get_parent().mpp.player_index)
+		Event.emit_signal("pick_up",player_node.mpp.player_index)
 	else:
 		Event.emit_signal("pick_up",-1)

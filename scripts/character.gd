@@ -46,7 +46,9 @@ func _ready():
 	Event.connect("drop_item",drop_item)
 	Event.connect("update_control",apply_control)
 	last_position = position
-	apply_control({
+	Event.control_id_counter += 1
+	control_item_id = Event.control_id_counter
+	Event.set_control({
 	"control_id": control_item_id,
 	"controlled_object_type":"player",
 	"multiplayer_index":Event.mpp_index
@@ -189,6 +191,8 @@ func _input(event: InputEvent):
 	if Event.is_inventory_active == true:
 		return  # Если инвентарь активен, не обрабатывать события для игрока
 	if Event.move_gui == true:
+		return
+	if Event.control_info["control_id"] != control_item_id:
 		return
 	
 	# Обработка касаний экрана
