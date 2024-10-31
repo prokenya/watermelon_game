@@ -34,6 +34,7 @@ var picked_item_control:int
 
 var control_item_id:int
 var picked_controlled_object_type:String
+var picked_controller_id:int
 var active_gui
 
 func _ready():
@@ -153,6 +154,9 @@ func _process(delta: float):
 				picked_controlled_object_type = picked_item.get("controlled_object_type")
 			else:
 				picked_controlled_object_type = "null"
+			if picked_item.get("controller_id") != null:
+				picked_controller_id = picked_item.get("controller_id")
+			else: picked_controller_id = -1
 			Event.emit_signal("usev", true, picked_item_id, picked_item_control, -1)
 	else: 
 		Event.emit_signal("usev", false, -1, -1, -1)

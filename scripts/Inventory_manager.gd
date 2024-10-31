@@ -5,16 +5,9 @@ var ITEM_STACK_LIM: Array = []
 var WORLD_ITEM: Array = []
 var HEND_ITEM: Array = []
 var default_item = ["res://scen/items/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
-"res://textures/1182467.160.webp",1]
-var items:Dictionary = {
-	-1:["res://scen/items/enemy.tscn", 0, 0, 1],
-	0:["res://scen/items/drone.tscn", "res://scen/items/inventory/drone_inv.tscn", "res://textures/icons/drone.png", 3],
-	1:["res://scen/items/ak_drop.tscn", "res://scen/items/inventory/watermelon_gun.tscn", "res://textures/icons/ak_w.png", 1],
-	2:["res://scen/items/watermelon.tscn", "res://scen/items/inventory/watermelon_inv.tscn", "res://textures/icons/watermelon.png", 10],
-	3:["res://scen/items/drone_exp.tscn", 0, 0, 3],
-	4:["res://scen/items/bullet.tscn", 0, 0, 1],
-	5:["res://scen/items/abeme.tscn", "res://scen/items/inventory/abeme_inv.tscn", "res://textures/model_0.png", 5]
-	}
+"res://textures/1182467.160.webp",1,null]
+var items:Dictionary = {6:["res://scen/vfx/vfx_expp1.tscn",0,0,0,0]}
+
 func _ready() -> void:
 	items = update_item(items)
 	items = defitems(items)
@@ -29,23 +22,25 @@ func defitems(data: Dictionary):
 
 func update_item(data: Dictionary) -> Dictionary:
 	var config = ConfigFile.new()
-	var config_path = "user://items.cfg"
+	var user_config_path = "user://items.cfg"
+	var res_config_path = "res://resources/items.cfg"
 
-	# Сохраняем данные, если передан непустой словарь
-	if not data.is_empty():
-		for key in data.keys():
-			config.set_value("Items", str(key), data[key])
-		var save_err = config.save(config_path)
-		if save_err != OK:
-			print_debug("Ошибка сохранения файла:", save_err)
-			return {}
 
 	# Загружаем данные из файла
-	var load_err = config.load(config_path)
+	var load_err = config.load(res_config_path)
 	if load_err != OK:
 		print_debug("Ошибка загрузки файла:", load_err)
 		return {}
 	
+	# Сохраняем данные, если передан непустой словарь
+	## ещё не используется
+	if not data.is_empty():
+		for key in data.keys():
+			config.set_value("Items", str(key), data[key])
+		var save_err = config.save(user_config_path)
+		if save_err != OK:
+			print_debug("Ошибка сохранения файла:", save_err)
+			return {}
 	# Проверка, существует ли секция "Items"
 	if not config.has_section("Items"):
 		print_debug("Секция 'Items' не найдена в файле конфигурации.")
@@ -63,7 +58,9 @@ func set_data_type(items: Dictionary):
 	for i in items.keys():
 		var WORLD_I = load(items[i][0])
 		var HEND_I = load(items[i][1])
-		
+		if items[i][4] != null:
+			var sub_node = load(items[i][4])
+			items[i][4] = sub_node
 		if WORLD_I:
 			items[i][0] = WORLD_I  # объект мира
 		if HEND_I:

@@ -39,14 +39,17 @@ func spawn_objrpc(data: Dictionary):
 
 func spawn_objs(data: Dictionary):
 	var dropped_item_scene
+	var dropped_item_sub_scene = InventoryManager.items[data["spawn_obj_id"]][4]
+	
 	if not data["inventory"]:
 		dropped_item_scene = InventoryManager.items[data["spawn_obj_id"]][0]
 	else:
 		dropped_item_scene = InventoryManager.items[data["spawn_obj_id"]][1]
+	if dropped_item_sub_scene != null:
+		dropped_item_sub_scene = dropped_item_sub_scene.instantiate()
 	for i in range(data["amount"]):
 		
 		var dropped_item = dropped_item_scene.instantiate()
-		
 		dropped_item.position = data["obj_position"]
 		dropped_item.rotation = data["obj_rotation"]
 		dropped_item.scale = dropped_item.scale * data["obj_scale"]
@@ -55,7 +58,9 @@ func spawn_objs(data: Dictionary):
 			data["spawn_parent"].add_child(dropped_item)
 		else:
 			add_child(dropped_item,true)
-		
+			if dropped_item_sub_scene != null:
+				dropped_item.item_id = data["spawn_obj_id"]
+				dropped_item.add_child(dropped_item_sub_scene,true)
 		if dropped_item is RigidBody3D:
 			dropped_item.linear_velocity = data["impulse"]
 			dropped_item.angular_velocity = data["impulse"]

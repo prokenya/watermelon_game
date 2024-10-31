@@ -1,0 +1,89 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvgqik7crs28t"]
+
+[sub_resource type="GDScript" id="GDScript_qdu7h"]
+resource_name = "push"
+script/source = "extends Area3D
+
+@onready var ray_cast_3d = $RayCast3D
+@onready var timer = $Timer
+@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
+var data:Dictionary
+
+var  repulsion_force = 25
+
+
+func _process(delta: float):
+	if ray_cast_3d.is_colliding() and timer.is_stopped():
+		ray_cast_3d.enabled = false
+		collision_shape_3d.disabled = false
+		data = {
+			\"spawn_obj_id\": 6,
+			\"obj_position\": self.global_position,
+			\"obj_scale\": Vector3(1, 1, 1),
+			\"amount\": 1,
+			\"impulse\": Vector3(0, 0, 0),
+			\"pl_id\": Event.mpp_index,
+			\"inventory\": false
+			}
+		Event.set_control({
+			\"control_id\": Event.control_info[\"controller_id\"],
+			\"controller_id\": Event.control_info[\"controller_id\"],
+			\"controlled_object_type\":\"player\",
+			\"multiplayer_index\":Event.mpp_index
+		})
+		Event.emit_signal(\"spawn_obj\",data)
+		await get_tree().create_timer(0.1).timeout
+		get_parent().queue_free()
+
+func _on_body_entered(body):
+	print(body)
+	if body is CharacterBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к скорости CharacterBody3D
+		body.velocity += force
+	elif body is RigidBody3D:
+		# Вычисляем направление отталкивания от центра Area3D
+		var direction = (body.global_transform.origin - self.global_transform.origin).normalized()
+		
+		# Вычисляем отталкивающую силу
+		var force = direction * repulsion_force
+		
+		# Применяем силу к RigidBody3D с использованием add_central_force
+		body.apply_central_impulse(force)
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_af6m0"]
+radius = 3.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wnon2"]
+radius = 0.051
+
+[node name="explosive_module" type="Area3D" groups=["damage"]]
+editor_description = "99"
+collision_layer = 15
+collision_mask = 15
+script = SubResource("GDScript_qdu7h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_af6m0")
+disabled = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.00221662, -0.999998, 0, 0.999998, -0.00221662, 0, 0, -0.599)
+mesh = SubResource("CapsuleMesh_wnon2")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.00221662, -0.999998, 0, 0.999998, -0.00221662, 0, 0, -0.970383)
+collision_mask = 7
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -12,6 +12,10 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
 	find_players_in_group()
+	Event.connect("_on_player_connected",on_player_connected)
+
+func on_player_connected():
+	find_players_in_group()
 
 func find_players_in_group() -> void:
 	players = []

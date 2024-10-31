@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://bo2s8uuybarua"]
+[gd_scene load_steps=15 format=3 uid="uid://bo2s8uuybarua"]
 
 [ext_resource type="Script" path="res://scripts/menu_0.gd" id="1_wmg5k"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="2_4uq3a"]
 [ext_resource type="Theme" uid="uid://bg8fsepfigyn0" path="res://theme/base_opt.tres" id="3_i7mto"]
 [ext_resource type="Script" path="res://scripts/select_level.gd" id="5_5mpaj"]
 [ext_resource type="ArrayMesh" uid="uid://pe65vyi7myeg" path="res://models/mesh/watermelon.tres" id="5_tvg7f"]
+[ext_resource type="AudioStream" uid="uid://bbse1o736bbe2" path="res://audio/music/grimyth - FPS Menu Music Theme 5.wav" id="6_ngwt3"]
 
 [sub_resource type="GDScript" id="GDScript_oiqsv"]
 script/source = "extends Button
@@ -108,6 +109,18 @@ background_mode = 1
 ambient_light_color = Color(1, 1, 1, 1)
 fog_light_color = Color(0.398543, 0.592049, 0.58517, 1)
 fog_sky_affect = 0.494
+
+[sub_resource type="GDScript" id="GDScript_1t6vs"]
+script/source = "extends Node3D
+@onready var directional_light_3d: DirectionalLight3D = $DirectionalLight3D
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	self.rotate_x(0.01)
+	self.rotate_y(0.01)
+	self.rotate_z(0.01)
+"
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_wmg5k")
@@ -252,6 +265,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_i7mto")
 
 [node name="BoxContainer" type="BoxContainer" parent="Control/credits"]
 top_level = true
@@ -269,18 +283,21 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/credits/BoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/credits/BoxContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="Control/credits/BoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/credits/BoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Control/credits/BoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0.862745, 0, 0.686275, 1)
 theme_override_font_sizes/font_size = 35
-text = "discord usernames!"
+text = "devolopers"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="Control/credits/BoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Control/credits/BoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("3_i7mto")
 theme_override_colors/font_color = Color(0, 0.517647, 0.364706, 1)
@@ -292,6 +309,36 @@ testers:
 @alexeyprogamer
 "
 label_settings = SubResource("LabelSettings_eeghs")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="Control/credits/BoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Control/credits/BoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_i7mto")
+theme_override_colors/font_color = Color(0.862745, 0, 0.686275, 1)
+theme_override_font_sizes/font_size = 35
+text = "music"
+horizontal_alignment = 1
+
+[node name="HS2" type="HSeparator" parent="Control/credits/BoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/credits/BoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "menu music by
+\"Michael Barker\""
+vertical_alignment = 1
+
+[node name="LinkButton" type="LinkButton" parent="Control/credits/BoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "youtube"
+uri = "https://www.youtube.com/@grimyth"
+
+[node name="HS" type="HSeparator" parent="Control/credits/BoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
 
 [node name="n-2-n" type="AnimationPlayer" parent="Control"]
 unique_name_in_owner = true
@@ -346,8 +393,16 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 14.575
 [node name="WorldEnvironment" type="WorldEnvironment" parent="bg/bg"]
 environment = SubResource("Environment_b0rlh")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="bg/bg"]
+[node name="rot" type="Node3D" parent="bg/bg"]
+script = SubResource("GDScript_1t6vs")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="bg/bg/rot"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 23.9588, 0, 0)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_ngwt3")
+autoplay = true
+bus = &"music"
 
 [connection signal="pressed" from="Control/menub/menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="Control/menu/VBoxContainer/multiplayer" to="." method="_on_multiplayer_pressed"]

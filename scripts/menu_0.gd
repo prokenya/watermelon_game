@@ -2,7 +2,8 @@ extends CanvasLayer
 
 func _ready():
 	node_to_node.play("fade_in")
-	Event.printc("загружено предметов:" + str(InventoryManager.items),Color.GREEN)
+	Event.printc("загружено предметов:" +str(len(InventoryManager.items.keys()))+"\nid:"+
+	str(InventoryManager.items.keys()),Color.GREEN)
 @onready var active_layer = [$Control/menu,$Control/select_level,$Control/settings,%credits]
 @onready var menu_button: CanvasLayer = $Control/menub
 var active_layer_id: = 0

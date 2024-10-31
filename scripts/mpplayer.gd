@@ -31,7 +31,7 @@ var picked_item_control:int
 @export var control_id:int
 @onready var namee = $name
 @onready var guinode: CanvasLayer = $Control_charapter/gui
-var control_item_id:int
+@export var control_item_id:int
 var picked_controlled_object_type:String
 var picked_controller_id:int
 @onready var mpp: MPPlayer = get_parent()
@@ -47,11 +47,12 @@ func _ready():
 	Event.connect("drop_item",drop_item_s)
 	last_position = position
 	Event.control_id_counter += 1
-	control_id = Event.control_id_counter
+	control_item_id = Event.control_id_counter
 	if is_multiplayer_authority():
 		Event.mpp_index = mpp.player_index
-		apply_control({
+		Event.set_control({
 			"control_id": control_item_id,
+			"controller_id":control_item_id,
 			"controlled_object_type":"player",
 			"multiplayer_index":Event.mpp_index
 			})

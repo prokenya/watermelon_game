@@ -731,6 +731,5 @@ func _net_load_scene(scene_path: String, respawn_players = true):
 	
 	scene_loaded.emit()
 
-
-func _on_player_connected(player: MPPlayer) -> void:
+func _on_connected_to_server(localplayer: MPPlayer) -> void:
 	Event.emit_signal("_on_player_connected")

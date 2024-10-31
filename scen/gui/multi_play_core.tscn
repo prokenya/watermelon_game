@@ -88,7 +88,7 @@ debug_gui_enabled = false
 script = ExtResource("4_tx765")
 
 [node name="OBJECTS_SPAWNER" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scen/items/abeme.tscn", "res://scen/items/ak_drop.tscn", "res://scen/items/bullet.tscn", "res://scen/items/drone.tscn")
+_spawnable_scenes = PackedStringArray("res://scen/items/abeme.tscn", "res://scen/items/ak_drop.tscn", "res://scen/items/bullet.tscn", "res://scen/items/drone.tscn", "res://scen/items/enemy.tscn", "res://scen/items/watermelon.tscn")
 spawn_path = NodePath("../objects")
 
 [node name="ENetProtocol" type="Node" parent="."]
@@ -256,6 +256,7 @@ auto_height = true
 fixed_icon_size = Vector2i(100, 100)
 script = SubResource("GDScript_aj2i0")
 
+[connection signal="connected_to_server" from="." to="." method="_on_connected_to_server"]
 [connection signal="player_connected" from="." to="." method="_on_player_connected"]
 [connection signal="pressed" from="menub/Control/menu" to="menub/Control" method="_on_menu_pressed"]
 [connection signal="pressed" from="menub/Control/VBoxContainer/Layout/Buttons/Host" to="menub/Control/VBoxContainer/ItemList" method="_on_host_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ijyj2vmqstqj"]
+[gd_scene load_steps=6 format=3 uid="uid://ijyj2vmqstqj"]
 
 [ext_resource type="Script" path="res://scripts/drone.gd" id="1_ho3or"]
 
@@ -7,15 +7,27 @@ bounce = 0.1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uj322"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_hf8m7"]
-radius = 1.62052
-
 [sub_resource type="BoxMesh" id="BoxMesh_2jvkg"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5tqcf"]
 properties/0/path = NodePath(".:control_item_id")
 properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:control_id")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:controller_mpid")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:controller_id")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [node name="drone" type="RigidBody3D"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
@@ -32,17 +44,10 @@ transform = Transform3D(1, 0, 0, 0, 0.17, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_uj322")
 
 [node name="Camera3person" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00425252, 0.353434, 1.92835)
+transform = Transform3D(2, 0, 0, 0, 1.9258, 0.539722, 0, -0.539722, 1.9258, 0.00425252, 0.687971, 1.92835)
 
 [node name="Camera1person" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.989455, 0.14484, 0, -0.14484, 0.989455, 0.00640284, -4.9267e-05, -0.304829)
-
-[node name="Area3D" type="Area3D" parent="."]
-editor_description = "use_drone"
-collision_layer = 3
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("SphereShape3D_hf8m7")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00640284, -4.9267e-05, -0.304829)
 
 [node name="drone" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
@@ -72,6 +77,9 @@ replication_config = SubResource("SceneReplicationConfig_5tqcf")
 
 [node name="debug label" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.612075, 0)
-visible = false
 billboard = 1
-text = "controler_id"
+text = "controller_id"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scen/items/sub_nodes/explosive_module.tscn")
+spawn_path = NodePath("..")
