@@ -30,10 +30,6 @@ func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)
 	pos.text = "pos:" + str(round(player_node.position))
 
-func ds_control(id,item_id,player_id):
-	if id != Event.player_control_id:
-		queue_free()
-
 func visus(vis,item_id,control,mp_id):
 	if mp_id != -1:
 		if mp_id == player_node.mpp.player_index:
@@ -68,7 +64,10 @@ func _on_fire_pressed():
 
 
 func _on_pick_up_pressed():
-	if Event.is_multiplayer == true:
-		Event.emit_signal("pick_up",player_node.mpp.player_index)
-	else:
-		Event.emit_signal("pick_up",-1)
+	item_id = player_node.picked_item_id
+	#print(Event.avable_items_id,"\n",item_id)
+	if item_id in Event.avable_items_id or Event.avable_items_id[0] == -2:
+		if Event.is_multiplayer == true:
+			Event.emit_signal("pick_up",player_node.mpp.player_index)
+		else:
+			Event.emit_signal("pick_up",-1)

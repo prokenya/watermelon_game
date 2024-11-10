@@ -6,7 +6,14 @@ var WORLD_ITEM: Array = []
 var HEND_ITEM: Array = []
 var default_item = ["res://scen/items/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
 "res://textures/1182467.160.webp",1,null]
-var items:Dictionary = {6:["res://scen/vfx/vfx_expp1.tscn",0,0,0,0]}
+var items:Dictionary = {-1:["res://scen/items/enemy.tscn", 0, 0, 1, 0],
+	0:["res://scen/items/drone.tscn", "res://scen/items/inventory/drone_inv.tscn", "res://textures/icons/drone.png", 3, 0],
+	1:["res://scen/items/ak_drop.tscn", "res://scen/items/inventory/watermelon_gun.tscn", "res://textures/icons/ak_w.png", 1, 0],
+	2:["res://scen/items/watermelon.tscn", "res://scen/items/inventory/watermelon_inv.tscn", "res://textures/icons/watermelon.png", 10, 0],
+	3:["res://scen/items/drone.tscn", 0, 0, 3, "res://scen/items/sub_nodes/explosive_module.tscn"],
+	4:["res://scen/items/bullet.tscn", 0, 0, 1, 0],
+	5:["res://scen/items/abeme.tscn", "res://scen/items/inventory/abeme_inv.tscn", "res://textures/model_0.png", 5, 0],
+	6:["res://scen/vfx/vfx_expp1.tscn", 0, 0, 0, 0]}
 
 func _ready() -> void:
 	items = update_item(items)
@@ -20,6 +27,7 @@ func defitems(data: Dictionary):
 				data[key][i] = default_item[i]
 	return data
 
+
 func update_item(data: Dictionary) -> Dictionary:
 	var config = ConfigFile.new()
 	var user_config_path = "user://items.cfg"
@@ -30,7 +38,6 @@ func update_item(data: Dictionary) -> Dictionary:
 	var load_err = config.load(res_config_path)
 	if load_err != OK:
 		print_debug("Ошибка загрузки файла:", load_err)
-		return {}
 	
 	# Сохраняем данные, если передан непустой словарь
 	## ещё не используется

@@ -71,7 +71,7 @@ func tp(x = 1, y = 1, z = 1, pl_id: int = Event.mpp_index):
 	players[pl_id].position = Vector3(float(x), float(y), float(z))
 
 
-func spawn(id:int,x = 0,y = 10,z = 0,amount:int = 1):
+func spawn(id:int,amount:int = 1,x = 0,y = 10,z = 0):
 	var data = {
 		"spawn_obj_id": id,
 		"obj_position": Vector3(x,y,z),

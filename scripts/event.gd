@@ -24,6 +24,7 @@ signal _on_player_connected(mpplayer)
 signal _active_item(item_id)
 var hp_char: int
 var is_inventory_active: bool
+var avable_items_id:Array
 ##control_player
 signal drop_item(item_id,amount)
 signal pick_up(player_id:int)

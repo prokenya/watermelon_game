@@ -176,7 +176,6 @@ func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 		add_child(new_item)
 		set_item(new_item, slot_id)
 		up_item_pos()
-		is_inventory_full = false
 		if active_slot == slot_id:
 			active_item = item_id
 		return true
@@ -187,7 +186,6 @@ func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 			var addable_amount = items[i].ITEM_STACK_LIM[i_id_get] - items[i].amount
 			if amount <= addable_amount:
 				items[i].amount += amount
-				is_inventory_full = false
 				return true
 			else:
 				items[i].amount += addable_amount
@@ -200,14 +198,23 @@ func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 			add_child(new_item)
 			set_item(new_item, i)
 			up_item_pos()
-			is_inventory_full = false
 			if active_slot == i:
 				active_item = item_id
 			return true
-	is_inventory_full = true
 	return false
 
+func check_inventory_full() -> Array:
+	var avable_items_ids:Array
+	for i in range(MAX_SLOTS):
+		if items[i] != null:
+			var item_id =  get_item_id(items[i])
+			if items[i].amount < items[i].ITEM_STACK_LIM[item_id]:
+				avable_items_ids.append(item_id)
+		else: return [-2]
+	return avable_items_ids
+
 func _draw():
+	Event.avable_items_id =  check_inventory_full()
 	save_inventory()
 	#print(active_item)
 	for i in range(MAX_SLOTS):

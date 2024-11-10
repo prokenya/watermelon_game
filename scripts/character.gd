@@ -51,6 +51,7 @@ func _ready():
 	control_item_id = Event.control_id_counter
 	Event.set_control({
 	"control_id": control_item_id,
+	"controller_id":control_item_id,
 	"controlled_object_type":"player",
 	"multiplayer_index":Event.mpp_index
 	})
@@ -60,15 +61,26 @@ var gui = {
 	"drone": preload("res://scen/gui/drone_gui.tscn")
 }
 
+var current_gui_type: String = ""
+
 func apply_control(control_info: Dictionary):
 	if control_info["control_id"] == control_item_id:
 		camera_3d.current = true
 		
+	var new_gui_type = control_info["controlled_object_type"]
+	
+	if current_gui_type == new_gui_type:
+		return
+	
 	for child in guinode.get_children():
 		child.queue_free()
-	var gui_scene = gui.get(control_info["controlled_object_type"], null)
+
+	current_gui_type = new_gui_type
+	
+	var gui_scene = gui.get(new_gui_type, null)
 	if gui_scene:
 		guinode.add_child(gui_scene.instantiate())
+
 
 #inventory
 func _active_item(id):
