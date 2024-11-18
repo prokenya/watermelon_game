@@ -25,13 +25,11 @@ func _ready():
 
 # When host game requested
 func host_game():
-	Event.is_multiplayer = true
 	mpc.start_online_host(true,{"name":namee.text})
 	open_connecting_ui()
 	menub.queue_free()
 # When join game requested
 func join_game():
-	Event.is_multiplayer = true
 	# Pass URL from address bar to MPC
 	var url = address_bar.text
 	mpc.start_online_join(url,{"name":namee.text})

@@ -163,7 +163,9 @@ func _process(delta: float):
 		if picked_item != null:
 			if picked_item.get("item_id") != null:
 				picked_item_id = picked_item.item_id
-			else: picked_item_id = -1
+			else:
+				picked_item_id = -1
+				return
 			if picked_item.get("control_item_id") != null:
 				picked_item_control = picked_item.get("control_item_id")
 			else:

@@ -1,17 +1,18 @@
 extends Node3D
 
+@onready var objects_spawner: MultiplayerSpawner
 func _ready() -> void:
 	if inworld == true and Event.is_multiplayer == true:
 		queue_free()
-	else:
+	if Event.is_multiplayer == true and inworld == false:
 		objects_spawner = $OBJECTS_SPAWNER
+		print_debug(objects_spawner)
 		var items = data.new().items
 		for key in items.keys():
 			objects_spawner.add_spawnable_scene(items[key][0])
 	Event.connect("spawn_obj",spawn_obj)
 
 @export var inworld:bool=false
-@onready var objects_spawner: MultiplayerSpawner
 
 
 func spawn_obj(data: Dictionary):

@@ -88,6 +88,7 @@ debug_gui_enabled = false
 script = ExtResource("4_tx765")
 
 [node name="OBJECTS_SPAWNER" type="MultiplayerSpawner" parent="objects"]
+process_priority = 1
 spawn_path = NodePath("..")
 
 [node name="ENetProtocol" type="Node" parent="."]

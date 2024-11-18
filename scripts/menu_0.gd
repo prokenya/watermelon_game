@@ -4,6 +4,7 @@ func _ready():
 	node_to_node.play("fade_in")
 	Event.printc("загружено предметов:" +str(len(InventoryManager.items.keys()))+"\nid:"+
 	str(InventoryManager.items.keys()),Color.GREEN)
+	Event.is_multiplayer = false
 @onready var active_layer = [$Control/menu,$Control/select_level,$Control/settings,%credits]
 @onready var menu_button: CanvasLayer = $Control/menub
 var active_layer_id: = 0
@@ -29,6 +30,7 @@ func pressed(id):
 
 func _on_multiplayer_pressed() -> void:
 	await play_anim("fade_out")
+	Event.is_multiplayer = true
 	get_tree().change_scene_to_file("res://scen/gui/multi_play_core.tscn")
 
 func _on_play_pressed():
