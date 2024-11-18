@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dk5m0g106ms0q"]
+[gd_scene load_steps=26 format=3 uid="uid://dk5m0g106ms0q"]
 
 [ext_resource type="Texture2D" uid="uid://bqtfe1drnqfnu" path="res://textures/exp_tex/Flare00.PNG" id="1_rp7wc"]
 [ext_resource type="Texture2D" uid="uid://bbbdncxnwj08o" path="res://materials/display_scale_part_rot.tres" id="2_gif1k"]
@@ -136,6 +136,14 @@ color = Color(0, 0, 0, 0.533333)
 
 [sub_resource type="QuadMesh" id="QuadMesh_dn4io"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_uoawl"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="vfx_expp1" type="Node3D"]
 script = SubResource("GDScript_thom4")
 
@@ -183,3 +191,6 @@ stream = ExtResource("4_hm3kv")
 volume_db = 10.0
 max_distance = 1500.0
 bus = &"SFX"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_uoawl")

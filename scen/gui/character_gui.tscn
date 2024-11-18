@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ba0c673pkere7"]
+[gd_scene load_steps=9 format=3 uid="uid://ba0c673pkere7"]
 
 [ext_resource type="Script" path="res://scripts/GUI.gd" id="1_366xt"]
 [ext_resource type="PackedScene" uid="uid://d0myxgmrgyquy" path="res://scen/gui/inventory.tscn" id="2_li0oh"]
@@ -18,24 +18,6 @@ func _on_pressed():
 	else:
 		$\"..\".modulate.a = 1.00
 	a = !a
-"
-
-[sub_resource type="GDScript" id="GDScript_b1duj"]
-script/source = "extends Button
-
-var item_id
-var control_id
-
-func _ready():
-	Event.connect(\"usev\",visus)
-
-func _on_pressed():
-	Event.emit_signal(\"control\",control_id)
-	Event.control_id = control_id
-
-func visus(vis,item_id,control,mp_id):
-	item_id = item_id
-	control_id = control
 "
 
 [sub_resource type="GDScript" id="GDScript_26y8o"]
@@ -163,7 +145,6 @@ theme = ExtResource("2_rh2mb")
 disabled = true
 button_mask = 7
 text = "use"
-script = SubResource("GDScript_b1duj")
 
 [node name="menu2" type="Button" parent="."]
 visibility_layer = 15
@@ -195,7 +176,6 @@ offset_bottom = -64.0
 grow_vertical = 0
 
 [node name="pick_up" type="Button" parent="."]
-unique_name_in_owner = true
 self_modulate = Color(1, 1, 1, 0.411765)
 top_level = true
 light_mask = 3

@@ -16,9 +16,12 @@ var last_position: Vector3
 @onready var ray_cast_3d = $Node3D/Camera3D/RayCast3D
 var picked_item_id: int
 var picked_item: Object
+var active_item
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera_3d: Camera3D = $Node3D/Camera3D
 @onready var guinode: CanvasLayer = $Control_charapter/gui
+@onready var mpp: MPPlayer
+@onready var namee: Label3D = $name
 
 
 var cam_ch: bool
@@ -29,15 +32,18 @@ var tracked_touch_index: int = -1
 var touch_start_position: Vector2
 var current_rotation: Vector2
 var dragging: bool = false
-var active_item_id:int = -1
-var picked_item_control:int
+var active_item_id:int
 
-var control_item_id:int
+var picked_item_control:int =-1
+@export var control_item_id:int
 var picked_controlled_object_type:String
-var picked_controller_id:int
+var picked_controller_id:int = -1
 var active_gui
 
 func _ready():
+	if Event.is_multiplayer:
+		mpp = get_parent()
+		mpp.handshake_ready.connect(_on_handshake_ready)
 	user_prefs = UserPref.load_or_create()
 	_apply_user_prefs()
 	Event.connect("charapter_op", _apply_user_prefs)
@@ -49,12 +55,15 @@ func _ready():
 	last_position = position
 	Event.control_id_counter += 1
 	control_item_id = Event.control_id_counter
-	Event.set_control({
-	"control_id": control_item_id,
-	"controller_id":control_item_id,
-	"controlled_object_type":"player",
-	"multiplayer_index":Event.mpp_index
-	})
+	if is_multiplayer_authority():
+		if Event.is_multiplayer:
+			Event.mpp_index = mpp.player_index
+		Event.set_control({
+			"control_id": control_item_id,
+			"controller_id":control_item_id,
+			"controlled_object_type":"player",
+			"multiplayer_index":Event.mpp_index
+			})
 
 var gui = {
 	"player": preload("res://scen/gui/character_gui.tscn"),
@@ -64,63 +73,60 @@ var gui = {
 var current_gui_type: String = ""
 
 func apply_control(control_info: Dictionary):
-	if control_info["control_id"] == control_item_id:
-		camera_3d.current = true
+	if is_multiplayer_authority():
+		print(control_info)
+		print(control_item_id)
+		if control_info["control_id"] == control_item_id:
+			camera_3d.current = true
+			
+		var new_gui_type = control_info["controlled_object_type"]
 		
-	var new_gui_type = control_info["controlled_object_type"]
-	
-	if current_gui_type == new_gui_type:
-		return
-	
-	for child in guinode.get_children():
-		child.queue_free()
+		if current_gui_type == new_gui_type:
+			return
+		
+		for child in guinode.get_children():
+			child.queue_free()
 
-	current_gui_type = new_gui_type
-	
-	var gui_scene = gui.get(new_gui_type, null)
-	if gui_scene:
-		guinode.add_child(gui_scene.instantiate())
-
+		current_gui_type = new_gui_type
+		
+		var gui_scene = gui.get(new_gui_type, null)
+		if gui_scene:
+			guinode.add_child(gui_scene.instantiate())
 
 #inventory
 func _active_item(id):
-	if hand.get_children() != null and active_item_id != id:
-		for child in hand.get_children():
-			hand.remove_child(child)
-			child.queue_free()
-	var data = {
-		"spawn_obj_id": id,
-		"obj_position": Vector3(0,0,0),
-		"obj_scale": Vector3(0.7, 0.7, 0.7),
-		"amount": 1,
-		"impulse": Vector3(0, 0, 0),
-		"pl_id": Event.mpp_index,
-		"spawn_parent": $Node3D/hand,
-		"inventory": true
-		}
-	if id != -1 and active_item_id != id:
-		Event.emit_signal("spawn_obj",data)
-	active_item_id = id
-	#if id == 0:
-		#active_item = preload("res://scen/drone_inv.tscn").instantiate()
-		#active_item.position = hand.position
-	#elif id == 1:
-		#active_item = preload("res://scen/watermelon_gun.tscn").instantiate()
-		#active_item.position = hand.position
-	#elif id == 2:
-		#active_item = preload("res://scen/watermelon_inv.tscn").instantiate()
-		#active_item.position = hand.position
-	#else:
-		#active_item = null
-		#return
-	#hand.add_child(active_item)
+	if Event.is_multiplayer == false:
+		if hand.get_children() != null and active_item_id != id:
+			for child in hand.get_children():
+				hand.remove_child(child)
+				child.queue_free()
+		var data = {
+			"spawn_obj_id": id,
+			"obj_position": Vector3(0,0,0),
+			"obj_scale": Vector3(0.7, 0.7, 0.7),
+			"amount": 1,
+			"impulse": Vector3(0, 0, 0),
+			"pl_id": Event.mpp_index,
+			"spawn_parent":hand,
+			"inventory": true
+			}
+		if id != -1 and active_item_id != id:
+			Event.emit_signal("spawn_obj",data)
+		active_item_id = id
+	else:
+		set_active_item(id) 
+
 
 func pick_up(id):
-	if picked_item != null:
-		picked_item.queue_free()
-		Event.emit_signal("add_item",picked_item_id,-1)
+	if Event.is_multiplayer == false:
+		if picked_item != null:
+			picked_item.queue_free()
+			Event.emit_signal("add_item",picked_item_id,Event.mpp_index)
+	else:
+		mp_pick_up(id)
 
 func drop_item(item_id,amount):
+	if is_multiplayer_authority():
 		var data = {
 		"spawn_obj_id": item_id,
 		"obj_position": hand.global_position + global_transform.basis.x,
@@ -155,8 +161,9 @@ func _process(delta: float):
 	if ray_cast_3d.is_colliding():
 		picked_item = ray_cast_3d.get_collider()
 		if picked_item != null:
-			picked_item_id = picked_item.item_id
-			
+			if picked_item.get("item_id") != null:
+				picked_item_id = picked_item.item_id
+			else: picked_item_id = -1
 			if picked_item.get("control_item_id") != null:
 				picked_item_control = picked_item.get("control_item_id")
 			else:
@@ -169,26 +176,29 @@ func _process(delta: float):
 			if picked_item.get("controller_id") != null:
 				picked_controller_id = picked_item.get("controller_id")
 			else: picked_controller_id = -1
-			Event.emit_signal("usev", true, picked_item_id, picked_item_control, -1)
-	else: 
-		Event.emit_signal("usev", false, -1, -1, -1)
+	else:
+		picked_item_id = -1
+		picked_item_control = -1
+		picked_controller_id = -1
+		picked_controlled_object_type = "null"
 
 
 func _physics_process(delta: float):
-	SimpleGrass.set_player_position(global_position)
-	if not is_on_floor():
-		velocity.y -= gravity * delta
-	
-	var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
-	
-	move_and_slide()
+	if is_multiplayer_authority():
+		SimpleGrass.set_player_position(global_position)
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+		
+		var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		if direction:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+			velocity.z = move_toward(velocity.z, 0, SPEED)
+		
+		move_and_slide()
 
 func _change_state(new_state: State):
 	state = new_state
@@ -204,6 +214,8 @@ func _play_footstep_anim():
 func footstep():
 	footstep_audio.play()
 func _input(event: InputEvent):
+	if not is_multiplayer_authority():
+		return
 	if Event.is_inventory_active == true:
 		return  # Если инвентарь активен, не обрабатывать события для игрока
 	if Event.move_gui == true:
@@ -240,7 +252,7 @@ func _rotate_camera(delta: Vector2):
 	current_rotation += delta * sensitivity
 	current_rotation.y = clamp(current_rotation.y, -90, 90)
 	rotation_degrees.y = current_rotation.x
-	$Node3D.rotation_degrees.x = current_rotation.y
+	head.rotation_degrees.x = current_rotation.y
 
 func _on_touch_screen_button_pressed():
 	if freejump or is_on_floor():
@@ -261,3 +273,44 @@ func _on_animation_player_animation_finished(anim_name: String):
 		cam_shid = 0
 	else:
 		cam_shid = 1
+
+## mplayer
+
+func _on_handshake_ready(data):
+	print(data)
+	if data.get("name") != null:
+		namee.text = data.get("name")
+
+func set_active_item(id):
+	if is_multiplayer_authority():
+		var p_id = mpp.player_index
+		#_active_item.rpc(id,p_id)
+		mp_active_item.call_deferred(id,p_id)
+
+#@rpc("any_peer", "call_local", "reliable")
+func mp_active_item(id,p_id):
+	if mpp.player_index == p_id:
+		if hand.get_children() != null and active_item_id != id:
+			for child in hand.get_children():
+				hand.remove_child(child)
+				child.queue_free()
+		if id != -1 and active_item_id != id:
+			active_item = InventoryManager.items[id][1].instantiate()
+			active_item.position = hand.position
+			hand.add_child(active_item)
+		active_item_id = id
+
+func mp_pick_up(id):
+	pick_up_mp.rpc(id)
+
+@rpc("any_peer", "call_local", "reliable")
+func pick_up_mp(mp_id):
+	if mp_id != -1:
+		if mp_id == get_parent().player_index:
+			if picked_item != null:
+				picked_item.queue_free()
+				Event.emit_signal("add_item",picked_item_id,mp_id)
+	if mp_id == -1:
+		if picked_item != null:
+			picked_item.queue_free()
+			Event.emit_signal("add_item",picked_item_id,mp_id)

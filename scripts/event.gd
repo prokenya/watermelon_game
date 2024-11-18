@@ -30,7 +30,6 @@ signal drop_item(item_id,amount)
 signal pick_up(player_id:int)
 signal add_item(item_id:int,player_id:int)
 signal jump()
-signal usev(vis: bool,item_id: int,control:int,player_id:int)
 signal on_fire(player_id:int)
 var move_gui:bool
 ###sw_control

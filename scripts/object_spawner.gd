@@ -3,9 +3,16 @@ extends Node3D
 func _ready() -> void:
 	if inworld == true and Event.is_multiplayer == true:
 		queue_free()
+	else:
+		objects_spawner = $OBJECTS_SPAWNER
+		var items = data.new().items
+		for key in items.keys():
+			objects_spawner.add_spawnable_scene(items[key][0])
 	Event.connect("spawn_obj",spawn_obj)
 
 @export var inworld:bool=false
+@onready var objects_spawner: MultiplayerSpawner
+
 
 func spawn_obj(data: Dictionary):
 	if not data.has("spawn_obj_id"):
