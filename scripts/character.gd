@@ -137,6 +137,7 @@ func drop_item(item_id,amount):
 		"pl_id": Event.mpp_index
 		}
 		Event.emit_signal("spawn_obj",data)
+#character
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
@@ -200,6 +201,7 @@ func _physics_process(delta: float):
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 			velocity.z = move_toward(velocity.z, 0, SPEED)
 		
+		push_rb()
 		move_and_slide()
 
 func _change_state(new_state: State):
@@ -275,6 +277,36 @@ func _on_animation_player_animation_finished(anim_name: String):
 		cam_shid = 0
 	else:
 		cam_shid = 1
+
+func push_rb():
+	for i in get_slide_collision_count():
+		var collision := get_slide_collision(i)
+		var collider_rb = collision.get_collider()
+		
+		if collider_rb and collider_rb is RigidBody3D:
+			var push_dir = -collision.get_normal()
+			push_dir.y = 0
+			push_dir = push_dir.normalized() # Нормализуем после изменения
+			
+			# Вычисляем относительную скорость вдоль направления столкновения
+			var relative_velocity = self.velocity.dot(push_dir) - collider_rb.linear_velocity.dot(push_dir)
+			relative_velocity = max(0.0, relative_velocity) # Отсекаем отрицательную скорость
+			
+			const MAX_APPROX_MASS = 30
+			var mass_ratio = collider_rb.mass / MAX_APPROX_MASS
+			mass_ratio = clamp(mass_ratio, 0.1, 1.0) # Ограничиваем значение массы
+			
+			# Учитываем массу в расчете силы
+			var push_force = (1.0 / mass_ratio) * 5.0 # Обратное влияние массы
+			var impulse = push_dir * relative_velocity * push_force
+			
+			var collision_point = collision.get_position() - collider_rb.global_position
+			
+			collider_rb.apply_impulse(impulse, collision_point)
+			
+			#print("Collision with:", str(collider_rb), "Impulse applied:", str(impulse))
+			#print("New Linear Velocity:", collider_rb.linear_velocity)
+
 
 ## mplayer
 

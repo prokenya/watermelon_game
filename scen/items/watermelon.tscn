@@ -69,8 +69,9 @@ properties/1/replication_mode = 1
 
 [node name="watermelon" type="RigidBody3D"]
 transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0, 0, 0)
-collision_layer = 6
+collision_layer = 7
 collision_mask = 3
+mass = 5.0
 script = SubResource("GDScript_mscu2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

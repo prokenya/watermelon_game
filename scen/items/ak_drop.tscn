@@ -71,8 +71,9 @@ properties/1/replication_mode = 1
 
 [node name="ak_drop" type="RigidBody3D"]
 transform = Transform3D(0.322538, 0, 0, 0, 0.322538, 0, 0, 0, 0.322559, 0, 0, 0)
-collision_layer = 6
+collision_layer = 7
 collision_mask = 3
+mass = 7.0
 script = SubResource("GDScript_n4til")
 
 [node name="AK-47 Lowpoly2" type="MeshInstance3D" parent="."]
