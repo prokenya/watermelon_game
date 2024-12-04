@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=3 uid="uid://dd2ano0bdyui1"]
+
+[ext_resource type="Script" path="res://addons/useful_scripts/player/player.gd" id="1_q2a7n"]
+[ext_resource type="AudioStream" uid="uid://bp0ojwm0mscqs" path="res://addons/useful_scripts/assets/audio/pl_step1.wav" id="2_yi76c"]
+[ext_resource type="AudioStream" uid="uid://f48encjaor7w" path="res://addons/useful_scripts/assets/audio/pl_step2.wav" id="3_lpo0w"]
+[ext_resource type="AudioStream" uid="uid://bjuknntd4svfj" path="res://addons/useful_scripts/assets/audio/pl_step3.wav" id="4_k5w2u"]
+[ext_resource type="AudioStream" uid="uid://u745df4hpahk" path="res://addons/useful_scripts/assets/audio/pl_step4.wav" id="5_0kbhp"]
+[ext_resource type="PackedScene" uid="uid://b2c3p2vnxrtm6" path="res://addons/useful_scripts/assets/models/cordless_drill.tscn" id="6_y4pm6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_emkox"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6b3ky"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_nbnlu"]
+streams_count = 4
+stream_0/stream = ExtResource("2_yi76c")
+stream_1/stream = ExtResource("3_lpo0w")
+stream_2/stream = ExtResource("4_k5w2u")
+stream_3/stream = ExtResource("5_0kbhp")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_q2a7n")
+
+[node name="CollisionShape3d" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_emkox")
+
+[node name="MeshInstance3d" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("CapsuleMesh_6b3ky")
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="Camera3d" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.468, 3.61433)
+
+[node name="RayCast3d" type="RayCast3D" parent="Head/Camera3d"]
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 0, -0.00588068, 0.463024)
+target_position = Vector3(60, 0, 0)
+
+[node name="footsteps" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.11587, 0)
+stream = SubResource("AudioStreamRandomizer_nbnlu")
+
+[node name="node" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(4, 0, 0, 0, -1.74846e-07, 4, 0, -4, -1.74846e-07, -0.0446097, -1.36359, -0.0633704)
+
+[node name="node2" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(4, 0, 0, 0, -1.74846e-07, 4, 0, -4, -1.74846e-07, -0.0446097, -0.32053, -0.0633704)
+
+[node name="node3" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(3.24004, 0, 2.34566, -2.34566, -1.74846e-07, 3.24004, 1.02532e-07, -4, -1.41627e-07, -0.0446097, -0.32053, -0.0633704)
+
+[node name="node4" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(3.14364, 0, -2.47336, 2.47336, -1.74846e-07, 3.14364, -1.08114e-07, -4, -1.37413e-07, -0.0446097, -0.32053, -0.0633704)
+
+[node name="node5" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(3.24004, 0, 2.34566, -2.34566, -1.74846e-07, 3.24004, 1.02532e-07, -4, -1.41627e-07, -0.0446097, 0.690879, -0.0633704)
+
+[node name="node6" parent="." instance=ExtResource("6_y4pm6")]
+transform = Transform3D(3.14364, 0, -2.47336, 2.47336, -1.74846e-07, 3.14364, -1.08114e-07, -4, -1.37413e-07, 0.0356618, 0.780527, -0.0633703)

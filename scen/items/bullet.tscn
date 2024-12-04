@@ -7,6 +7,7 @@
 [ext_resource type="ArrayMesh" uid="uid://cyqt63iaowjve" path="res://models/mesh/watermelon_p2.tres" id="5_l2d1q"]
 [ext_resource type="AudioStream" uid="uid://c5a2ukjufkpbx" path="res://audio/sfx/exp_1.ogg" id="6_6f6p6"]
 [ext_resource type="Texture2D" uid="uid://dsm6r6dvejany" path="res://textures/exp_tex/Circle03.png" id="7_4pl72"]
+[ext_resource type="Script" path="res://scripts/mps.gd" id="8_riq3y"]
 
 [sub_resource type="GDScript" id="GDScript_doo73"]
 script/source = "extends RigidBody3D
@@ -177,17 +178,6 @@ alpha_curve = SubResource("CurveTexture_wn1s2")
 
 [sub_resource type="QuadMesh" id="QuadMesh_6qckr"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p0j4u"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:linear_velocity")
-properties/2/spawn = true
-properties/2/replication_mode = 1
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_850y8"]
 resource_name = "Scene_-_Root"
 cull_mode = 2
@@ -308,13 +298,14 @@ one_shot = true
 process_material = SubResource("ParticleProcessMaterial_p2s5f")
 draw_pass_1 = SubResource("QuadMesh_6qckr")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_p0j4u")
-
 [node name="Watermelon" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.305, 0, 0, 0, -1.3332e-08, 0.305, 0, -0.305, -1.3332e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_bk5m0")
 skeleton = NodePath("")
+
+[node name="mps" type="Node3D" parent="." node_paths=PackedStringArray("track_this_object")]
+script = ExtResource("8_riq3y")
+track_this_object = NodePath("..")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]

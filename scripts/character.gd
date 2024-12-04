@@ -292,7 +292,7 @@ func push_rb():
 			var relative_velocity = self.velocity.dot(push_dir) - collider_rb.linear_velocity.dot(push_dir)
 			relative_velocity = max(0.0, relative_velocity) # Отсекаем отрицательную скорость
 			
-			const MAX_APPROX_MASS = 30
+			const MAX_APPROX_MASS = 15
 			var mass_ratio = collider_rb.mass / MAX_APPROX_MASS
 			mass_ratio = clamp(mass_ratio, 0.1, 1.0) # Ограничиваем значение массы
 			

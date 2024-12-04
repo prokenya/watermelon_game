@@ -1,0 +1,93 @@
+[gd_scene load_steps=12 format=3 uid="uid://c2y1l0d4cdsj3"]
+
+[ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://addons/useful_scripts/player/player_firstperson.tscn" id="1_ir120"]
+[ext_resource type="Script" path="res://addons/useful_scripts/interaction/scene_change.gd" id="2_2cjek"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5fj5y"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_kcd5f"]
+sky_material = SubResource("ProceduralSkyMaterial_5fj5y")
+
+[sub_resource type="Environment" id="Environment_evvro"]
+background_mode = 2
+sky = SubResource("Sky_kcd5f")
+
+[sub_resource type="BoxMesh" id="BoxMesh_agx2e"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0y86u"]
+points = PackedVector3Array(-50, -0.5, -50, -50, 0.5, -50, 50, -0.5, -50, -50, -0.5, 50, -50, 0.5, 50, 50, 0.5, -50, 50, -0.5, 50, 50, 0.5, 50)
+
+[sub_resource type="TextMesh" id="TextMesh_p3ro2"]
+text = "go to
+floating"
+font_size = 42
+
+[sub_resource type="TextMesh" id="TextMesh_xfklm"]
+text = "go to
+rotation"
+font_size = 42
+
+[sub_resource type="TextMesh" id="TextMesh_3svhx"]
+text = "go to
+floating rotation"
+font_size = 42
+
+[sub_resource type="TextMesh" id="TextMesh_xv41f"]
+text = "go to
+lookAtMe"
+font_size = 42
+
+[node name="main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_evvro")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
+mesh = SubResource("BoxMesh_agx2e")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("ConvexPolygonShape3D_0y86u")
+
+[node name="Player" parent="." instance=ExtResource("1_ir120")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="go_to_floating" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
+mesh = SubResource("TextMesh_p3ro2")
+script = ExtResource("2_2cjek")
+otherScene = "res://addons/useful_scripts/movement/example_floating.tscn"
+
+[node name="go_to_rotation" type="MeshInstance3D" parent="." node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -5)
+mesh = SubResource("TextMesh_xfklm")
+skeleton = NodePath("../go_to_floating")
+script = ExtResource("2_2cjek")
+player = NodePath("../Player")
+otherScene = "res://addons/useful_scripts/movement/example_rotation.tscn"
+
+[node name="go_to_floating_rotation" type="MeshInstance3D" parent="." node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -5)
+mesh = SubResource("TextMesh_3svhx")
+skeleton = NodePath("../go_to_floating")
+script = ExtResource("2_2cjek")
+player = NodePath("../Player")
+otherScene = "res://addons/useful_scripts/movement/example_floating_rotation.tscn"
+
+[node name="go_to_lookAtMe" type="MeshInstance3D" parent="." node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, -5)
+mesh = SubResource("TextMesh_xv41f")
+skeleton = NodePath("../go_to_floating")
+script = ExtResource("2_2cjek")
+player = NodePath("../Player")
+otherScene = "res://addons/useful_scripts/movement/example_lookAtMe.tscn"

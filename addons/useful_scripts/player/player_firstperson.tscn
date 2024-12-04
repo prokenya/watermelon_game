@@ -1,0 +1,41 @@
+[gd_scene load_steps=9 format=3 uid="uid://7gv6q50fuutj"]
+
+[ext_resource type="Script" path="res://addons/useful_scripts/player/player.gd" id="1_8mcm0"]
+[ext_resource type="AudioStream" uid="uid://bp0ojwm0mscqs" path="res://addons/useful_scripts/assets/audio/pl_step1.wav" id="2_4wi7b"]
+[ext_resource type="AudioStream" uid="uid://f48encjaor7w" path="res://addons/useful_scripts/assets/audio/pl_step2.wav" id="3_3bvs6"]
+[ext_resource type="AudioStream" uid="uid://bjuknntd4svfj" path="res://addons/useful_scripts/assets/audio/pl_step3.wav" id="4_yk88t"]
+[ext_resource type="AudioStream" uid="uid://u745df4hpahk" path="res://addons/useful_scripts/assets/audio/pl_step4.wav" id="5_squ8k"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_emkox"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6b3ky"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_r10wh"]
+resource_local_to_scene = true
+streams_count = 4
+stream_0/stream = ExtResource("2_4wi7b")
+stream_1/stream = ExtResource("3_3bvs6")
+stream_2/stream = ExtResource("4_yk88t")
+stream_3/stream = ExtResource("5_squ8k")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_8mcm0")
+
+[node name="CollisionShape3d" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_emkox")
+
+[node name="MeshInstance3d" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_6b3ky")
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="Camera3d" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.468479, -0.463024)
+
+[node name="RayCast3d" type="RayCast3D" parent="Head/Camera3d"]
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 0, -0.00588068, 0.463024)
+target_position = Vector3(60, 0, 0)
+
+[node name="footsteps" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0104, 0)
+stream = SubResource("AudioStreamRandomizer_r10wh")

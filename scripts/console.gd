@@ -36,11 +36,17 @@ func help() -> void:
 	printd("reload() - Reloads the current scene.")
 	printd("clear() - Clears the text in the RichTextLabel.")
 	printd("printd(data, color: Color = Color.YELLOW) - Prints data to the RichTextLabel with an optional color.")
-	printd("get_cid() - Displays current control ID, player ID, and the number of players in the world.")
+	printd("get_cid() - Displays the current control ID, player ID, and the number of players in the world.")
 	printd("get_log() - Reads and prints lines from the log file if it exists.")
 	printd("tp(x: int = 0, y: int = 0, z: int = 0, pl_id: int = Event.mpp_index) - Teleports a player to specified coordinates.")
-	printd("spawn(id: int, x: int = 0, y: int = 10, z: int = 0, amount: int = 1) - Spawns an object with a specified ID and amount at given coordinates.")
+	printd("spawn(id: int,amount: int = 1, x: int = 0, y: int = 10, z: int = 0) - Spawns an object with a specified ID and amount at given coordinates.")
 	printd("time(uscale: float) - Changes the time scale in the game. Default is 1.0 for normal speed.")
+	printd("give(item_id,amount: int = 1, pl_id: int = Event.mpp_index) - Gives an item")
+
+
+func give(item_id,amount: int = 1,pl_id: int = Event.mpp_index):
+	for iter in range(amount):
+		Event.emit_signal("add_item",item_id,pl_id)
 
 func get_log():
 	var log_file_path = "user://logs/godot.log"

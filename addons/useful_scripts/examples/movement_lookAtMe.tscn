@@ -1,0 +1,908 @@
+[gd_scene load_steps=11 format=3 uid="uid://ci45baj3j34hu"]
+
+[ext_resource type="Script" path="res://addons/useful_scripts/movement/floating.gd" id="1_h78tq"]
+[ext_resource type="Script" path="res://addons/useful_scripts/movement/lookAtMe.gd" id="2_1a7ey"]
+[ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://addons/useful_scripts/player/player_firstperson.tscn" id="3_eewfh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5fj5y"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o60ic"]
+sky_material = SubResource("ProceduralSkyMaterial_5fj5y")
+
+[sub_resource type="Environment" id="Environment_evvro"]
+background_mode = 2
+sky = SubResource("Sky_o60ic")
+
+[sub_resource type="BoxMesh" id="BoxMesh_agx2e"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0y86u"]
+points = PackedVector3Array(-50, -0.5, -50, -50, 0.5, -50, 50, -0.5, -50, -50, -0.5, 50, -50, 0.5, 50, 50, 0.5, -50, 50, -0.5, 50, 50, 0.5, 50)
+
+[sub_resource type="PrismMesh" id="PrismMesh_ta53b"]
+size = Vector3(1, 1, 10)
+
+[sub_resource type="PrismMesh" id="PrismMesh_5s0wh"]
+
+[node name="lookAtMe" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_evvro")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
+mesh = SubResource("BoxMesh_agx2e")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("ConvexPolygonShape3D_0y86u")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 5, 0)
+script = ExtResource("1_h78tq")
+movementRadius = Vector3(5, 5, 5)
+timeOffset = Vector3(0, 1, 0)
+
+[node name="floating_wedge" type="MeshInstance3D" parent="Node3D"]
+mesh = SubResource("PrismMesh_ta53b")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.726575, 0.687087, 0, -0.687087, 0.726575, 7.385, 15.233, 16.753)
+current = true
+
+[node name="wedges_player" type="Node3D" parent="."]
+
+[node name="wedge_1" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_2" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_3" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_4" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_5" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_6" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_7" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_8" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_9" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_10" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_11" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_12" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_13" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_14" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_15" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_16" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_17" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_18" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_19" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_20" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_21" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_22" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_23" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_24" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_25" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_26" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_27" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_28" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_29" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_30" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_31" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_32" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_33" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_34" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_35" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_36" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_37" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_38" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_39" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_40" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_41" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_42" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_43" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_44" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_45" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_46" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_47" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_48" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_49" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_50" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_51" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_52" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_53" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_54" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_55" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_56" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_57" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_58" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_59" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedge_60" type="MeshInstance3D" parent="wedges_player" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Player")
+
+[node name="wedges_wedge" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.65452, 0, 0)
+
+[node name="wedge_1" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_2" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_3" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_4" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_5" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_6" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_7" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_8" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_9" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_10" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_11" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_12" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_13" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_14" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_15" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_16" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_17" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_18" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_19" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_20" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_21" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_22" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_23" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_24" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_25" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_26" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_27" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_28" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_29" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_30" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_31" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_32" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_33" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_34" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_35" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_36" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_37" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_38" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_39" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_40" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_41" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_42" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_43" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_44" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_45" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_46" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_47" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_48" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_49" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_50" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 0)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_51" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_52" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_53" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_54" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_55" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 2)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_56" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_57" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_58" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_59" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="wedge_60" type="MeshInstance3D" parent="wedges_wedge" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 4)
+mesh = SubResource("PrismMesh_5s0wh")
+skeleton = NodePath("")
+script = ExtResource("2_1a7ey")
+player = NodePath("../../Node3D/floating_wedge")
+
+[node name="Player" parent="." instance=ExtResource("3_eewfh")]

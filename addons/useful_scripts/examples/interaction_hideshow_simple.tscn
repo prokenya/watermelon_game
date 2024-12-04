@@ -1,0 +1,75 @@
+[gd_scene load_steps=11 format=3 uid="uid://cppitduwskw70"]
+
+[ext_resource type="PackedScene" uid="uid://dd2ano0bdyui1" path="res://addons/useful_scripts/player/player_thirdperson.tscn" id="1_y2ysv"]
+[ext_resource type="Script" path="res://addons/useful_scripts/interaction/hideshow.gd" id="2_b3ges"]
+[ext_resource type="Script" path="res://addons/useful_scripts/movement/transformator.gd" id="3_4k4rh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6il5m"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_d7ykm"]
+sky_material = SubResource("ProceduralSkyMaterial_6il5m")
+
+[sub_resource type="Environment" id="Environment_717ww"]
+background_mode = 2
+sky = SubResource("Sky_d7ykm")
+
+[sub_resource type="BoxMesh" id="BoxMesh_lc52x"]
+size = Vector3(42, 1, 42)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8tv3p"]
+points = PackedVector3Array(-21, -0.5, -21, -21, 0.5, -21, 20.9959, -0.5, -21, -21, -0.5, 20.9959, -21, 0.5, 20.9959, 20.9959, 0.5, -21, 20.9959, -0.5, 20.9959, 20.9959, 0.5, 20.9959)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0n360"]
+transparency = 1
+depth_draw_mode = 1
+albedo_color = Color(1, 0, 1, 0.164706)
+metallic = 1.0
+roughness = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_nkn4q"]
+material = SubResource("StandardMaterial3D_0n360")
+radius = 4.0
+height = 8.0
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_717ww")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 8, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_y2ysv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 11)
+
+[node name="floor_body" type="StaticBody3D" parent="."]
+
+[node name="floor_mesh" type="MeshInstance3D" parent="floor_body"]
+mesh = SubResource("BoxMesh_lc52x")
+skeleton = NodePath("../..")
+
+[node name="floor_collider" type="CollisionShape3D" parent="floor_body"]
+shape = SubResource("ConvexPolygonShape3D_8tv3p")
+
+[node name="hideshow" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("2_b3ges")
+
+[node name="visualizer" type="MeshInstance3D" parent="hideshow"]
+mesh = SubResource("SphereMesh_nkn4q")
+
+[node name="hide_on_trigger" type="Node3D" parent="hideshow"]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="hideshow/hide_on_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.34432, 0)
+
+[node name="show_on_trigger" type="Node3D" parent="hideshow"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="hideshow/show_on_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.28265, 0)
+script = ExtResource("3_4k4rh")
+rotation_enabled = true
+rotation_type_type = 0

@@ -1,2 +1,2 @@
-extends Node3D
-@export var item_id = 0
+extends  "res://scripts/mps.gd"
+@export var item_id = -5
