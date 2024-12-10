@@ -1,9 +1,5 @@
 extends Node2D
 class_name Item
-var default_item = ["res://scen/drop/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
-"res://textures/1182467.160.webp",1]
-var items:Dictionary = InventoryManager.items
-var config = ConfigFile.new()
 var sprite
 var ITEM_TEXTURES: Array = InventoryManager.ITEM_TEXTURES
 var ITEM_STACK_LIM: Array = InventoryManager.ITEM_STACK_LIM

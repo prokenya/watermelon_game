@@ -5,13 +5,32 @@ var ITEM_STACK_LIM: Array = []
 var WORLD_ITEM: Array = []
 var HEND_ITEM: Array = []
 var default_item = ["res://scen/items/abeme.tscn","res://scen/items/inventory/abeme_inv.tscn",
-"res://textures/1182467.160.webp",1,null]
-@export var items:Dictionary = data.new().items
+"res://textures/1182467.160.webp",1,null,"item"]
+var new_items:Dictionary = {}
+#world_item,inventory_item,texture,st_lim,subnode,name
+var item_ids_to_erase:Array = []
+var item_data = Data.load_or_create()
+@export var items:Dictionary
 
 func _ready() -> void:
-	items = update_item(items)
+	items = item_data.items_paths.duplicate(true)
+	#push_items()
+	#erase_ids()
 	items = defitems(items)
-	set_data_type(items)
+	load_data_types(items)
+	#print(item_data.items_paths)
+
+func erase_ids():
+	for id in item_ids_to_erase:
+		items.erase(id)
+	item_data.items_paths = items
+	item_data.save()
+
+func push_items():
+	items.merge(new_items,true)
+	item_data.items_paths = items
+	item_data.save()
+	
 
 func defitems(data: Dictionary):
 	for key in data.keys():
@@ -21,40 +40,7 @@ func defitems(data: Dictionary):
 	return data
 
 
-func update_item(data: Dictionary) -> Dictionary:
-	var config = ConfigFile.new()
-	var user_config_path = "user://items.cfg"
-	var res_config_path = "res://resources/items.cfg"
-
-
-	# Загружаем данные из файла
-	var load_err = config.load(res_config_path)
-	if load_err != OK:
-		print_debug("Ошибка загрузки файла:", load_err)
-	
-	# Сохраняем данные, если передан непустой словарь
-	## ещё не используется
-	if not data.is_empty():
-		for key in data.keys():
-			config.set_value("Items", str(key), data[key])
-		var save_err = config.save(user_config_path)
-		if save_err != OK:
-			print_debug("Ошибка сохранения файла:", save_err)
-			return {}
-	# Проверка, существует ли секция "Items"
-	if not config.has_section("Items"):
-		print_debug("Секция 'Items' не найдена в файле конфигурации.")
-		return {}
-
-	# Читаем данные из секции "Items"
-	var loaded_data = {}
-	for key in config.get_section_keys("Items"):
-		loaded_data[int(key)] = config.get_value("Items", key)
-	
-	return loaded_data
-
-
-func set_data_type(items: Dictionary):
+func load_data_types(items: Dictionary):
 	for i in items.keys():
 		var WORLD_I = load(items[i][0])
 		var HEND_I = load(items[i][1])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://m6cpbilj2lg6"]
+[gd_scene load_steps=25 format=3 uid="uid://m6cpbilj2lg6"]
 
 [ext_resource type="Script" path="res://scripts/character.gd" id="1_hwfqd"]
 [ext_resource type="Texture2D" uid="uid://varw4lx87ems" path="res://textures/1182467.160.webp" id="2_q7m3t"]
@@ -11,97 +11,11 @@
 [ext_resource type="AudioStream" uid="uid://cis8w30cm46lq" path="res://audio/sfx/Footsteps/FootstepsStoneDirt3.wav" id="10_bv7be"]
 [ext_resource type="AudioStream" uid="uid://bp7oub08v01c0" path="res://audio/sfx/Footsteps/FootstepsStoneDirt4.wav" id="11_hb27t"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sie3j"]
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v4cbk"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0xdd3"]
-
-[sub_resource type="Animation" id="Animation_4ps3i"]
-resource_name = "cam_go_shaking_left"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Camera3D:h_offset")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, -0.055, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Camera3D:v_offset")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 0.045, 0.0]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("..")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"footstep"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_jpkuy"]
-resource_name = "cam_go_shaking_right"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Camera3D:h_offset")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 0.055, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Camera3D:v_offset")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 0.045, 0.0]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("..")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"footstep"
-}]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_fp5d2"]
-_data = {
-"cam_go_shaking_left": SubResource("Animation_4ps3i"),
-"cam_go_shaking_right": SubResource("Animation_jpkuy")
-}
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h5m22"]
 albedo_texture = ExtResource("2_q7m3t")
@@ -245,6 +159,7 @@ properties/3/replication_mode = 1
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 collision_layer = 3
 script = ExtResource("1_hwfqd")
+noise_shake = SubResource("FastNoiseLite_sie3j")
 
 [node name="AudioListener3D" type="AudioListener3D" parent="."]
 
@@ -255,12 +170,6 @@ shape = SubResource("CapsuleShape3D_v4cbk")
 layers = 65537
 mesh = SubResource("CapsuleMesh_0xdd3")
 skeleton = NodePath("../..")
-
-[node name="animation_player" type="AnimationPlayer" parent="."]
-root_node = NodePath("../Node3D")
-libraries = {
-"": SubResource("AnimationLibrary_fp5d2")
-}
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.947956, 0)
@@ -281,6 +190,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.666, -0.157, -0.694)
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Node3D"]
 transform = Transform3D(0.445573, 0, 0.895246, 0, 1, 0, -0.895246, 0, 0.445573, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_h5m22")
+
+[node name="step_interval" type="Timer" parent="Node3D"]
+one_shot = true
 
 [node name="Control_charapter" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -391,8 +303,9 @@ script = SubResource("GDScript_5dq31")
 
 [node name="name" type="Label3D" parent="."]
 transform = Transform3D(2.765, 0, 0, 0, 2.765, 0, 0, 0, 2.765, 0, 1.8396, 0)
+visibility_range_begin = 0.45
 billboard = 1
-text = "d"
+text = "m,jkm"
 
 [node name="mps" type="Node3D" parent="."]
 
@@ -403,7 +316,6 @@ spawn_path = NodePath("../../Node3D/hand")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="mps"]
 replication_config = SubResource("SceneReplicationConfig_tdt8x")
 
-[connection signal="animation_finished" from="animation_player" to="." method="_on_animation_player_animation_finished"]
 [connection signal="pressed" from="Control_charapter/ui_b/back" to="Control_charapter/ui_b/back" method="_on_pressed"]
 [connection signal="pressed" from="Control_charapter/ui_b/menu2" to="Control_charapter/ui_b/menu2" method="_on_pressed"]
 [connection signal="pressed" from="Control_charapter/ui_b/back2" to="Control_charapter/ui_b/back2" method="_on_pressed"]

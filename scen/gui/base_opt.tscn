@@ -168,21 +168,25 @@ theme = ExtResource("2_x5s8u")
 
 [node name="perfomance" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 35
 text = "perfomance"
 
 [node name="audio" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 35
 text = "audio"
 
 [node name="cheats" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 35
 text = "cheats"
 
 [node name="console" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 35
 text = "console"
 
@@ -385,6 +389,7 @@ grow_vertical = 2
 
 [node name="LineEdit" type="LineEdit" parent="Control/console/VBoxContainer"]
 layout_mode = 2
+focus_mode = 1
 theme = ExtResource("2_x5s8u")
 theme_override_font_sizes/font_size = 35
 placeholder_text = "write the command"

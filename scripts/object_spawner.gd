@@ -7,7 +7,7 @@ func _ready() -> void:
 	if Event.is_multiplayer == true and inworld == false:
 		objects_spawner = $OBJECTS_SPAWNER
 		print_debug(objects_spawner)
-		var items = data.new().items
+		var items = Data.load_or_create().items_paths
 		for key in items.keys():
 			objects_spawner.add_spawnable_scene(items[key][0])
 	Event.connect("spawn_obj",spawn_obj)

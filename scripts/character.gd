@@ -8,7 +8,6 @@ var state: State = State.IDLE
 var user_prefs: UserPref
 var last_position: Vector3
 @onready var camera = $Node3D/Camera3D
-@onready var shaking_anim = $animation_player
 @onready var footstep_audio = $footstep
 @onready var playeranim_gui = $Control_charapter/CanvasLayer/playeranim_gui
 @onready var head = $Node3D
@@ -18,14 +17,18 @@ var picked_item_id: int
 var picked_item: Object
 var active_item
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
-@onready var camera_3d: Camera3D = $Node3D/Camera3D
 @onready var guinode: CanvasLayer = $Control_charapter/gui
 @onready var mpp: MPPlayer
 @onready var namee: Label3D = $name
 
+var cam_shake:bool
+@onready var original_rotation_degrees = camera.rotation_degrees
+var shake_time: float = 0.0
+@onready var step_interval: Timer = $Node3D/step_interval
+var shake_offset:Vector3
+@export var noise_shake: Noise
+var trauma:float = 0.0
 
-var cam_ch: bool
-var cam_shid: int = 0
 var freejump: bool
 var sensitivity: float
 var tracked_touch_index: int = -1
@@ -77,7 +80,7 @@ func apply_control(control_info: Dictionary):
 		print(control_info)
 		print(control_item_id)
 		if control_info["control_id"] == control_item_id:
-			camera_3d.current = true
+			camera.current = true
 			
 		var new_gui_type = control_info["controlled_object_type"]
 		
@@ -141,7 +144,7 @@ func drop_item(item_id,amount):
 func _apply_user_prefs():
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
-	cam_ch = user_prefs.cam_ch
+	cam_shake = user_prefs.cam_ch
 	var index = user_prefs.MSAA
 	if user_prefs.infinite_hp == true:
 		hp = 10000000
@@ -157,7 +160,8 @@ func _process(delta: float):
 	if position.distance_to(last_position) > 0.01:
 		last_position = position
 		_change_state(State.WALK)
-		_play_footstep_anim()
+	else:
+		_change_state(State.IDLE)
 
 	if ray_cast_3d.is_colliding():
 		picked_item = ray_cast_3d.get_collider()
@@ -188,6 +192,10 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	if is_multiplayer_authority():
+		if state == State.WALK and is_on_floor():
+			shake_camera(delta,false,3,SPEED/7,true)
+		else:
+			shake_camera(delta,true,3,0.2,false)
 		SimpleGrass.set_player_position(global_position)
 		if not is_on_floor():
 			velocity.y -= gravity * delta
@@ -207,16 +215,28 @@ func _physics_process(delta: float):
 func _change_state(new_state: State):
 	state = new_state
 
-func _play_footstep_anim():
-	if cam_ch == true and is_on_floor():
-		if not shaking_anim.is_playing():
-			shaking_anim.speed_scale = 3
-			if cam_shid == 0:
-				shaking_anim.play("cam_go_shaking_left")
-			else:
-				shaking_anim.play("cam_go_shaking_right")
-func footstep():
-	footstep_audio.play()
+func shake_camera(delta,stop:bool,value:float,interval:float = 2,is_fstep:bool=false):
+	trauma = 1
+	trauma = max(trauma-delta * 1,0.0)
+	step_interval.wait_time = interval
+	if cam_shake:
+		if stop:
+			camera.rotation_degrees = camera.rotation_degrees.lerp(original_rotation_degrees,delta* 5.0)
+		elif step_interval.time_left <= 0:
+			if is_fstep:
+				footstep_audio.play()
+			step_interval.start()
+			# Генерируем случайный угол смещения
+			shake_offset = Vector3(
+				randf_range(-value, value),
+				randf_range(-value, value),
+				randf_range(-value, value)
+			)
+		else:
+			camera.rotation_degrees = camera.rotation_degrees.lerp(original_rotation_degrees + shake_offset,delta/interval)
+
+
+				
 func _input(event: InputEvent):
 	if not is_multiplayer_authority():
 		return
@@ -226,7 +246,6 @@ func _input(event: InputEvent):
 		return
 	if Event.control_info["control_id"] != control_item_id:
 		return
-	
 	# Обработка касаний экрана
 	if event is InputEventScreenTouch:
 		if event.pressed:
@@ -270,13 +289,6 @@ func _on_area_3d_area_entered(area: Area3D):
 		if hp <= 0:
 			Event.emit_signal("back_s",1)
 		Event.hp_char = hp
-	
-
-func _on_animation_player_animation_finished(anim_name: String):
-	if anim_name == "cam_go_shaking_right":
-		cam_shid = 0
-	else:
-		cam_shid = 1
 
 func push_rb():
 	for i in get_slide_collision_count():
