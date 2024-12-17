@@ -218,7 +218,9 @@ text = "hui"
 script = SubResource("GDScript_1giln")
 
 [node name="left-right" parent="." instance=ExtResource("2_nu77o")]
+offset_left = -15.0
 offset_top = -300.0
+offset_right = 285.0
 offset_bottom = 0.0
 deadzone_size = 0.0
 action_left = "left_drone_r"

@@ -113,16 +113,29 @@ func _physics_process(delta: float):
 	if control_item_id == control_id:
 		if Event.is_multiplayer == true:
 				if controller_mpid == Event.control_info["multiplayer_index"]:
-					rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
-					input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+					if Event.platform == "PC":
+						print("faasfsa")
+						if Input.is_key_pressed(KEY_SPACE):
+							rotate_dir[1] = 1
+							print(rotate_dir)
+					else:
+						rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
+						input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 					if multiplayer.is_server():
 						value = rotate_dir[1]*10
 					else:
 						movedata.rpc(rotate_dir,input_dir)
 				
 		else: 
-			rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
-			input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
+			if Event.platform == "PC":
+				if Input.is_key_pressed(KEY_SPACE):
+					rotate_dir[1] = 1
+					print(rotate_dir)
+				else:
+					rotate_dir[1] = 0
+			else:
+				rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
+				input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
 			value = (rotate_dir[1])*10
 		var current_rotation_speed = 2
 		if value > 0:

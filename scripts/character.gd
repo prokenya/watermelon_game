@@ -169,7 +169,6 @@ func _process(delta: float):
 				picked_item_id = picked_item.item_id
 			else:
 				picked_item_id = -1
-				return
 			if picked_item.get("control_item_id") != null:
 				picked_item_control = picked_item.get("control_item_id")
 			else:
@@ -208,13 +207,14 @@ func _physics_process(delta: float):
 		if not is_on_floor():
 			velocity.y -= gravity * delta
 			
-		var input_dir
+		var input_dir = Vector2.ZERO
 		##pc
-		if Event.platform == "PC":
-			input_dir = Input.get_vector("left_move", "right_move", "forward_move", "back_move")
+		if Event.control_info["control_id"] == control_item_id and !Event.not_move_gui:
+			if Event.platform == "PC":
+				input_dir = Input.get_vector("left_move", "right_move", "forward_move", "back_move")
 
-		else: 
-			input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+			elif Event.not_move_gui == false: 
+				input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		if direction:
 			velocity.x = direction.x * SPEED
@@ -233,18 +233,22 @@ func _change_state(new_state: State):
 func _on_step_interval_timeout() -> void:
 	footstep.play()
 
-
-				
 func _input(event: InputEvent):
 	if not is_multiplayer_authority():
 		return
 	if Event.is_inventory_active == true:
 		return  # Если инвентарь активен, не обрабатывать события для игрока
-	if Event.move_gui == true:
-		return
 	if Event.control_info["control_id"] != control_item_id:
 		return
 	# Обработка касаний экрана
+	if Event.platform == "PC":
+		pc_rotate_camera(event)
+	else:
+		mobile_rotate_camera(event)
+
+func mobile_rotate_camera(event):
+	if Event.not_move_gui:
+		return
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			if tracked_touch_index == -1:
@@ -253,7 +257,7 @@ func _input(event: InputEvent):
 				tracked_touch_index = event.index
 		elif event.index == tracked_touch_index:
 			tracked_touch_index = -1
-
+		
 	# Обработка перетаскивания
 	if event is InputEventScreenDrag:
 		# Проверяем, отслеживается ли палец
@@ -268,6 +272,24 @@ func _input(event: InputEvent):
 	# Обработка джойстика
 	if event is InputEventJoypadMotion:
 		_rotate_camera(Vector2(event.axis_value(0), event.axis_value(1)) * sensitivity)
+
+func pc_rotate_camera(event):
+	if event.is_action_pressed("ui_cancel"):
+		var mode = Input.MOUSE_MODE_VISIBLE if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
+		Input.set_mouse_mode(mode)
+	
+	if !Event.not_move_gui:
+		if event is InputEventMouseButton and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		
+	
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED :
+		rotate_y(deg_to_rad(event.relative.x * sensitivity * -1))
+		
+		var delta_x = event.relative.y * sensitivity * -1
+		camera.rotation_degrees.x = clamp(camera.rotation_degrees.x + delta_x, -90, 90)
 
 func _rotate_camera(delta: Vector2):
 	current_rotation += delta * sensitivity

@@ -32,7 +32,7 @@ signal pick_up(player_id:int)
 signal add_item(item_id:int,player_id:int)
 signal jump()
 signal on_fire(player_id:int)
-var move_gui:bool
+var not_move_gui:bool
 ###sw_control
 var control_id_counter:int = -1
 var control_info = {
@@ -61,3 +61,4 @@ func _ready() -> void:
 	else:
 		platform = "PC"
 		print("Запущено на ПК")
+	#platform = "Android"
