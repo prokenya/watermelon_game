@@ -21,13 +21,12 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var mpp: MPPlayer
 @onready var namee: Label3D = $name
 
-var cam_shake:bool
-@onready var original_rotation_degrees = camera.rotation_degrees
-var shake_time: float = 0.0
+var cam_shake:bool = false
+@onready var shaker_component: ShakerComponent3D = $Node3D/ShakerComponent3D
 @onready var step_interval: Timer = $Node3D/step_interval
-var shake_offset:Vector3
-@export var noise_shake: Noise
-var trauma:float = 0.0
+@onready var footstep: AudioStreamPlayer = $footstep
+
+
 
 var freejump: bool
 var sensitivity: float
@@ -193,14 +192,29 @@ func _process(delta: float):
 func _physics_process(delta: float):
 	if is_multiplayer_authority():
 		if state == State.WALK and is_on_floor():
-			shake_camera(delta,false,3,SPEED/7,true)
+			if step_interval.is_stopped():
+				step_interval.start(0.6)
+			shaker_component.intensity = lerpf(shaker_component.intensity, 1 if cam_shake else 0, delta)
+			shaker_component.shake_speed = lerpf(shaker_component.shake_speed, 1 if cam_shake else 0, delta)
+			shaker_component.is_playing = cam_shake
 		else:
-			shake_camera(delta,true,3,0.2,false)
+			shaker_component.intensity = lerpf(shaker_component.intensity, 0.1 if cam_shake else 0, delta)
+			shaker_component.shake_speed = lerpf(shaker_component.shake_speed, 0.1 if cam_shake else 0, delta)
+			shaker_component.is_playing = cam_shake
+		if !cam_shake:
+			camera.position = camera.position.lerp(Vector3.ZERO, delta)
+
 		SimpleGrass.set_player_position(global_position)
 		if not is_on_floor():
 			velocity.y -= gravity * delta
-		
-		var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+			
+		var input_dir
+		##pc
+		if Event.platform == "PC":
+			input_dir = Input.get_vector("left_move", "right_move", "forward_move", "back_move")
+
+		else: 
+			input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		if direction:
 			velocity.x = direction.x * SPEED
@@ -209,31 +223,15 @@ func _physics_process(delta: float):
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 			velocity.z = move_toward(velocity.z, 0, SPEED)
 		
+		#calls
 		push_rb()
 		move_and_slide()
 
 func _change_state(new_state: State):
 	state = new_state
 
-func shake_camera(delta,stop:bool,value:float,interval:float = 2,is_fstep:bool=false):
-	trauma = 1
-	trauma = max(trauma-delta * 1,0.0)
-	step_interval.wait_time = interval
-	if cam_shake:
-		if stop:
-			camera.rotation_degrees = camera.rotation_degrees.lerp(original_rotation_degrees,delta* 5.0)
-		elif step_interval.time_left <= 0:
-			if is_fstep:
-				footstep_audio.play()
-			step_interval.start()
-			# Генерируем случайный угол смещения
-			shake_offset = Vector3(
-				randf_range(-value, value),
-				randf_range(-value, value),
-				randf_range(-value, value)
-			)
-		else:
-			camera.rotation_degrees = camera.rotation_degrees.lerp(original_rotation_degrees + shake_offset,delta/interval)
+func _on_step_interval_timeout() -> void:
+	footstep.play()
 
 
 				

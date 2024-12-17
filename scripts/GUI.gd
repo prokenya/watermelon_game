@@ -9,6 +9,9 @@ var control_id
 @onready var menu = $"../../ui_b"
 @onready var pos: Label = $pos
 @onready var player_node
+
+@onready var elements_to_del:Array = [$"Virtual Joystick",$VBoxContainer,$VBoxContainer2]
+
 var is_paused = false
 func pressed():
 	if gui.visible == true:
@@ -21,9 +24,18 @@ func pressed():
 	Event.move_gui = is_paused
 
 func _ready():
+	if Event.platform == "PC":
+		for item in elements_to_del:
+			item.queue_free()
 	Event.connect("menu", pressed)
 	player_node = get_parent().get_parent().get_parent()
 
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("ui_cancel"):
+		Event.emit_signal("menu")
+	if Event.platform == "PC":
+		if Input.is_action_just_pressed("jump_move"):
+			_on_touch_screen_button_pressed()
 
 func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)

@@ -1,9 +1,11 @@
-[gd_scene load_steps=26 format=3 uid="uid://dk5m0g106ms0q"]
+[gd_scene load_steps=29 format=3 uid="uid://dk5m0g106ms0q"]
 
 [ext_resource type="Texture2D" uid="uid://bqtfe1drnqfnu" path="res://textures/exp_tex/Flare00.PNG" id="1_rp7wc"]
 [ext_resource type="Texture2D" uid="uid://bbbdncxnwj08o" path="res://materials/display_scale_part_rot.tres" id="2_gif1k"]
 [ext_resource type="Material" uid="uid://b0eekmgghjv0i" path="res://materials/exp_flash1.tres" id="3_fe0t7"]
 [ext_resource type="AudioStream" uid="uid://6k15wkb1r2cw" path="res://audio/sfx/exp_4.ogg" id="4_hm3kv"]
+[ext_resource type="Script" path="res://addons/shaker/src/Vector3/ShakerEmitter3D.gd" id="5_6ycjs"]
+[ext_resource type="Resource" uid="uid://dakufr1eoowxf" path="res://addons/shaker/data/resources/strong_shake3D.tres" id="6_h77t4"]
 
 [sub_resource type="GDScript" id="GDScript_thom4"]
 resource_name = "expp"
@@ -144,6 +146,9 @@ properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_udlie"]
+radius = 8.71392
+
 [node name="vfx_expp1" type="Node3D"]
 script = SubResource("GDScript_thom4")
 
@@ -194,3 +199,19 @@ bus = &"SFX"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_uoawl")
+
+[node name="ShakerEmitter3D" type="Node3D" parent="."]
+script = ExtResource("5_6ycjs")
+emit = true
+max_distance = 15.0
+distance_attenuation = 1.51572
+intensity = 5.0
+duration = 0.7
+shakerPreset = ExtResource("6_h77t4")
+
+[node name="Area3D" type="Area3D" parent="ShakerEmitter3D"]
+collision_layer = 512
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShakerEmitter3D/Area3D"]
+shape = SubResource("SphereShape3D_udlie")

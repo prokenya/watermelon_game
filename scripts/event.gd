@@ -1,5 +1,6 @@
 extends Node
 
+var platform
 #world_data
 var start_world_args: Dictionary
 var items: Dictionary
@@ -50,3 +51,13 @@ signal cam_1_3p(cam: bool,id:int)
 signal reset_drone_pos()
 func printc(text:String,color = Color.YELLOW):
 	Event.emit_signal("printd",text,color)
+
+func _ready() -> void:
+	platform = OS.get_name()
+	if platform == "Android":
+		print(platform)
+	elif platform == "iOS":
+		print("Запущено на iOS")
+	else:
+		platform = "PC"
+		print("Запущено на ПК")
