@@ -82,6 +82,7 @@ func up_item_pos():
 			item.position = (get_pos_by_id(i) + HALF_SLOT)
 
 func _input(event):
+	# Обработка касания экрана (для мобильных)
 	if event is InputEventScreenTouch:
 		var local_pos = (get_global_transform_with_canvas().affine_inverse() * event.position)
 		if event.pressed:
@@ -91,7 +92,7 @@ func _input(event):
 			else:
 				Event.is_inventory_active = false
 			var itm = get_item(hovered_index)
-			if hovered_index != -1: # если не за приделами инвенторя
+			if hovered_index != -1: # если не за пределами инвентаря
 				active_item = get_item_id(itm)
 			if itm != null:
 				picked_item = itm
@@ -105,7 +106,7 @@ func _input(event):
 					var item_in_slot = get_item(hovered_index)
 					if item_in_slot == null:
 						set_item(picked_item, hovered_index)
-					else: # cтак
+					else: # стэк
 						if get_item_id(picked_item) == get_item_id(item_in_slot) and item_in_slot.amount < item_in_slot.ITEM_STACK_LIM[get_item_id(item_in_slot)]:
 							var addable_amount = item_in_slot.ITEM_STACK_LIM[get_item_id(item_in_slot)] - item_in_slot.amount
 							if picked_item.amount <= addable_amount:
@@ -121,38 +122,126 @@ func _input(event):
 							items[picked_id] = item_in_slot
 				else:
 					var item_id = get_item_id(picked_item)
-					Event.emit_signal("drop_item", active_item_c,picked_item.amount)
-					print(picked_item.amount,"Items? with ID ", item_id, " was dropped outside the inventory")
+					Event.emit_signal("drop_item", item_id, picked_item.amount)
+					print(picked_item.amount, "Items? with ID ", item_id, " was dropped outside the inventory")
 					active_item = -1
 					items_to_remove.append(picked_item)
 					picked_item = null  # Не освобождаем сразу, а помечаем для удаления
 				picked_item = null
 				up_item_pos()
 		queue_redraw()
-	elif event is InputEventScreenDrag:
+
+	# Обработка движения мыши (для ПК)
+	elif event is InputEventMouseMotion:
 		if picked_item != null:
 			picked_item.position = (get_global_transform_with_canvas().affine_inverse() * event.position)
+
+	# Обработка нажатия кнопки мыши
+	elif event is InputEventMouseButton:
+		var local_pos = (get_global_transform_with_canvas().affine_inverse() * event.position)
+
+		if event.pressed:
+			# Если нажата левая кнопка мыши
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				hovered_index = get_id_by_pos(local_pos)
+				if hovered_index != -1:
+					Event.is_inventory_active = true
+				else:
+					Event.is_inventory_active = false
+				var itm = get_item(hovered_index)
+				if hovered_index != -1: # если не за пределами инвентаря
+					active_item = get_item_id(itm)
+				if itm != null:
+					picked_item = itm
+					picked_id = hovered_index
+					items[picked_id] = null # Важно очистить слот, откуда берется предмет
+		else:
+			# Если кнопка мыши отпущена
+			if picked_item != null:
+				local_pos = (get_global_transform_with_canvas().affine_inverse() * event.position)
+				hovered_index = get_id_by_pos(local_pos)
+				if hovered_index >= 0 and hovered_index < MAX_SLOTS:
+					var item_in_slot = get_item(hovered_index)
+					if item_in_slot == null:
+						set_item(picked_item, hovered_index)
+					else: # стэк
+						if get_item_id(picked_item) == get_item_id(item_in_slot) and item_in_slot.amount < item_in_slot.ITEM_STACK_LIM[get_item_id(item_in_slot)]:
+							var addable_amount = item_in_slot.ITEM_STACK_LIM[get_item_id(item_in_slot)] - item_in_slot.amount
+							if picked_item.amount <= addable_amount:
+								item_in_slot.amount += picked_item.amount
+								picked_item.amount = 0
+								items_to_remove.append(picked_item)
+							else:
+								item_in_slot.amount += addable_amount
+								picked_item.amount -= addable_amount
+								items[picked_id] = picked_item
+						else:
+							items[hovered_index] = picked_item
+							items[picked_id] = item_in_slot
+				else:
+					var item_id = get_item_id(picked_item)
+					Event.emit_signal("drop_item", item_id, picked_item.amount)
+					print(picked_item.amount, "Items? with ID ", item_id, " was dropped outside the inventory")
+					active_item = -1
+					items_to_remove.append(picked_item)
+					picked_item = null  # Не освобождаем сразу, а помечаем для удаления
+				picked_item = null
+				up_item_pos()
+		queue_redraw()
+
+	if Event.platform == "PC" and !Event.not_move_gui:
+		if event is InputEventMouseButton and event.is_pressed():
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				hovered_index = clamp(active_slot -1 ,0,MAX_SLOTS-1)
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				hovered_index = clamp(active_slot +1 ,0,MAX_SLOTS-1)
+		if Input.is_key_pressed(KEY_Q) and active_slot != -1:
+			var itm = get_item(active_slot)
+			if itm != null and is_instance_valid(itm):
+				picked_item = itm
+				var item_id = get_item_id(picked_item)
+				Event.emit_signal("drop_item", item_id, picked_item.amount)
+				print(picked_item.amount, "Items with ID", item_id, "were dropped outside the inventory")
+				active_item = -1
+				items_to_remove.append(picked_item)
+			up_item_pos()
+			queue_redraw()
+			picked_item = null
+
+		for i in range(1,MAX_SLOTS+1):
+			if Input.is_key_pressed(KEY_0 + i):
+				hovered_index = i - 1
 	if hovered_index != -1:
 		active_slot = hovered_index
 
+	active_item = get_item_id(get_item(active_slot))
+	queue_redraw()
+
+			
+
 func _process(delta):
 	for item in items_to_remove:
-		item.queue_free()
+		if is_instance_valid(item):
+			item.queue_free()
 	items_to_remove.clear()
+
 	if active_item_c != active_item:
 		active_item_c = active_item
 		Event.emit_signal("_active_item", active_item_c)
+
 
 func set_item(item: Node2D, idx: int) -> bool:
 	if idx < 0 or idx >= MAX_SLOTS:
 		return false
 	if items[idx] == null:
 		items[idx] = item
+		up_item_pos()  # Переместить предмет на правильную позицию
 		return true
 	return false
 
+
 func get_item(idx: int) -> Node2D:
-	if idx < 0 or idx >= MAX_SLOTS:
+	if idx < 0 or idx >= MAX_SLOTS or !is_instance_valid(items[idx]):
 		return null
 	return items[idx]
 
@@ -169,39 +258,37 @@ func add_item_by_id_mp(item_id,player_id):
 
 func add_item_by_id(item_id: int, amount: int = 1, slot_id: int = -1) -> bool:
 	if slot_id >= 0 and slot_id < MAX_SLOTS and items[slot_id] == null:
-		# Add directly to the specified slot
 		var new_item = preload("res://scen/gui/item.tscn").instantiate()
 		new_item.item_id = item_id
-		new_item.amount = amount # количество
+		new_item.amount = amount
 		add_child(new_item)
 		set_item(new_item, slot_id)
-		up_item_pos()
 		if active_slot == slot_id:
 			active_item = item_id
 		return true
 
 	for i in range(MAX_SLOTS):
-		var i_id_get = get_item_id(items[i])
-		if i_id_get == item_id and items[i].amount < items[i].ITEM_STACK_LIM[i_id_get] and amount > 0:
-			var addable_amount = items[i].ITEM_STACK_LIM[i_id_get] - items[i].amount
+		var item_in_slot = items[i]
+		if item_in_slot != null and get_item_id(item_in_slot) == item_id and item_in_slot.amount < item_in_slot.ITEM_STACK_LIM[item_id] and amount > 0:
+			var addable_amount = item_in_slot.ITEM_STACK_LIM[item_id] - item_in_slot.amount
 			if amount <= addable_amount:
-				items[i].amount += amount
+				item_in_slot.amount += amount
 				return true
 			else:
-				items[i].amount += addable_amount
+				item_in_slot.amount += addable_amount
 				amount -= addable_amount
-		
+
 		if items[i] == null and amount > 0:
 			var new_item = preload("res://scen/gui/item.tscn").instantiate()
 			new_item.item_id = item_id
-			new_item.amount = amount # количество
+			new_item.amount = amount
 			add_child(new_item)
 			set_item(new_item, i)
-			up_item_pos()
 			if active_slot == i:
 				active_item = item_id
 			return true
 	return false
+
 
 func check_inventory_full() -> Array:
 	var avable_items_ids:Array

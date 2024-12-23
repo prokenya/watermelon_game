@@ -10,7 +10,6 @@
 
 [sub_resource type="GDScript" id="GDScript_7qj11"]
 script/source = "extends Node3D
-class_name Weapon
 @onready var gun_anim = $AnimationPlayer
 @onready var fire_sfx = $fire
 #@onready var bullet_scene = preload(\"res://scen/drop/bullet.tscn\")

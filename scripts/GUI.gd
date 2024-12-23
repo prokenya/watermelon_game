@@ -39,8 +39,9 @@ func _exit_tree() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _input(event: InputEvent) -> void:
-	#if Input.is_action_just_pressed():
-		#Event.emit_signal("menu")
+	if Input.is_key_pressed(KEY_SLASH):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		Event.emit_signal("menu")
 	if Event.platform == "PC":
 		if Input.is_action_just_pressed("jump_move"):
 			_on_touch_screen_button_pressed()
@@ -48,6 +49,8 @@ func _input(event: InputEvent) -> void:
 			_on_fire_pressed()
 		if Input.is_action_just_pressed("F-KEY") and item_id != -1:
 			_on_pick_up_pressed()
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !Event.not_move_gui:
+			Event.emit_signal("on_fire",Event.mpp_index)
 
 func _process(delta):
 	hp.text = "HP:" + str(Event.hp_char)

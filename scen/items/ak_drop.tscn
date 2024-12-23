@@ -62,6 +62,7 @@ collision_layer = 7
 collision_mask = 3
 mass = 25.0
 script = ExtResource("1_f3d0t")
+item_id = 1
 track_this_object = NodePath(".")
 
 [node name="AK-47 Lowpoly2" type="MeshInstance3D" parent="."]

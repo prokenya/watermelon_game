@@ -10,21 +10,37 @@ script/source = "extends CanvasLayer
 
 @onready var gui = $\".\"
 @onready var menu = $\"../../ui_b\"
+
+@onready var elements_to_del_mobile:Array = [$VBoxContainer,$\"VBoxContainer/cam_1-3person\",$\"Virtual Joystick\",$\"left-right\"]
+@onready var elements_to_del_PC:Array = []
+
 var is_paused = false
-func preessed():
+func pressed():
 	if gui.visible == true:
-		gui.visible = false;$\"../../..\".set_physics_process(false)
+		gui.visible = false
 		menu.visible = true
-	else: gui.visible = true;menu.visible = false;$\"../../..\".set_physics_process(true)
+	else:
+		gui.visible = true
+		menu.visible = false
 	is_paused = not is_paused
-	Event.move_gui = is_paused
+	Event.not_move_gui = is_paused
 
+func _input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_SLASH):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		Event.emit_signal(\"menu\")
+	if Input.is_key_pressed(KEY_ESCAPE):
+		_on_ch_pressed()
+	if Input.is_key_pressed(KEY_F5):
+		_on_cam_13_person_pressed()
 func _ready():
-	Event.connect(\"menu\",preessed)
-
-func _on_val_drag_ended(value_changed):
-	val.value = 0
-	Event.val_slider = 0
+	if Event.platform == \"PC\":
+		for item in elements_to_del_mobile:
+			item.queue_free()
+	else:
+		for item in elements_to_del_PC:
+			item.queue_free()
+	Event.connect(\"menu\",pressed)
 
 func _process(delta):
 	linar_ve.text = Event.drone_speed

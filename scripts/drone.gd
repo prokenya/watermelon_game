@@ -128,11 +128,10 @@ func _physics_process(delta: float):
 				
 		else: 
 			if Event.platform == "PC":
+				rotate_dir = Input.get_vector("left_move", "right_move", "back_move", "forward_move")
+				input_dir = Input.get_vector("ui_left","ui_right","ui_up","ui_down")
 				if Input.is_key_pressed(KEY_SPACE):
 					rotate_dir[1] = 1
-					print(rotate_dir)
-				else:
-					rotate_dir[1] = 0
 			else:
 				rotate_dir = Input.get_vector("left_drone_r","right_drone_r","downd2","upd2")
 				input_dir = Input.get_vector("ui_left_d", "ui_right_d", "ui_up_d", "ui_down_d")
@@ -160,35 +159,3 @@ func _physics_process(delta: float):
 
 func _change_state(new_state: State):
 	state = new_state
-
-#func _input(event: InputEvent):
-	#if control_id == 1:
-		#if event is InputEventScreenTouch:
-			#if event.pressed:
-				#if tracked_touch_index == -1:
-					#tracked_touch_index = event.index
-					#touch_start_position = event.position
-					#dragging = true
-			#elif event.index == tracked_touch_index:
-				#tracked_touch_index = -1
-				#dragging = false
-	#if control_id == 1:
-		#if event is InputEventScreenDrag and event.index == tracked_touch_index:
-			#if dragging:
-				## Пропускаем первый кадр, чтобы избежать резкого скачка
-				#dragging = false
-				#touch_start_position = event.position
-			#else:
-				#var delta = event.position - touch_start_position
-				#delta *= -1
-				#_rotate_camera(delta)
-				#touch_start_position = event.position
-#
-	#if event is InputEventJoypadMotion:
-		#_rotate_camera(Vector2(event.axis_value(0), event.axis_value(1)) * sensitivity)
-#
-#func _rotate_camera(delta: Vector2):
-	#current_rotation += delta * sensitivity
-	## Apply rotation to the RigidBody3D
-	##apply_torque_impulse(Vector3(0,current_rotation.x,0))
-	##current_rotation.x = 0

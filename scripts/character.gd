@@ -289,7 +289,7 @@ func pc_rotate_camera(event):
 		rotate_y(deg_to_rad(event.relative.x * sensitivity * -1))
 		
 		var delta_x = event.relative.y * sensitivity * -1
-		camera.rotation_degrees.x = clamp(camera.rotation_degrees.x + delta_x, -90, 90)
+		head.rotation_degrees.x = clamp(head.rotation_degrees.x + delta_x, -90, 90)
 
 func _rotate_camera(delta: Vector2):
 	current_rotation += delta * sensitivity
