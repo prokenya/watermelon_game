@@ -1,6 +1,6 @@
-# Watermrlon Game
+# watermelon game
 
-**Watermrlon** is a **cross-platform sandbox game** designed for fun
+**watermelon game** is a **cross-platform sandbox game** designed for fun
 
 ## Features
 
