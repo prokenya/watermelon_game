@@ -61,4 +61,4 @@ func _ready() -> void:
 	else:
 		platform = "PC"
 		print("Запущено на ПК")
-	#platform = "Android"
+	platform = "Android"

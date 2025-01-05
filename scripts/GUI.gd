@@ -93,7 +93,8 @@ func _on_fire_pressed():
 		}
 		Event.set_control(data)
 		print("Applying control for ID:",control_id)
-
+	if Event.platform != "PC":
+		Event.emit_signal("on_fire",Event.mpp_index)
 
 func _on_pick_up_pressed():
 	if item_id == -1:
@@ -102,5 +103,6 @@ func _on_pick_up_pressed():
 	if item_id in Event.avable_items_id or Event.avable_items_id[0] == -2:
 		if Event.is_multiplayer == true:
 			Event.emit_signal("pick_up",Event.mpp_index)
+			
 		else:
 			Event.emit_signal("pick_up",-1)

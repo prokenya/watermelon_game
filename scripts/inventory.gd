@@ -82,7 +82,22 @@ func up_item_pos():
 			item.position = (get_pos_by_id(i) + HALF_SLOT)
 
 func _input(event):
-	# Обработка касания экрана (для мобильных)
+	if Event.platform == "PC":
+		_handle_pc_input(event)
+	else:
+		_handle_mobile_input(event)
+			# Обработка движения
+	if event is InputEventMouseMotion or event is InputEventScreenDrag:
+		if picked_item != null:
+			picked_item.position = (get_global_transform_with_canvas().affine_inverse() * event.position)
+	
+	if hovered_index != -1:
+		active_slot = hovered_index
+
+	active_item = get_item_id(get_item(active_slot))
+	queue_redraw()
+	
+func _handle_mobile_input(event):
 	if event is InputEventScreenTouch:
 		var local_pos = (get_global_transform_with_canvas().affine_inverse() * event.position)
 		if event.pressed:
@@ -121,23 +136,13 @@ func _input(event):
 							items[hovered_index] = picked_item
 							items[picked_id] = item_in_slot
 				else:
-					var item_id = get_item_id(picked_item)
-					Event.emit_signal("drop_item", item_id, picked_item.amount)
-					print(picked_item.amount, "Items? with ID ", item_id, " was dropped outside the inventory")
-					active_item = -1
-					items_to_remove.append(picked_item)
-					picked_item = null  # Не освобождаем сразу, а помечаем для удаления
+					remove_item(picked_item,true)
 				picked_item = null
 				up_item_pos()
 		queue_redraw()
 
-	# Обработка движения мыши (для ПК)
-	elif event is InputEventMouseMotion:
-		if picked_item != null:
-			picked_item.position = (get_global_transform_with_canvas().affine_inverse() * event.position)
-
-	# Обработка нажатия кнопки мыши
-	elif event is InputEventMouseButton:
+func _handle_pc_input(event):
+	if event is InputEventMouseButton:
 		var local_pos = (get_global_transform_with_canvas().affine_inverse() * event.position)
 
 		if event.pressed:
@@ -179,45 +184,24 @@ func _input(event):
 							items[hovered_index] = picked_item
 							items[picked_id] = item_in_slot
 				else:
-					var item_id = get_item_id(picked_item)
-					Event.emit_signal("drop_item", item_id, picked_item.amount)
-					print(picked_item.amount, "Items? with ID ", item_id, " was dropped outside the inventory")
-					active_item = -1
-					items_to_remove.append(picked_item)
-					picked_item = null  # Не освобождаем сразу, а помечаем для удаления
+					remove_item(picked_item,true)
 				picked_item = null
 				up_item_pos()
 		queue_redraw()
 
-	if Event.platform == "PC" and !Event.not_move_gui:
+	if !Event.not_move_gui:
 		if event is InputEventMouseButton and event.is_pressed():
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				hovered_index = clamp(active_slot -1 ,0,MAX_SLOTS-1)
 			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				hovered_index = clamp(active_slot +1 ,0,MAX_SLOTS-1)
-		if Input.is_key_pressed(KEY_Q) and active_slot != -1:
-			var itm = get_item(active_slot)
-			if itm != null and is_instance_valid(itm):
-				picked_item = itm
-				var item_id = get_item_id(picked_item)
-				Event.emit_signal("drop_item", item_id, picked_item.amount)
-				print(picked_item.amount, "Items with ID", item_id, "were dropped outside the inventory")
-				active_item = -1
-				items_to_remove.append(picked_item)
-			up_item_pos()
-			queue_redraw()
-			picked_item = null
+		if Input.is_action_just_pressed("Q") and active_slot != -1:
+			remove_item(null,-33)
 
 		for i in range(1,MAX_SLOTS+1):
 			if Input.is_key_pressed(KEY_0 + i):
 				hovered_index = i - 1
-	if hovered_index != -1:
-		active_slot = hovered_index
 
-	active_item = get_item_id(get_item(active_slot))
-	queue_redraw()
-
-			
 
 func _process(delta):
 	for item in items_to_remove:
@@ -249,6 +233,74 @@ func get_item_id(item: Node2D) -> int:
 	if item is Item:
 		return item.item_id
 	return -1
+
+func remove_item(item = null, drop: bool = false, slot_id: int = -1, item_amount: int = 1, id: int = -33):
+	var litem
+	var item_id = id
+	
+	# Если передан предмет (item != null), удаляем его
+	if item != null:
+		litem = item
+		item_id = get_item_id(litem)
+		if drop:
+			Event.emit_signal("drop_item", item_id, litem.amount)  # Отправляем сигнал, если нужно выбросить предмет
+		items_to_remove.append(litem)  # Добавляем в список на удаление
+		active_item = -1
+		up_item_pos()  # Обновляем позиции предметов
+		queue_redraw()  # Перерисовываем интерфейс
+		return
+	
+	# Если id == -33, это означает, что мы удаляем предмет из активного слота
+	if id == -33:
+		if slot_id == -1:
+			slot_id = active_slot  # Если слот не передан, используем активный слот
+		litem = get_item(slot_id)
+		if litem == null or litem in items_to_remove:
+			return  # Если предмета нет или он уже помечен для удаления, ничего не делаем
+		
+		item_id = get_item_id(litem)
+		if item_amount == -1:
+			# Удаляем весь предмет
+			Event.emit_signal("drop_item", item_id, litem.amount)  # Отправляем сигнал о полном удалении
+			items_to_remove.append(litem)  # Добавляем в список на удаление
+			active_item = -1
+		else:
+			# Уменьшаем количество предмета
+			var remaining_amount = litem.amount - item_amount
+			print(remaining_amount)  # Логируем оставшееся количество для отладки
+			if remaining_amount <= 0:
+				# Если предмет должен быть полностью удален
+				Event.emit_signal("drop_item", item_id, litem.amount)  # Отправляем сигнал о полном удалении
+				items_to_remove.append(litem)
+				active_item = -1
+			else:
+				# Если предмет не удаляется, обновляем его количество
+				var removed_amount = item_amount  # Количество удаленных предметов
+				litem.amount = remaining_amount
+				if drop:
+					Event.emit_signal("drop_item", item_id, removed_amount)  # Передаем количество удаленных предметов
+
+		up_item_pos()  # Обновляем позиции предметов в инвентаре
+		queue_redraw()  # Перерисовываем интерфейс
+		return
+	
+	# Если передан конкретный слот, удаляем предмет из этого слота
+	if slot_id >= 0 and slot_id < MAX_SLOTS:
+		litem = get_item(slot_id)
+		if litem != null:
+			# Если предмет существует в слоте
+			if item_amount == -1 or litem.amount <= item_amount:
+				# Если удаляем весь предмет
+				Event.emit_signal("drop_item", item_id, litem.amount)  # Отправляем сигнал о полном удалении
+				items_to_remove.append(litem)
+				items[slot_id] = null  # Очищаем слот
+			else:
+				# Уменьшаем количество предмета в слоте
+				litem.amount -= item_amount
+				if drop:
+					Event.emit_signal("drop_item", item_id, item_amount)  # Передаем количество удаленного предмета
+			up_item_pos()  # Обновляем позиции
+			queue_redraw()  # Перерисовываем интерфейс
 
 func add_item_by_id_mp(item_id,player_id):
 	if Event.is_multiplayer == true:
@@ -294,14 +346,16 @@ func check_inventory_full() -> Array:
 	var avable_items_ids:Array
 	for i in range(MAX_SLOTS):
 		if items[i] != null:
-			var item_id =  get_item_id(items[i])
+			var item_id = get_item_id(items[i])
 			if items[i].amount < items[i].ITEM_STACK_LIM[item_id]:
 				avable_items_ids.append(item_id)
 		else: return [-2]
+	if avable_items_ids.is_empty():
+		return [-1]
 	return avable_items_ids
 
 func _draw():
-	Event.avable_items_id =  check_inventory_full()
+	Event.avable_items_id = check_inventory_full()
 	save_inventory()
 	#print(active_item)
 	for i in range(MAX_SLOTS):

@@ -121,11 +121,14 @@ func _active_item(id):
 
 func pick_up(id):
 	if Event.is_multiplayer == false:
-		if picked_item != null:
+		if picked_item != null and picked_item_id != -1:
 			picked_item.queue_free()
 			Event.emit_signal("add_item",picked_item_id,Event.mpp_index)
+			picked_item_id = -1
+			
 	else:
 		mp_pick_up(id)
+		
 
 func drop_item(item_id,amount):
 	if is_multiplayer_authority():
@@ -340,6 +343,7 @@ func push_rb():
 			#print("New Linear Velocity:", collider_rb.linear_velocity)
 
 
+#region mpplayer
 ## mplayer
 
 func _on_handshake_ready(data):
@@ -373,10 +377,14 @@ func mp_pick_up(id):
 func pick_up_mp(mp_id):
 	if mp_id != -1:
 		if mp_id == get_parent().player_index:
-			if picked_item != null:
+			if picked_item != null and picked_item_id != -1:
 				picked_item.queue_free()
 				Event.emit_signal("add_item",picked_item_id,mp_id)
+				picked_item_id = -1
 	if mp_id == -1:
-		if picked_item != null:
+		if picked_item != null and  picked_item_id != -1:
 			picked_item.queue_free()
 			Event.emit_signal("add_item",picked_item_id,mp_id)
+			picked_item_id = -1
+#endregion
+			
