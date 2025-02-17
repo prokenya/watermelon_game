@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://m6cpbilj2lg6"]
+[gd_scene load_steps=29 format=3 uid="uid://m6cpbilj2lg6"]
 
 [ext_resource type="Script" path="res://scripts/character.gd" id="1_hwfqd"]
 [ext_resource type="Script" path="res://addons/shaker/src/Vector3/shaker_component3D.gd" id="2_h326c"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/map_sw.gd" id="4_j2k8y"]
 [ext_resource type="Script" path="res://addons/shaker/src/Vector3/ShakerReceiver3D.gd" id="4_of5k6"]
 [ext_resource type="PackedScene" uid="uid://cqn6qgtemelvm" path="res://scen/gui/base_opt.tscn" id="5_dm75i"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="6_7mee1"]
 [ext_resource type="AudioStream" uid="uid://erqx6phtv0fp" path="res://audio/music/Transferloop_-_drone_-_spaces.wav" id="7_c42dc"]
 [ext_resource type="AudioStream" uid="uid://n57g5baj44a" path="res://audio/sfx/Footsteps/FootstepsStoneDirt1.wav" id="8_5j2pe"]
 [ext_resource type="AudioStream" uid="uid://ctrpvkoufalvn" path="res://audio/sfx/Footsteps/FootstepsStoneDirt2.wav" id="9_45bso"]
@@ -221,6 +222,7 @@ autostart = true
 
 [node name="Control_charapter" type="CanvasLayer" parent="."]
 process_mode = 3
+script = ExtResource("6_7mee1")
 
 [node name="ui_b" parent="Control_charapter" instance=ExtResource("5_dm75i")]
 visible = false

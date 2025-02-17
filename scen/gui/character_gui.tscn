@@ -244,23 +244,27 @@ anchor_bottom = 0.668
 offset_left = -64.0
 offset_top = -48.864
 offset_right = 64.0
-offset_bottom = 79.136
+offset_bottom = 37.136
 grow_horizontal = 2
 grow_vertical = 0
 
 [node name="hint1" type="TextureRect" parent="hints"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("6_py1aq")
-expand_mode = 1
+expand_mode = 3
+stretch_mode = 5
 
 [node name="hint2" type="TextureRect" parent="hints"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("7_pvhge")
-expand_mode = 1
+expand_mode = 3
+stretch_mode = 5
 
 [connection signal="pressed" from="VBoxContainer/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/fire" to="." method="_on_fire_pressed"]

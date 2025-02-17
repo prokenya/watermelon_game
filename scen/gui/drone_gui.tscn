@@ -8,22 +8,8 @@ script/source = "extends CanvasLayer
 @onready var val = %Label
 @onready var linar_ve = %linar_ve
 
-@onready var gui = $\".\"
-@onready var menu = $\"../../ui_b\"
-
 @onready var elements_to_del_mobile:Array = [$VBoxContainer,$\"VBoxContainer/cam_1-3person\",$\"Virtual Joystick\",$\"left-right\"]
 @onready var elements_to_del_PC:Array = []
-
-var is_paused = false
-func pressed():
-	if gui.visible == true:
-		gui.visible = false
-		menu.visible = true
-	else:
-		gui.visible = true
-		menu.visible = false
-	is_paused = not is_paused
-	Event.not_move_gui = is_paused
 
 func _input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_SLASH):
@@ -40,7 +26,6 @@ func _ready():
 	else:
 		for item in elements_to_del_PC:
 			item.queue_free()
-	Event.connect(\"menu\",pressed)
 
 func _process(delta):
 	linar_ve.text = Event.drone_speed

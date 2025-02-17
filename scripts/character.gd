@@ -58,6 +58,7 @@ func _ready():
 	Event.control_id_counter += 1
 	control_item_id = Event.control_id_counter
 	if is_multiplayer_authority():
+		Event.playernode = self
 		if Event.is_multiplayer:
 			Event.mpp_index = mpp.player_index
 		Event.set_control({
@@ -69,7 +70,8 @@ func _ready():
 
 var gui = {
 	"player": preload("res://scen/gui/character_gui.tscn"),
-	"drone": preload("res://scen/gui/drone_gui.tscn")
+	"drone": preload("res://scen/gui/drone_gui.tscn"),
+	"freecam": preload("res://scen/gui/free_cam_gui.tscn")
 }
 
 var current_gui_type: String = ""
@@ -144,6 +146,7 @@ func drop_item(item_id,amount):
 		Event.emit_signal("spawn_obj",data)
 #character
 func _apply_user_prefs():
+	Event
 	freejump = user_prefs.freejump_s
 	sensitivity = user_prefs.sensitivity
 	cam_shake = user_prefs.cam_ch

@@ -14,6 +14,7 @@ func on_run_command(cmd: String) -> void:
 	var result = expression.execute([], self)
 	if result != null:
 		printd(result,Color.GREEN)
+	Event.emit_signal("menu")
 		# Do stuff with the result
 
 # Reload the current scene
@@ -70,6 +71,14 @@ func get_log():
 
 func time(uscale:float):
 	Engine.time_scale = uscale
+
+func freecam():
+	Event.set_control({
+			"control_id": -170,
+			"controller_id":Event.control_info["controller_id"],
+			"controlled_object_type":"freecam",
+			"multiplayer_index":Event.mpp_index
+			})
 
 func tp(x = 1, y = 1, z = 1, pl_id: int = Event.mpp_index):
 	# Обновляем позицию игрока

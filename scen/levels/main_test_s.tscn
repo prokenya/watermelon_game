@@ -1,9 +1,10 @@
-[gd_scene load_steps=39 format=4 uid="uid://bdnenmk6e4f2t"]
+[gd_scene load_steps=40 format=4 uid="uid://bdnenmk6e4f2t"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_ectqd"]
 [ext_resource type="Texture2D" uid="uid://dup4vwmgwyf41" path="res://textures/prototype/Dark/texture_04.png" id="1_oehe3"]
 [ext_resource type="Texture2D" uid="uid://cknnpbe7gnutf" path="res://textures/prototype/Green/texture_01.png" id="2_a61ap"]
 [ext_resource type="Script" path="res://scripts/object_spawner.gd" id="2_guvvm"]
+[ext_resource type="PackedScene" uid="uid://c47grqxh258d2" path="res://addons/useful_scripts/player/freecam_firstperson.tscn" id="3_67uaq"]
 [ext_resource type="Texture2D" uid="uid://cjmy06h4u2c4r" path="res://textures/prototype/Orange/texture_01.png" id="4_drs5p"]
 [ext_resource type="Texture2D" uid="uid://varw4lx87ems" path="res://textures/1182467.160.webp" id="14_whqx1"]
 [ext_resource type="AudioStream" uid="uid://bbhfg3cbhi5rf" path="res://audio/sfx/on.ogg" id="15_ek63r"]
@@ -195,6 +196,8 @@ script = ExtResource("1_ectqd")
 [node name="objects" type="Node3D" parent="."]
 script = ExtResource("2_guvvm")
 inworld = true
+
+[node name="freecam" parent="objects" instance=ExtResource("3_67uaq")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_614wv")

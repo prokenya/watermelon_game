@@ -2,6 +2,7 @@ extends Node
 
 var platform
 #world_data
+var setings = UserPref.load_or_create()
 var start_world_args: Dictionary
 var items: Dictionary
 #op_signals
@@ -22,6 +23,7 @@ var mpcnode
 var mpp_index:int
 signal _on_player_connected(mpplayer)
 #player
+var playernode:Node
 signal _active_item(item_id)
 var hp_char: int
 var is_inventory_active: bool
@@ -61,4 +63,4 @@ func _ready() -> void:
 	else:
 		platform = "PC"
 		print("Запущено на ПК")
-	platform = "Android"
+	#platform = "Android"

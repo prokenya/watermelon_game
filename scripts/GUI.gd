@@ -13,17 +13,6 @@ var control_id
 @onready var elements_to_del_mobile:Array = [$"Virtual Joystick",$VBoxContainer,$VBoxContainer2,pick_up,$Button]
 @onready var elements_to_del_PC:Array = [$hints]
 
-var is_paused = false
-func pressed():
-	if gui.visible == true:
-		gui.visible = false
-		menu.visible = true
-	else:
-		gui.visible = true
-		menu.visible = false
-	is_paused = not is_paused
-	Event.not_move_gui = is_paused
-
 func _ready():
 	if Event.platform == "PC":
 		for item in elements_to_del_mobile:
@@ -32,7 +21,6 @@ func _ready():
 	else:
 		for item in elements_to_del_PC:
 			item.queue_free()
-	Event.connect("menu", pressed)
 	player_node = get_parent().get_parent().get_parent()
 
 func _exit_tree() -> void:

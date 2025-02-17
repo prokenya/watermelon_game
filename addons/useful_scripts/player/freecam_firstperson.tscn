@@ -6,11 +6,12 @@
 
 [sub_resource type="SphereMesh" id="SphereMesh_0ppkb"]
 
-[node name="freecam" type="CharacterBody3D"]
+[node name="freecam" type="CharacterBody3D" groups=["freecam"]]
 script = ExtResource("1_pj4m6")
 
 [node name="CollisionShape3d" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_3o0yw")
+disabled = true
 
 [node name="MeshInstance3d" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_0ppkb")
